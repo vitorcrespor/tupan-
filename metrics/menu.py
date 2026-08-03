@@ -1,6 +1,7 @@
 import data_type as data
 from ingestion import ingest
 from pathlib import Path
+import pandas as pd
 
 def menu():
     print("TUPAN DIGITAL SYSTEM\n")
@@ -16,14 +17,13 @@ def menu():
         print("3. Área\n")
         choice_1= input("Digite sua escolha: ")
         if choice_1 == "1":
-            real_estate= data.real_estate()
-            manual_register(real_estate)
+            manual_register(data.real_estate)
         elif choice_1 == "2":
             city= data.city()
-            manual_register(city)
+            manual_register(data.city)
         elif choice_1 == "3":
             area= data.area()
-            manual_register(area)
+            manual_register(data.area)
             
     elif choice == "2":
         search()
@@ -38,19 +38,26 @@ def menu():
 def search():
     """"""
 
-def automatic_register():
-    path= str(input("Digite o caminho do seu banco de dados: "))
+def automatic_register(cls):
+    path= Path(input("Digite o caminho do seu banco de dados: "))
     if path.exists():
-        open(path, "r")
-        
-        with open(path, "r") as f:
-            print(f.read())
+        df= pd.read_excel(path)
+        print("REGISTRANDO BANCO DE DADOS...")
+        for index,row in df.iterrows():
+            obj= cls()
+            for attr, attr_type in cls.__annotations__.items():
+                attr_value= row[attr]
+                setattr(obj, attr, attr_type(attr_value))
+            ingest(obj)
+        print("OPERAÇÃO CONCLUÍDA COM SUCESSO")
     else:
         print("Path does not exist")
-        print("REGISTRANDO BANCO DE DADOS...")
+        return
 
-def manual_register(obj):
-    for attr, attr_type in obj.__annotations__.items():
+def manual_register(cls):
+    obj= cls()
+    for attr, attr_type in cls.__annotations__.items():
         user_input= input(f"Digite o valor do atributo {attr}: ")
     setattr(obj, attr, attr_type(user_input))
-    
+    ingest(obj)
+    return

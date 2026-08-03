@@ -31,9 +31,9 @@ def ingest(real_estate):
                 "average_discount": real_estate.average_discount})
     
     index= VectorStoreIndex.from_documents(documents=[doc])
-    return index
+    return 
     
-def ingest_city(city_panorama):
+def ingest(city_panorama):
     city_hash= hashlib.sha256(city_panorama.name.encode()).hexdigest()    
     if city_hash in city_hashes:
         print("City already ingested")
@@ -53,9 +53,9 @@ def ingest_city(city_panorama):
                 "average_dom": city_panorama.average_dom})
     
     index= VectorStoreIndex.from_documents(documents=[doc])
-    return index
+    return 
 
-def ingest_area(area_panorama):
+def ingest(area_panorama):
     area_hash= hashlib.sha256(area_panorama.name.encode()).hexdigest()
     if area_hash in area_hashes:
         print("Area already ingested")
@@ -73,5 +73,4 @@ def ingest_area(area_panorama):
                 "average_dom": area_panorama.average_dom})
     
     index= VectorStoreIndex.from_documents(documents=[doc])
-    return index
-
+    return
