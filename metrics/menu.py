@@ -1,7 +1,11 @@
+from ingestion import ingest, get_index
 import data_type as data
-from ingestion import ingest
 from pathlib import Path
 import pandas as pd
+
+
+index= get_index()
+
 
 def menu():
     print("TUPAN DIGITAL SYSTEM\n")
@@ -49,15 +53,18 @@ def automatic_register(cls):
                 attr_value= row[attr]
                 setattr(obj, attr, attr_type(attr_value))
             ingest(obj)
+        index.storage_context.persist()
         print("OPERAÇÃO CONCLUÍDA COM SUCESSO")
     else:
         print("Path does not exist")
-        return
+        
 
 def manual_register(cls):
     obj= cls()
     for attr, attr_type in cls.__annotations__.items():
         user_input= input(f"Digite o valor do atributo {attr}: ")
-    setattr(obj, attr, attr_type(user_input))
+        setattr(obj, attr, attr_type(user_input))
     ingest(obj)
-    return
+    index.storage_context.persist()
+    
+
