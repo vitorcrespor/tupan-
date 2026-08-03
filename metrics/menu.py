@@ -3,15 +3,28 @@ from ingestion import ingest
 from pathlib import Path
 
 def menu():
-    print("TUPAN DIGITAL SYSTEM")
-    print("1. Registro Manual")
-    print("2. Pesquisa")
-    print("3. Registro Automático")
-    print("4. Sair")
+    print("TUPAN DIGITAL SYSTEM\n")
+    print("1. Registro Manual\n")
+    print("2. Pesquisa\n")
+    print("3. Registro Automático\n")
+    print("4. Sair\n")
     
     choice= input("Digite sua escolha: ")
     if choice == "1":
-        manual_register()
+        print("1. Imóvel\n")
+        print("2. Cidade\n")
+        print("3. Área\n")
+        choice_1= input("Digite sua escolha: ")
+        if choice_1 == "1":
+            real_estate= data.real_estate()
+            manual_register(real_estate)
+        elif choice_1 == "2":
+            city= data.city()
+            manual_register(city)
+        elif choice_1 == "3":
+            area= data.area()
+            manual_register(area)
+            
     elif choice == "2":
         search()
     elif choice == "3":
@@ -28,40 +41,16 @@ def search():
 def automatic_register():
     path= str(input("Digite o caminho do seu banco de dados: "))
     if path.exists():
-        """need to know how does the file looks like"""
+        open(path, "r")
+        
         with open(path, "r") as f:
             print(f.read())
     else:
         print("Path does not exist")
         print("REGISTRANDO BANCO DE DADOS...")
 
-def manual_register():
-    print("REGISTRAR NOVO IMOVEL")
-    price= float(input("Digite o valor do imóvel: "))
-    area= float(input("Digite a área do imóvel em metros quadrados: "))
-    age= int(input("Digite quando o imóvel foi construído: "))
-    number_of_rooms= tuple(map(int, input(
-        "Digite o número de quartos (suítes e quartos separados por -> S Q): ").split()))
-    number_of_bathrooms= int(input("Digite o número de banheiros: "))
-    number_of_parking_spaces= int(input("Digite o número de vagas: "))
-    last_sale_price= float(input("Digite o valor da venda mais recente: "))
-    last_sale_date= input("Digite a data da ultima venda (dd/mm/aaaa): ")
-    square_meter_price= price / area if area > 0 else 0
-
-    real_estate= data.RealEstate(
-        name= input("Digite o nome do imóvel: "),
-        address= input("Digite o endereço do imóvel: "),
-        price= price,
-        area= area,
-        age= age,
-        number_of_rooms= number_of_rooms,
-        number_of_bathrooms= number_of_bathrooms,
-        number_of_parking_spaces= number_of_parking_spaces,
-        last_sale_price= last_sale_price,
-        last_sale_date= last_sale_date,
-        square_meter_price= square_meter_price  
-    )
-
-    index= ingest(real_estate)
-    print("OPERAÇÃO CONCLUÍDA COM SUCESSO")
-    return index
+def manual_register(obj):
+    for attr, attr_type in obj.__annotations__.items():
+        user_input= input(f"Digite o valor do atributo {attr}: ")
+    setattr(obj, attr, attr_type(user_input))
+    
