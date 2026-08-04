@@ -1,10 +1,9 @@
-
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core import Settings, VectorStoreIndex, StorageContext, Document
 import data_type as data
-from llama_index.core.ingestion import IngestionPipeline
 import hashlib
 import os
+import prompts
 
 vector_db= os.getenv("VECTOR_DB")
 Settings.embed_model= OpenAIEmbedding(model="text-embedding-3-small")
@@ -27,10 +26,13 @@ def ingest_real_estate(real_estate):
         print("Address already ingested")
         return
     address_hashes.add(address_hash)
-    
-    doc= Document(text=real_estate.address, metadata={
+    query= prompts.build_summary_prompt(real_estate)
+    response= Settings.llm.complete(query)
+    real_estate.summary= response.text
+
+    doc= Document(text=real_estate.summary, metadata={
+                "address": real_estate.address,
                 "age": real_estate.age,
-                "name": real_estate.name,
                 "price": real_estate.price,
                 "area": real_estate.area,
                 "last_sale_price": real_estate.last_sale_price,
@@ -51,7 +53,7 @@ def ingest_city(city):
         print("City already ingested")
         return
     city_hashes.add(city_hash)
-    
+
     doc= Document(text=city.name, metadata={
                 "population": city.population,
                 "area": city.area,
@@ -99,3 +101,4 @@ def ingest(obj):
 
     elif isinstance(obj, data.area):
         ingest_area(obj)
+        

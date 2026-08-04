@@ -2,6 +2,10 @@ from ingestion import ingest, get_index
 import data_type as data
 from pathlib import Path
 import pandas as pd
+import config
+import agent
+import prompts
+from llama_index.core import Settings
 
 
 index= get_index()
@@ -12,7 +16,8 @@ def menu():
     print("1. Registro Manual\n")
     print("2. Pesquisa\n")
     print("3. Registro Automático\n")
-    print("4. Sair\n")
+    print("4. Conversar com Ulisses\n")
+    print("5. Sair\n")
     
     choice= input("Digite sua escolha: ")
     if choice == "1":
@@ -34,13 +39,12 @@ def menu():
     elif choice == "3":
         automatic_register()
     elif choice == "4":
+        agent.ulisses()
+    elif choice == "5":
         exit()
     else:
         print("Invalid choice")
         menu()
-        
-def search():
-    """"""
 
 def automatic_register(cls):
     path= Path(input("Digite o caminho do seu banco de dados: "))
@@ -67,4 +71,18 @@ def manual_register(cls):
     ingest(obj)
     index.storage_context.persist()
     
-
+def search():
+    search_query= input("Digite sua pesquisa: ")
+    results= config.collection.query(
+        query_texts=[search_query],
+        n_results=5)     
+    print("RESULTADOS DA PESQUISA:")
+    for result in results:
+        print(result.metadata)
+    return results
+    #adicionar filtros de pesquisa, como cidade, área, faixa de preço, etc.
+    
+def normalize_address(address):
+    query= prompts.normalize_address(address)
+    response= Settings.llm.complete(query)
+    return response.text

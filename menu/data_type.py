@@ -1,7 +1,7 @@
 class real_estate:
     def __init__(self):
         self.suggested_price: float= None
-        self.nam: str= None
+        self.summary: str= None
         self.age: int= None
         self.address: str= None
         self.price: float= None
