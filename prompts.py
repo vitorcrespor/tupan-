@@ -8,4 +8,13 @@ def normalize_address(address):
     return {
         "task": "normalize address to street/number/city",
         "input": address}
-    
+
+def build_where(filters: dict[str, tuple[float, float]]):
+    return {
+        "$and": [
+            {
+                attr: {
+                    "$gte": interval[0],
+                    "$lte": interval[1]
+                }
+            }for attr, interval in filters.items()]}

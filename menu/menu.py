@@ -43,24 +43,25 @@ def menu():
     elif choice == "5":
         exit()
     else:
-        print("Invalid choice")
+        print("Invalid choice\n")
         menu()
 
 def automatic_register(cls):
     path= Path(input("Digite o caminho do seu banco de dados: "))
     if path.exists():
         df= pd.read_excel(path)
-        print("REGISTRANDO BANCO DE DADOS...")
+        print("REGISTRANDO BANCO DE DADOS...\n")
         for index,row in df.iterrows():
             obj= cls()
             for attr, attr_type in cls.__annotations__.items():
                 attr_value= row[attr]
                 setattr(obj, attr, attr_type(attr_value))
+            normalize_address(obj)
             ingest(obj)
         index.storage_context.persist()
-        print("OPERAÇÃO CONCLUÍDA COM SUCESSO")
+        print("OPERAÇÃO CONCLUÍDA COM SUCESSO\n")
     else:
-        print("Path does not exist")
+        print("Path does not exist\n")
         
 
 def manual_register(cls):
@@ -68,21 +69,43 @@ def manual_register(cls):
     for attr, attr_type in cls.__annotations__.items():
         user_input= input(f"Digite o valor do atributo {attr}: ")
         setattr(obj, attr, attr_type(user_input))
+    normalize_address(obj)
     ingest(obj)
     index.storage_context.persist()
     
 def search():
+    choice_2= input("FILTRAR PESQUISAS?\n1. Sim\n2. Não\n")
+    if choice_2 == "1":
+        print("FILTROS DE PESQUISA:\n")
+        attrs= list(data.real_estate.__annotations__.keys())
+        for i, attr in enumerate(attrs):
+            print(f"{i}. {attr}")
+            
+        filters: dict[str, tuple[float, float]] = {}
+        values= [x.strip()
+                for x in input("Filtros separados por vírgulas: ").split(",")]
+        for value in values:
+            minv= float(input(f"Digite o valor mínimo do filtro {attrs[int(value)]}: "))
+            maxv= float(input(f"Digite o valor máximo do filtro {attrs[int(value)]}: "))
+            filters[attrs[int(value)]] = (minv, maxv)
+        where= prompts.build_where(filters)
+    
+    else: where= None
+    
     search_query= input("Digite sua pesquisa: ")
     results= config.collection.query(
         query_texts=[search_query],
-        n_results=5)     
-    print("RESULTADOS DA PESQUISA:")
-    for result in results:
-        print(result.metadata)
-    return results
+        n_results=5,
+        where=where)     
+    print("RESULTADOS DA PESQUISA:\n")
+    
+    for metadata in results["metadatas"][0]:
+        print(metadata)
     #adicionar filtros de pesquisa, como cidade, área, faixa de preço, etc.
     
-def normalize_address(address):
-    query= prompts.normalize_address(address)
+    
+    
+def normalize_address(obj):
+    query= prompts.normalize_address(obj.address)
     response= Settings.llm.complete(query)
-    return response.text
+    obj.address= response.text
