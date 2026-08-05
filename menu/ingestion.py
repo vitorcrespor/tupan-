@@ -1,9 +1,11 @@
 from llama_index.embeddings.openai import OpenAIEmbedding
-from llama_index.core import Settings, VectorStoreIndex, StorageContext, Document
 import data_type as data
 import hashlib
 import os
 import prompts
+from llama_index.core import Settings, VectorStoreIndex, StorageContext, Document
+# pyright: reportMissingImports=false
+
 
 vector_db= os.getenv("VECTOR_DB")
 Settings.embed_model= OpenAIEmbedding(model="text-embedding-3-small")

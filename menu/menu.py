@@ -1,15 +1,15 @@
 from ingestion import ingest, get_index
 import data_type as data
 from pathlib import Path
-import pandas as pd
+import pandas as pd  # type: ignore[reportMissingImports]
 import config
 import agent
 import prompts
 from llama_index.core import Settings
+# pyright: reportMissingImports=false
 
 
 index= get_index()
-
 
 def menu():
     print("TUPAN DIGITAL SYSTEM\n")
