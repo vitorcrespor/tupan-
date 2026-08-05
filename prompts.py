@@ -9,12 +9,20 @@ def normalize_address(address):
         "task": "normalize address to street/number/city",
         "input": address}
 
-def build_where(filters: dict[str, tuple[float, float]]):
-    return {
-        "$and": [
-            {
+def build_where(filters: dict):
+    conditions= []
+    for attr, value in filters.items():
+        if isinstance(value, tuple):
+            conditions.append({
                 attr: {
-                    "$gte": interval[0],
-                    "$lte": interval[1]
-                }
-            }for attr, interval in filters.items()]}
+                    "$gte": value[0],
+                    "$lte": value[1]
+                }})
+
+        elif isinstance(value, str):
+            conditions.append({
+                attr: {
+                    "$eq": value
+                }})
+
+    return {"$and": conditions}

@@ -33,6 +33,7 @@ def ingest_real_estate(real_estate):
     real_estate.summary= response.text
 
     doc= Document(text=real_estate.summary, metadata={
+                "price": real_estate.price,
                 "address": real_estate.address,
                 "age": real_estate.age,
                 "price": real_estate.price,
@@ -104,3 +105,5 @@ def ingest(obj):
     elif isinstance(obj, data.area):
         ingest_area(obj)
         
+
+

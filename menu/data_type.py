@@ -1,16 +1,18 @@
 class real_estate:
     def __init__(self):
+        #location h3
         self.suggested_price: float= None
-        self.summary: str= None
+        self.summary: str= None #after add image influence
         self.age: int= None
         self.address: str= None
         self.price: float= None
         self.area: float= None
+        self.city: str= None
         
         self.last_sale_price: float= None
         self.last_sale_date: str= None
         
-        self.number_of_rooms: tuple[int, int]= None
+        self.number_of_rooms: int= None
         self.number_of_bathrooms: int= None
         self.number_of_parking_spaces: int= None
         self.square_meter_price: float= None

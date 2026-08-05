@@ -1,4 +1,4 @@
-import metrics.menu as menu
+import menu.menu as menu
 
 def main():
     menu()
