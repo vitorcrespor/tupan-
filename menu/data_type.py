@@ -1,6 +1,7 @@
 class real_estate:
     def __init__(self):
         #location h3
+        self.four_metric: dict= {"luxury": float, "leisure": float, "location": float, "leverage": float}
         self.suggested_price: float= None
         self.summary: str= None #after add image influence
         self.age: int= None
