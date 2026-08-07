@@ -1,6 +1,7 @@
 from xgboost import XGBRegressor
 import os
 import json
+import train.xg_class as xg
 
 PARAM_LOG_PATH= os.getenv("PARAM_LOG_PATH")
 SEED= os.getenv("SEED")
@@ -21,18 +22,18 @@ def price_suggestion(real_estate):
     return prediction
 
 
-def analyze_tendency(tendent):
+def analyze_tendency(tendent, percentile):
     
     with open(PARAM_LOG_PATH, "r") as f:
         params= json.load(f)
     
-    model= XGBRegressor(objective="reg:squarederror", tree_method="hist",
+    model= XGBRegressor(objective="reg:quantileerror", quantile_alpha= percentile,
                         enable_categorical=True, random_state=seed,
                         **params,)
 
     prediction= model.predict(tendent.model_dump())
     
-    return prediction
+    return 
 
     
     

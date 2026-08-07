@@ -1,20 +1,19 @@
 from langchain_core.tools import tool
-import googlemaps
-import json
-import menu.data_type as data
+import numpy as np
 import agent.analytics as analytics
 
 
 @tool
 def price_suggestion(real_estate):
     """Suggests price for property"""
-    return analytics.price_suggestion(real_estate)
+    return np.expm1(analytics.price_suggestion(real_estate))
     
 @tool
 def negotiation_helper:
     
     
 @tool
+#melhorar os dados: % de certeza, previsão de tempo
 def market_analysis:
     """Analyzes market tendencies"""
     
