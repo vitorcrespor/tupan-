@@ -1,4 +1,4 @@
-from ingestion import ingest, get_index
+from menu.ingestion import ingest, get_index
 import data_type as data
 from pathlib import Path
 import pandas as pd  # type: ignore[reportMissingImports]
@@ -17,7 +17,8 @@ def menu():
     print("2. Pesquisa\n")
     print("3. Registro Automático\n")
     print("4. Conversar com Ulisses\n")
-    print("5. Sair\n")
+    print("5. Heat Map\n")
+    print("6. Sair\n")
     
     choice= input("Digite sua escolha: ")
     if choice == "1":

@@ -1,5 +1,5 @@
 from llama_index.embeddings.openai import OpenAIEmbedding
-import data_type as data
+import menu.data_type as data
 import hashlib
 import os
 import prompts
@@ -9,7 +9,7 @@ from llama_index.core import Settings, VectorStoreIndex, StorageContext, Documen
 
 vector_db= os.getenv("VECTOR_DB")
 Settings.embed_model= OpenAIEmbedding(model="text-embedding-3-small")
-VectorStoreIndex.set_storage_context(storage_context=StorageContext.from_defaults
+VectorStoreIndex.storage_context(storage_context=StorageContext.from_defaults
                                      (persist_dir=vector_db))
 address_hashes= set()
 city_hashes= set()
