@@ -1,5 +1,5 @@
 from llama_index.embeddings.openai import OpenAIEmbedding
-import menu.data_type as data
+import data_base.data_type as data
 import hashlib
 import os
 import prompts

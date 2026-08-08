@@ -1,5 +1,5 @@
-from menu.ingestion import ingest, get_index
-import data_type as data
+from data_base.ingestion import ingest, get_index
+import data_base.data_type as data
 from pathlib import Path
 import pandas as pd  # type: ignore[reportMissingImports]
 import config

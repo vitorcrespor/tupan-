@@ -1,6 +1,6 @@
 from xgboost import XGBRegressor
 import optuna
-from sklearn.metrics import root_mean_squared_error
+from sklearn.metrics import root_mean_squared_error, pinball_loss
 from sklearn.model_selection import train_test_split, TimeSeriesSplit
 import pandas as pd
 import numpy as np
@@ -14,11 +14,19 @@ SEED= os.getenv("SEED")
 global seed
 seed= int(SEED)
 
-def run_optimize_time_series_Percentile(train_dataset, percentile):
+
+def run_optimize_time_series_Percentile(train_dataset, percentile, time_span):
+    with open(PARAM_LOG_PATH, "r") as f:
+        if f.read() == time_span:
+            return
+        
     X= train_dataset.model_dump()
     dfX= pd.DataFrame(X)
-    y = [x.suggested_price for x in train_dataset]
-    y= pd.Series(y)
+    y= [x.suggested_price for x in train_dataset]
+    y= pd.Series(y).shift(-time_span)
+    
+    dfX= dfX.loc[y.notna()].reset_index(drop= True)
+    y= y.loc[y.notna()].reset_index(drop= True)
     
     for col in dfX.select_dtypes(include=["object"]).columns:
         dfX[col]= dfX[col].astype("category") 
@@ -26,7 +34,8 @@ def run_optimize_time_series_Percentile(train_dataset, percentile):
     ts= TimeSeriesSplit()
     
     def objective(trial):
-        params= {"n_estimators": trial.suggest_int("n_estimators", 100, 1000),
+        params= {"objective": "reg:quantileerror", "quantile_alpha": percentile,
+                "n_estimators": trial.suggest_int("n_estimators", 100, 1000),
                 "max_depth": trial.suggest_int("max_depth", 3, 12),
                 "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3, log=True),
                 "subsample": trial.suggest_float("subsample", 0.1, 0.8),
@@ -46,7 +55,9 @@ def run_optimize_time_series_Percentile(train_dataset, percentile):
             model.fit(X_train, y_train_log)
             
             log_prediction= model.predict(X_valid)
-            score.append(root_mean_squared_error(y_valid, log_prediction))
+            loss= pinball_loss(y_valid, log_prediction, alpha= percentile)
+            
+            score.append(loss)
         return sum(score)/len(score)
         
     sampler= optuna.samplers.TPESampler(seed= seed)
@@ -59,8 +70,11 @@ def run_optimize_time_series_Percentile(train_dataset, percentile):
                             **study.best_params,)
     best_model.fit(dfX, y)
     
+    log_data= study.best_params.copy()
+    log_data["time_span"]= time_span
+
     with open(PARAM_LOG_PATH, "w") as f:
-        json.dump(study.best_params, f)
+        json.dump(log_data, f, indent=4)
     
     return best_model,study
 
