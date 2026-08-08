@@ -2,7 +2,7 @@ from langchain_core.tools import tool
 import numpy as np
 import train.analytics as analytics
 from train.xg_class import tendency_prediction
-import pandas as pd
+from data_base.metrics import portfolio_analysis_scores
 
 @tool
 def price_suggestion(real_estate):
@@ -14,11 +14,12 @@ def negotiation_helper(query):
     
     return
     
-@tool
-def portfolio_analysis(real_estates):
-    """Analyzes portfolio"""
     
-    return 
+@tool
+def portfolio_analysis(portfolio):
+    """Analyzes portfolio"""
+    return portfolio_analysis_scores(portfolio)
+
 
 def market_analysis(market):
     """Analyzes market"""

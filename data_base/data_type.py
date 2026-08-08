@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from datetime import date
 from enum import Enum
 import pydantic as pyda
 from h3 import latlong_to_cell
 from typing import Optional
+
 class kind(str, Enum):
     STREET_HOUSE = "casa de rua"
     CONDO_HOUSE = "casa de condomínio"
@@ -37,7 +39,9 @@ class location(pyda.BaseModel):
             return latlong_to_cell(self.latitude, self.longitude, 9)
         return None
     
-
+class PricePoint(pyda.BaseModel):
+    date: date
+    price: float
 class real_estate_metrics(pyda.BaseModel):
     number_of_rooms: int | None = None
     number_of_bathrooms: int | None = None
@@ -47,7 +51,9 @@ class real_estate_metrics(pyda.BaseModel):
     
 class re_price_metrics(pyda.BaseModel):
     price: float | None = None
+    listed_prices: list[PricePoint] | None = None
     last_sale_price: float | None = None
+    sale_price: float | None = None
     
 class four_metric(pyda.BaseModel):
     luxury: float= pyda.Field(gt=0, lt=5)
@@ -57,31 +63,40 @@ class four_metric(pyda.BaseModel):
 
     
 class real_estate(pyda.BaseModel):
-    def __init__(self, summary: str, neighboors: list[map_point], four_metric: four_metric,
-                 re_price_metrics: re_price_metrics, kind: kind, location: location,
-                 real_estate_metrics: real_estate_metrics, age: int, last_sale_date: str):
-        self.summary= summary
-        self.neighboors= neighboors
-        self.four_metric= four_metric
-        self.re_price_metrics= re_price_metrics
-        self.kind= kind
-        self.location= location
-        self.real_estate_metrics= real_estate_metrics
-        self.age= age
-        self.last_sale_date= last_sale_date 
+    exclusive: bool | None = None
+    dom: float | None = None
+    summary: str | None = None
+    age: int | None = None
+    last_sale_date: date | None = None
+    on_sale_since: date | None = None
+    
+    neighboors: list[map_point] | None = None
+    
+    four_metric: four_metric | None = None
+    re_price_metrics: re_price_metrics | None = None
+    kind: kind | None = None
+    location: location | None = None
+    real_estate_metrics: real_estate_metrics | None = None
+
+        
+class sold_estate(real_estate):
+   sold_price: float | None = None
+   sale_date: date | None = None
+   practiced_comission: float | None = None
+    
 class city(pyda.BaseModel):
-    def __init__(self, diversity_score: float, name: str, population: int, available_estates: list[real_estate],
-                 averages: averages):
-        self.diversity_score= diversity_score
-        self.name= name
-        self.population= population
-        self.available_estates= available_estates        
-        self.averages= averages         
+        diversity_score: float | None = None
+        name: str | None = None
+        population: int | None = None
+        available_estates: list[real_estate] | None = None
+        averages: averages | None = None
+
 class area(pyda.BaseModel):
-    def __init__(self, diversity_score: float, name: str, averages: averages):
-        self.diversity_score= diversity_score
-        self.name= name        
-        self.averages= averages
+        diversity_score: float | None = None
+        name: str | None = None
+        averages: averages | None = None
+
+
 class averages(pyda.BaseModel):
     average_dom: float | None = None
     average_discount: float | None = None
@@ -94,5 +109,8 @@ class averages(pyda.BaseModel):
     average_square_meter_price: float | None = None
     
     
-
-    
+class portfolio(pyda.BaseModel):
+    tgt_comission: float | None = None
+    real_estates: list[real_estate] | None = None
+    sold_estates: list[sold_estate] | None = None
+    estates: list[real_estate] | None = None
