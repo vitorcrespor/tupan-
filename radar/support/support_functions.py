@@ -1,8 +1,13 @@
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage, BaseMessage
-import schema
 from dotenv import load_dotenv
 import os
 import json 
+import agent.agent as agent
+import concurrent.futures
+from typing import Dict, List, Optional
+import googlemaps
+from pydantic import BaseModel
+import data_base.data_type as data
 
 load_dotenv()
 LOG_PATH= os.getenv('LOG_PATH')
@@ -55,7 +60,7 @@ def message_to_text(message) -> str:
     return f"{role}: {content}"
 
 
-def update_summary(state: schema.AgentState) -> schema.AgentState:
+def update_summary(state: agent.AgentState) -> agent.AgentState:
     """
     Summarize older conversation history into state['summary'].
 
@@ -103,7 +108,7 @@ def update_summary(state: schema.AgentState) -> schema.AgentState:
                             Updated summary:
                             """)
 
-    response= schema.lm.invoke([system_prompt,human_prompt])
+    response= agent.llm.invoke([system_prompt,human_prompt])
     return {"summary": response.content.strip()}
 
 
@@ -135,3 +140,80 @@ def content_to_text(content) -> str:
         ).strip()
 
     return str(content)
+
+import numpy as np
+
+
+def calculate_shannon_entropy(probabilities: np.ndarray) -> float:
+    p= probabilities[probabilities > 0]
+    if len(p) <= 1:
+        return 0.0
+    entropy= -np.sum(p * np.log(p))
+    max_entropy= np.log(len(probabilities)) 
+    return float(entropy/max_entropy) if max_entropy> 0 else 0.0
+
+
+POI_IMPACT_WEIGHTS: Dict[str, float] = {
+    "subway_station": 10.0,
+    "transit_station": 8.0,
+    "supermarket": 6.0,
+    "park": 5.0,
+    "school": 5.0,
+    "shopping_mall": 4.0,
+    "restaurant": 2.0,
+    "bar": -2.0,
+    "night_club": -4.0,
+    "waste_management": -10.0,
+}
+
+
+async def fetch_google_neighbors(latitude: float, longitude: float, gmaps_client: googlemaps.Client,
+                        radius_meters: int = 500,) -> List[data.map_point]:
+    try:
+        response= gmaps_client.places_nearby(
+        location=(latitude, longitude), radius=radius_meters)
+    except Exception as e:
+        print(f"Error fetching Google Places for ({latitude}, {longitude}): {e}")
+        return []
+
+    neighbors: List[data.map_point]= []
+
+    for place in response.get("results", []):
+        loc= place.get("geometry", {}).get("location", {})
+        lat= loc.get("lat")
+        lng= loc.get("lng")
+
+        if lat is None or lng is None:
+            continue
+
+        types= place.get("types", [])
+        rating= place.get("rating", 3.0) 
+
+        type_impact= sum(POI_IMPACT_WEIGHTS.get(t, 0.5) for t in types)
+
+        rating_multiplier= rating/5.0
+        calculated_impact= type_impact*rating_multiplier
+
+        neighbors.append(data.map_point(
+                latitude=lat,
+                longitude=lng,
+                impact_score=calculated_impact,
+            ))
+
+    return neighbors
+
+
+def populate_city_neighbors(
+    city, api_key: str, radius_meters: int = 500, max_workers: int = 10):
+    gmaps_client= googlemaps.Client(key=api_key)
+
+    def process_estate(estate):
+        if estate.location and estate.location.latitude and estate.location.longitude:
+            estate.neighbors= fetch_google_neighbors(
+                latitude=estate.location.latitude,
+                longitude=estate.location.longitude,
+                gmaps_client=gmaps_client,
+                radius_meters=radius_meters)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        executor.map(process_estate, city.available_estates)

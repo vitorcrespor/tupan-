@@ -2,17 +2,22 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 import data_base.data_type as data
 import hashlib
 import os
-import prompts
+import radar.prompts as prompts
 from llama_index.core import Settings, VectorStoreIndex, StorageContext, Document
-# pyright: reportMissingImports=false
+
+HASH_LOG_PATH= os.getenv("HASH_LOG_PATH")
+
 
 
 vector_db= os.getenv("VECTOR_DB")
 Settings.embed_model= OpenAIEmbedding(model="text-embedding-3-small")
 VectorStoreIndex.storage_context(storage_context=StorageContext.from_defaults
                                      (persist_dir=vector_db))
+global address_hashes
 address_hashes= set()
+global city_hashes
 city_hashes= set()
+global area_hashes
 area_hashes= set()
 
 
@@ -23,10 +28,18 @@ def get_index():
     else: return VectorStoreIndex([], storage_context=storage_context)
 
 def ingest_real_estate(real_estate):
-    address_hash= hashlib.sha256(real_estate.address.encode()).hexdigest()   
+    address_hash= hashlib.sha256(real_estate.address.encode()).hexdigest() 
+    with open(HASH_LOG_PATH, "r") as f:
+        for line in f:
+            address_hashes.add(line.strip(":")[-1].strip())
+        
     if address_hash in address_hashes:
         print("Address already ingested")
         return
+    
+    with open(HASH_LOG_PATH, "w") as f:
+        f.write(f"{real_estate.address} HASH: {address_hash}\n")
+    
     address_hashes.add(address_hash)
     query= prompts.build_summary_prompt(real_estate)
     response= Settings.llm.complete(query)
@@ -51,11 +64,17 @@ def ingest_real_estate(real_estate):
     return 
     
 def ingest_city(city):
-    city_hash= hashlib.sha256(city.name.encode()).hexdigest()    
-    if city_hash in city_hashes:
+    city_hashes= hashlib.sha256(city.name.encode()).hexdigest() 
+    with open(HASH_LOG_PATH, "r") as f:
+        for line in f:
+            city_hashes.add(line.strip(":")[-1].strip())
+            
+    if city_hashes in city_hashes:
         print("City already ingested")
         return
-    city_hashes.add(city_hash)
+    
+    with open(HASH_LOG_PATH, "w") as f:
+        f.write(f"{city.name} HASH: {city_hashes}\n")
 
     doc= Document(text=city.name, metadata={
                 "population": city.population,
@@ -75,10 +94,17 @@ def ingest_city(city):
 
 def ingest_area(area):
     area_hash= hashlib.sha256(area.name.encode()).hexdigest()
-    if area_hash in area_hashes:
+    with open(HASH_LOG_PATH, "r") as f:
+        for line in f:
+            area_hashes.add(line.strip(":")[-1].strip())
+            
+    if area_hashes in area_hashes:
         print("Area already ingested")
         return
-        
+    
+    with open(HASH_LOG_PATH, "w") as f:
+        f.write(f"{area.name} HASH: {area_hashes}\n")
+    
     area_hashes.add(area_hash)
     doc= Document(text=area.name, metadata={
                 "average_price": area.average_price,

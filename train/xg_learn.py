@@ -9,16 +9,20 @@ import json
 
 
 #testar tecnincas de normalizacao!!!!!!!!!!!!!!!!
-PARAM_LOG_PATH= os.getenv("PARAM_LOG_PATH")
+TS_PARAM_LOG_PATH= os.getenv("TS_PARAM_LOG_PATH")
+OS_PARAM_LOG_PATH= os.getenv("OS_PARAM_LOG_PATH")
+
 SEED= os.getenv("SEED")
 global seed
 seed= int(SEED)
 
 
-def run_optimize_time_series_Percentile(train_dataset, percentile, time_span):
-    with open(PARAM_LOG_PATH, "r") as f:
-        if f.read() == time_span:
-            return
+def run_optimize_time_series_logPrice_Percentile(train_dataset, percentile, time_span):
+    with open(TS_PARAM_LOG_PATH, "r") as f:
+        for line in f:
+            if "PREDICTION" in line:
+                if line == f"time_span: {time_span}":
+                    return
         
     X= train_dataset.model_dump()
     dfX= pd.DataFrame(X)
@@ -70,17 +74,23 @@ def run_optimize_time_series_Percentile(train_dataset, percentile, time_span):
                             **study.best_params,)
     best_model.fit(dfX, y)
     
-    log_data= study.best_params.copy()
-    log_data["time_span"]= time_span
+    log_data = {"PREDICTION": None, "time_span": time_span,
+                "best_params": study.best_params.copy()}
 
-    with open(PARAM_LOG_PATH, "w") as f:
+    with open(TS_PARAM_LOG_PATH, "w") as f:
         json.dump(log_data, f, indent=4)
+        f.write("\nEND\n")
     
     return best_model,study
 
 
 
-def run_optimize(train_dataset, seed):
+def run_optimize_price(train_dataset, seed):
+    with open(OS_PARAM_LOG_PATH, "r") as f:
+        for line in f:
+            if "SUGGESTION" in line:
+                return
+                
     X= [x.model_dump(exclude= ("suggested_price", "summary", "price")) for x in train_dataset]
     dfX= pd.DataFrame(X)
     y = [x.suggested_price for x in train_dataset]
@@ -118,7 +128,13 @@ def run_optimize(train_dataset, seed):
                         **study.best_params,)
     best_model.fit(X_train, y_train)
     
-    with open(PARAM_LOG_PATH, "w") as f:
+    log_data = {"SUGGESTION": None, "best_params": study.best_params.copy()}
+
+    with open(TS_PARAM_LOG_PATH, "w") as f:
+        json.dump(log_data, f, indent=4)
+        f.write("\nEND\n")
+        
+    with open(OS_PARAM_LOG_PATH, "w") as f:
         json.dump(study.best_params, f)
     
     return best_model, study

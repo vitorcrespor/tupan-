@@ -1,8 +1,8 @@
 from langchain_core.tools import tool
 import numpy as np
 import train.analytics as analytics
-from train.xg_class import prediction
-
+from train.xg_class import tendency_prediction
+import pandas as pd
 
 @tool
 def price_suggestion(real_estate):
@@ -10,22 +10,26 @@ def price_suggestion(real_estate):
     return np.expm1(analytics.price_suggestion(real_estate))
     
 @tool
-def negotiation_helper:
+def negotiation_helper(query):
     
+    return
     
 @tool
-#melhorar os dados: % de certeza, previsão de tempo
-def market_analysis:
-    """Analyzes market tendencies"""
+def portfolio_analysis(real_estates):
+    """Analyzes portfolio"""
     
+    return 
 
-@tool
-def portfolio_analysis:
+def market_analysis(market):
+    """Analyzes market"""
     
-
+    return 
+        
+    
 @tool
 def property_analysis(real_estate):
-    return prediction(real_estate), np.expm1(analytics.price_suggestion(real_estate))
+    """Analyzes property price tendencies"""
+    return tendency_prediction(real_estate), np.expm1(analytics.price_suggestion(real_estate))
     
 
 

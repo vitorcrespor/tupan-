@@ -5,10 +5,10 @@ import numpy as np
 
 #train_dataset translation
 
-def prediction(real_estate, time_span):
-    log_q10= a.analyze_tendency(real_estate, 0.1)
-    log_q50= a.analyze_tendency(real_estate, 0.5)
-    log_q90= a.analyze_tendency(real_estate, 0.9)
+def tendency_prediction(real_estate, time_span):
+    log_q10= a.analyze_tendency(real_estate, 0.1, time_span)
+    log_q50= a.analyze_tendency(real_estate, 0.5, time_span)
+    log_q90= a.analyze_tendency(real_estate, 0.9, time_span)
     _mean= log_q50
     _stdDev= (log_q90 - log_q10)/(2 * 1.2815)
 
@@ -18,7 +18,7 @@ def prediction(real_estate, time_span):
 
     z_scores= (target_log_threshold - _mean) / _stdDev
     certainty_pct= (1.0 - norm.cdf(z_scores)) * 100.0
-    interval= [log_q10, log_q50, log_q90]
+    interval= [np.expm1(log_q10), np.expm1(log_q50), np.expm1(log_q90)]
 
-    return float(certainty_pct), interval
+    return certainty_pct, interval
 
