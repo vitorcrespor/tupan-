@@ -4,7 +4,8 @@ from datetime import date
 from enum import Enum
 import pydantic as pyda
 from h3 import latlong_to_cell
-from typing import Optional
+import support.support_functions as support
+import os
 
 class kind(str, Enum):
     STREET_HOUSE = "casa de rua"
@@ -17,10 +18,9 @@ class kind(str, Enum):
     SITE = "sítio"
     
 class map_point(pyda.BaseModel):
-    def __init__(self, latitude: float, longitude: float, impact_score: float):
-        self.latitude= latitude
-        self.longitude= longitude
-        self.impact_score= impact_score
+    latitude: float
+    longitude: float
+    impact_score: float
 
 class predictions(pyda.BaseModel):
     suggested_price: float | None = None
@@ -42,6 +42,7 @@ class location(pyda.BaseModel):
 class PricePoint(pyda.BaseModel):
     date: date
     price: float
+    
 class real_estate_metrics(pyda.BaseModel):
     number_of_rooms: int | None = None
     number_of_bathrooms: int | None = None
@@ -60,7 +61,6 @@ class four_metric(pyda.BaseModel):
     leisure: float= pyda.Field(gt=0, lt=5)
     location_: float= pyda.Field(gt=0, lt=5)
     leverage: float= pyda.Field(gt=0, lt=5)
-
     
 class real_estate(pyda.BaseModel):
     exclusive: bool | None = None
@@ -71,7 +71,13 @@ class real_estate(pyda.BaseModel):
     on_sale_since: date | None = None
     
     neighboors: list[map_point] | None = None
+    @pyda.computed_field
+    def neighbors(self) -> list[real_estate] | None:
+        return support.populate_real_estate_neighbors_gmaps(
+            [self], api_key=os.getenv("GOOGLE_API_KEY"))
+        
     
+    preictions: predictions | None = None
     four_metric: four_metric | None = None
     re_price_metrics: re_price_metrics | None = None
     kind: kind | None = None
@@ -83,6 +89,18 @@ class sold_estate(real_estate):
    sold_price: float | None = None
    sale_date: date | None = None
    practiced_comission: float | None = None
+
+class averages(pyda.BaseModel):
+    average_dom: float | None = None
+    average_discount: float | None = None
+    average_price: float | None = None
+    average_area: float | None = None
+    average_rooms: float | None = None
+    average_bathrooms: float | None = None
+    average_parking_spaces: float | None = None
+    available_estates: list[real_estate] | None = None
+    average_square_meter_price: float | None = None
+
     
 class city(pyda.BaseModel):
         diversity_score: float | None = None
@@ -97,18 +115,6 @@ class area(pyda.BaseModel):
         averages: averages | None = None
 
 
-class averages(pyda.BaseModel):
-    average_dom: float | None = None
-    average_discount: float | None = None
-    average_price: float | None = None
-    average_area: float | None = None
-    average_rooms: float | None = None
-    average_bathrooms: float | None = None
-    average_parking_spaces: float | None = None
-    available_estates: list[real_estate] | None = None
-    average_square_meter_price: float | None = None
-    
-    
 class portfolio(pyda.BaseModel):
     tgt_comission: float | None = None
     real_estates: list[real_estate] | None = None

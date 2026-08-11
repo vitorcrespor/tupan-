@@ -27,6 +27,23 @@ def price_suggestion(real_estate) -> dict:
     return prediction
 
 
+def luxury_prediction(real_estate) -> dict:
+    with open(PARAM_LOG_PATH, "r") as f:
+        for line in f:
+            if "LUXURY" in line:
+                params= json.load(line)
+                if line.startswith("END"):
+                    break
+                
+            model= XGBRegressor(objective="reg:squarederror", tree_method="hist",
+                                    enable_categorical=True, random_state=seed,
+                                    **params,)
+            
+            prediction= model.predict(real_estate.model_dump())
+    
+    return prediction
+
+
 def analyze_tendency(tendent, percentile, time_span):
     
     with open(PARAM_LOG_PATH, "r") as f:

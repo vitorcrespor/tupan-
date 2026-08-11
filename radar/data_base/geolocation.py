@@ -39,7 +39,7 @@ def resolve_attribute(obj, attr_path: str):
 
 
 def run_heatmap(city, filter1: str = "re_price_metrics.price",
-                filter2: str = "real_estate_metrics.area",):
+                filter2: str = "real_estate_metrics.area"):
     
     properties_data= []
     for re in city.available_estates:

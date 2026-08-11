@@ -3,6 +3,8 @@ import pandas as pd
 import h3
 import datetime 
 import json
+from scipy.special import expit, tanh
+from collections import defaultdict
 
 def calculate_location(real_estates, decay_lambda: float = 0.5) -> pd.DataFrame:
     records= []
@@ -196,3 +198,77 @@ def calculate_h3_clustering_coefficient(real_estates) -> float:
 
     contacts = sum(len(set(h3.grid_ring(c, 1)) & cells) for c in cells)
     return float(contacts / (6 * len(cells)))
+
+
+def calculate_market_heat(real_estates, portfolio, decay_lambda: float = 0.5):
+    sales_t2= 0
+    for sold_estate in reversed(portfolio.sold_estates):
+        days_ago= (datetime.today()-sold_estate.sale_date).days
+        if days_ago <= 60:
+            sales_t2+= 1
+        else:
+            break
+    
+    sales_t12_t14 = 0
+    for sold_estate in reversed(portfolio.sold_estates):
+        days_ago= (datetime.today()-sold_estate.sale_date).days
+        if days_ago > 425:
+            break 
+        if 365 <= days_ago <= 425:
+            sales_t12_t14 += 1
+            
+    denom= sales_t12_t14 if sales_t12_t14 > 0 else 1.0
+    gamma= (sales_t2 - sales_t12_t14) / denom
+    growth_mult= 1.0 + np.tanh(gamma)
+    
+    G= np.array(expit([re.predictions.expected_growth for re in real_estates]))
+    G= growth_mult*G
+    
+    records= []
+    re_by_cell= defaultdict(list)
+    for re in real_estates:
+        cell_id= re.location.h3_index
+        if cell_id:
+            re_by_cell[cell_id].append(re)
+            loc_score= getattr(getattr(re, "four_metric", None), "location_", 1.0)
+            raw_growth= getattr(getattr(re, "predictions", None),
+                        "expected_normalized_growth", 0.0)
+            records.append({"h3_index": cell_id, "location_score": loc_score,
+                            "growth": raw_growth})
+
+    dfProperties= pd.DataFrame(records)
+    if dfProperties.empty:
+        return dfProperties
+
+    cell_score= dfProperties.groupby("h3_index")["location_score"].sum()
+    d1, d2= np.exp(-decay_lambda*1), np.exp(-decay_lambda*2)
+    scores= {}
+        
+    for cell in cell_score.index:
+        r1= [c for c in h3.grid_ring(cell, 1) if c in cell_score.index]
+        r2= [c for c in h3.grid_ring(cell, 2) if c in cell_score.index]
+
+        imp_r1= cell_score.loc[r1].sum()*d1 if r1 else 0.0
+        imp_r2= cell_score.loc[r2].sum()*d2 if r2 else 0.0
+
+        l= float(np.log1p(imp_r1+imp_r2))
+        scores[cell]= l
+        
+        for re in re_by_cell.get(cell, []):
+            g= expit(re.predictions.expected_growth)
+            lev_score= l*g*growth_mult
+            re.leverage= lev_score
+
+    aligned_cells= cell_score.index
+    L_vec= expit(np.array([scores[c] for c in aligned_cells]))
+    G_vec= G.reindex(aligned_cells)
+    market_heat= np.dot(L_vec, G_vec)
+
+    return market_heat, pd.DataFrame({
+        "h3_index": aligned_cells,
+        "spatial_heat_L": L_vec,
+        "momentum_growth_G": G_vec,
+        "cell_market_heat": L_vec * G_vec,
+    })
+    
+    

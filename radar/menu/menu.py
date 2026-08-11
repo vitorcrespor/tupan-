@@ -1,13 +1,12 @@
-from data_base.ingestion import ingest, get_index
-import data_base.data_type as data
+from radar.data_base.ingestion import ingest, get_index
+import radar.data_base.data_type as data
 from pathlib import Path
-import pandas as pd  # type: ignore[reportMissingImports]
+import pandas as pd
 import config
 import agent
 import prompts
 from llama_index.core import Settings
-# pyright: reportMissingImports=false
-
+from data_base.geolocation import run_heatmap
 
 index= get_index()
 
@@ -51,7 +50,11 @@ def menu():
         automatic_register()
     elif choice == "4":
         agent.ulisses()
+        
     elif choice == "5":
+        run_heatmap() 
+        
+    elif choice == "6":
         exit()
     else:
         print("Invalid choice\n")

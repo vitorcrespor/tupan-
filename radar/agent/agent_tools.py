@@ -2,7 +2,7 @@ from langchain_core.tools import tool
 import numpy as np
 import train.analytics as analytics
 from train.xg_class import tendency_prediction
-from data_base.metrics import portfolio_analysis_scores
+from radar.data_base.metrics import portfolio_analysis_scores, calculate_market_heat
 
 @tool
 def price_suggestion(real_estate):
@@ -21,10 +21,9 @@ def portfolio_analysis(portfolio):
     return portfolio_analysis_scores(portfolio)
 
 
-def market_analysis(market):
+def market_analysis(portfolio):
     """Analyzes market"""
-    
-    return 
+    return calculate_market_heat(portfolio.real_estates, portfolio)
         
     
 @tool

@@ -7,7 +7,7 @@ import concurrent.futures
 from typing import Dict, List, Optional
 import googlemaps
 from pydantic import BaseModel
-import data_base.data_type as data
+import radar.data_base.data_type as data
 
 load_dotenv()
 LOG_PATH= os.getenv('LOG_PATH')
@@ -203,17 +203,71 @@ async def fetch_google_neighbors(latitude: float, longitude: float, gmaps_client
     return neighbors
 
 
-def populate_city_neighbors(
-    city, api_key: str, radius_meters: int = 500, max_workers: int = 10):
-    gmaps_client= googlemaps.Client(key=api_key)
+import googlemaps
 
-    def process_estate(estate):
-        if estate.location and estate.location.latitude and estate.location.longitude:
-            estate.neighbors= fetch_google_neighbors(
-                latitude=estate.location.latitude,
-                longitude=estate.location.longitude,
-                gmaps_client=gmaps_client,
-                radius_meters=radius_meters)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        executor.map(process_estate, city.available_estates)
+def populate_real_estate_neighbors_gmaps(
+    real_estates,
+    api_key: str,
+    max_distance_meters: int = 2000,
+    max_duration_seconds: int = 600,
+    mode: str = "driving",
+):
+    """Populates `.neighbors` for each real_estate object using Google Maps
+
+    Distance Matrix API based on actual driving/walking distance or time.
+    """
+    gmaps = googlemaps.Client(key=api_key)
+
+    # Extract coordinates or addresses for each property
+    def get_location(re):
+        lat = getattr(re, "latitude", None)
+        lng = getattr(re, "longitude", None)
+        if lat is not None and lng is not None:
+            return (lat, lng)
+        return getattr(re, "address", None)
+
+    locations = [get_location(re) for re in real_estates]
+
+    # Initialize neighbors list for all properties
+    for re in real_estates:
+        re.neighbors = []
+
+    n = len(real_estates)
+    batch_size = 10  # Google Maps Distance Matrix supports up to 25 origins/destinations per request
+
+    # Process in batches to respect API limits
+    for i in range(0, n, batch_size):
+        origins = locations[i : i + batch_size]
+        origin_objs = real_estates[i : i + batch_size]
+
+        for j in range(0, n, batch_size):
+            destinations = locations[j : j + batch_size]
+            dest_objs = real_estates[j : j + batch_size]
+
+            # Query Google Maps Distance Matrix API
+            response = gmaps.distance_matrix(
+                origins=origins, destinations=destinations, mode=mode
+            )
+
+            for row_idx, row in enumerate(response["rows"]):
+                origin_re = origin_objs[row_idx]
+
+                for col_idx, element in enumerate(row["elements"]):
+                    dest_re = dest_objs[col_idx]
+
+                    # Skip self-comparison
+                    if origin_re is dest_re:
+                        continue
+
+                    if element.get("status") == "OK":
+                        dist_val = element["distance"]["value"]  # in meters
+                        dur_val = element["duration"]["value"]  # in seconds
+
+                        if (
+                            dist_val <= max_distance_meters
+                            and dur_val <= max_duration_seconds
+                        ):
+                            origin_re.neighbors.append(dest_re)
+
+    return real_estates
