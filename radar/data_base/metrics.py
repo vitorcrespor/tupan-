@@ -264,11 +264,11 @@ def calculate_market_heat(real_estates, portfolio, decay_lambda: float = 0.5):
     G_vec= G.reindex(aligned_cells)
     market_heat= np.dot(L_vec, G_vec)
 
-    return market_heat, pd.DataFrame({
+    return json.dumps({
         "h3_index": aligned_cells,
         "spatial_heat_L": L_vec,
         "momentum_growth_G": G_vec,
-        "cell_market_heat": L_vec * G_vec,
+        "market_heat": market_heat,
     })
     
     

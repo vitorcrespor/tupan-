@@ -11,20 +11,17 @@ def price_suggestion(real_estate):
     
 @tool
 def negotiation_helper(query):
-    
+    """Analyzes the negotiation and makes an action plan"""
     return
-    
     
 @tool
 def portfolio_analysis(portfolio):
     """Analyzes portfolio"""
     return portfolio_analysis_scores(portfolio)
 
-
 def market_analysis(portfolio):
     """Analyzes market"""
     return calculate_market_heat(portfolio.real_estates, portfolio)
-        
     
 @tool
 def property_analysis(real_estate):
