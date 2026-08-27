@@ -1,0 +1,126 @@
+.metric-host { --metric-knob-background-color: hsl(var(--card) / .44); --metric-knob-background-image:linear-gradient(145deg, hsl(0 0% 100% / .55) 0%, hsl(var(--card) / .44) 38%, hsl(188 60% 90% / .14) 100%); --metric-tab-radius:16px; --metric-tab-border:hsl(0 0% 100% / .84); --metric-tab-right:28px; background-color:var(--metric-knob-background-color) !important; background-image:var(--metric-knob-background-image) !important; border-color:hsl(0 0% 100% / .84); box-shadow:0 12px 30px hsl(220 12% 18% / .10), inset 0 1px 0 hsl(0 0% 100% / .96), inset 0 12px 24px hsl(0 0% 100% / .14), inset 0 -14px 26px hsl(196 42% 56% / .09); backdrop-filter:blur(24px) saturate(125%); -webkit-backdrop-filter:blur(24px) saturate(125%); transition: transform 280ms cubic-bezier(.22,1,.36,1), box-shadow 280ms ease, border-color 220ms ease; }
+.metric-host:has(.metric-knob:hover):not(:has(.metric-knob--open)) { transform: translateY(-2px) scale(1.006); box-shadow: 0 14px 34px hsl(220 12% 18% / .14), inset 0 1px 0 hsl(0 0% 100% / .92); }
+.metric-host:has(.metric-knob)::before { content:""; position:absolute; z-index:34; left:auto; right:var(--metric-tab-right); bottom:0; width:58px; height:1px; transform:none; pointer-events:none; background-color:var(--metric-knob-background-color); background-image:var(--metric-knob-background-image); }
+.metric-host:has(.metric-knob)::after { content:""; position:absolute; z-index:33; left:auto; right:var(--metric-tab-right); bottom:-12px; width:58px; height:12px; transform:none; pointer-events:none; border-left:1px solid var(--metric-tab-border); border-right:1px solid var(--metric-tab-border); border-bottom:1px solid var(--metric-tab-border); border-radius:0 0 var(--metric-tab-radius) var(--metric-tab-radius); background-color:var(--metric-knob-background-color); background-image:var(--metric-knob-background-image); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); box-shadow:none; }
+.metric-host:has(.metric-knob):hover { border-color:hsl(var(--brand) / .35); }
+.metric-host:has(.metric-knob):hover::after, .metric-host:has(.metric-knob:focus-within)::after { border-color:hsl(var(--brand) / .35); box-shadow:inset 0 -1px 0 hsl(220 10% 55% / .10),inset 1px 0 0 hsl(0 0% 100% / .48); }
+.metric-host:has(.metric-knob--open)::before, .metric-host:has(.metric-knob--open)::after { display:none; }
+.metric-knob { position:absolute; left:auto; right:var(--metric-tab-right); bottom:-12px; width:58px; height:12px; transform:none; transform-origin:center bottom; z-index:35; overflow:visible; border:0; border-radius:0 0 var(--metric-tab-radius) var(--metric-tab-radius); background:transparent; box-shadow:none; transition:width 280ms cubic-bezier(.22,.9,.25,1),height 280ms cubic-bezier(.22,.9,.25,1),border-radius 260ms cubic-bezier(.22,.9,.25,1),background 220ms ease,box-shadow 220ms ease; }
+.metric-knob::before { display:none; }
+.metric-knob:not(.metric-knob--open), .metric-knob:not(.metric-knob--open) .metric-knob__handle { border:0; outline:0; background:transparent; box-shadow:none; }
+.metric-knob:not(.metric-knob--open) .metric-knob__handle:focus-visible { outline:0; }
+.metric-knob:not(.metric-knob--open):hover, .metric-knob:not(.metric-knob--open):focus-within { transform:translateY(3px) scale(1.02); }
+.metric-knob--open { left:auto; right:var(--metric-tab-right); width:min(248px, calc(100vw - 24px)); height:var(--metric-knob-open-height, 318px); bottom:-12px; transform:none; overflow:hidden; border:1px solid hsl(0 0% 100% / .82); border-radius:22px; background-color:hsl(var(--card) / .98); background-image:linear-gradient(145deg,hsl(var(--card) / .98),hsl(var(--surface) / .96)); box-shadow:inset 0 1px 0 hsl(0 0% 100% / .94),inset 1px 0 0 hsl(0 0% 100% / .58),14px 18px 50px hsl(220 12% 18% / .22); backdrop-filter:blur(30px) saturate(115%); -webkit-backdrop-filter:blur(30px) saturate(115%); }
+.metric-knob--opens-down.metric-knob--open { top:calc(100% + 8px); bottom:auto; border-radius:22px; }
+
+.metric-knob__handle { position:absolute; left:0; bottom:0; width:100%; height:100%; margin:0; padding:0; border:0; outline:0; background:transparent; cursor:pointer; z-index:3; }
+.metric-knob__handle::after { display:none; }
+.metric-knob__handle:focus-visible { outline:2px solid hsl(var(--brand) / .7); outline-offset:2px; }
+.metric-knob--open .metric-knob__handle { height:18px; }
+.metric-knob__content { position:absolute; z-index:1; inset:0 0 18px; display:flex; flex-direction:column; min-height:0; padding:18px 14px 12px; opacity:0; transform:translateY(12px) scale(.98); pointer-events:none; transition:opacity 150ms ease,transform 300ms cubic-bezier(.2,.8,.2,1); }
+.metric-knob--open .metric-knob__content { opacity:1; transform:translateY(0) scale(1); pointer-events:auto; transition-delay:90ms; }
+.metric-knob__title { flex:0 0 auto; margin:0 8px 16px; color:hsl(var(--foreground)); font-size:12px; font-weight:650; letter-spacing:.06em; text-transform:uppercase; }
+.metric-knob__options { display:flex; flex:1 1 auto; flex-direction:column; min-height:0; gap:7px; overflow-y:auto; padding:0 2px 2px; scrollbar-width:thin; }
+.metric-knob__option { width:100%; min-height:38px; display:flex; align-items:center; justify-content:space-between; padding:0 13px; border:1px solid hsl(var(--border) / .7); border-radius:11px; background:hsl(0 0% 100% / .30); color:hsl(var(--text-secondary)); font:inherit; font-size:12px; text-align:left; cursor:pointer; transition:background 130ms ease,border-color 130ms ease,color 130ms ease,transform 130ms ease; }
+.metric-knob__option:hover { background:hsl(0 0% 100% / .68); border-color:hsl(var(--foreground) / .14); color:hsl(var(--foreground)); transform:translateX(1px); }
+.metric-knob__option--active { background:hsl(var(--foreground) / .07); border-color:hsl(var(--foreground) / .18); color:hsl(var(--foreground)); }
+.metric-knob__dot { width:6px; height:6px; flex-shrink:0; border-radius:50%; background:hsl(var(--foreground) / .66); box-shadow:0 0 7px hsl(var(--foreground) / .22); }
+/* Context action tab for large chart panels. */
+.metric-insight-tab {
+  position: absolute !important;
+  z-index: 35;
+  left: auto !important;
+  right: 28px !important;
+  bottom: -12px !important;
+  display: grid !important;
+  place-items: center;
+  width: 58px !important;
+  min-width: 58px;
+  height: 12px !important;
+  min-height: 12px;
+  margin: 0;
+  padding: 0 !important;
+  transform: none;
+  border: 0 !important;
+  border-right: 1px solid var(--metric-tab-border) !important;
+  border-bottom: 1px solid var(--metric-tab-border) !important;
+  border-left: 1px solid var(--metric-tab-border) !important;
+  border-radius: 0 0 var(--metric-tab-radius) var(--metric-tab-radius) !important;
+  background-color: var(--metric-knob-background-color) !important;
+  background-image: var(--metric-knob-background-image) !important;
+  box-shadow: none !important;
+  color: hsl(var(--text-secondary));
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: border-color 180ms ease, color 180ms ease;
+}
+
+.metric-insight-tab:hover,
+.metric-insight-tab:focus-visible {
+  transform: none;
+  border-color: hsl(var(--brand) / .35) !important;
+  color: hsl(var(--brand));
+  outline: 0;
+}
+
+.panel-host {
+  transition: border-color 280ms ease, box-shadow 280ms ease;
+}
+
+.panel-host:hover,
+.panel-host:focus-within {
+  border-color: hsl(var(--brand) / .35);
+  box-shadow: 0 14px 34px hsl(220 12% 18% / .14), inset 0 1px 0 hsl(0 0% 100% / .92);
+}
+.panel-host:hover .metric-insight-tab,
+.panel-host:focus-within .metric-insight-tab {
+  border-color: hsl(var(--brand) / .35) !important;
+  color: hsl(var(--brand));
+}
+
+
+.metric-host:has(.metric-insight-tab) {
+  --metric-tab-right: 94px;
+}
+
+.metric-host:has(.metric-knob--open) .metric-insight-tab {
+  opacity: 0;
+  pointer-events: none;
+}
+
+html.dark .metric-host {
+  /* Override the light inline card tokens rather than layering white gloss over them. */
+  --metric-knob-background-color: hsl(var(--card) / .90) !important;
+  --metric-knob-background-image: none !important;
+  --metric-tab-border: hsl(var(--border) / .82) !important;
+  border-color: hsl(var(--border) / .82) !important;
+  box-shadow: 0 16px 36px hsl(220 38% 4% / .38) !important;
+}
+html.dark .metric-host:has(.metric-knob:hover):not(:has(.metric-knob--open)),
+html.dark .panel-host:hover,
+html.dark .panel-host:focus-within {
+  box-shadow: 0 18px 42px hsl(220 38% 4% / .46) !important;
+}
+
+
+html.dark .metric-knob--open {
+  background-color: hsl(var(--card) / .98);
+  background-image: none;
+  border-color: hsl(var(--border) / .82);
+  box-shadow: 14px 18px 50px hsl(220 38% 4% / .42);
+}
+
+html.dark .metric-knob__option {
+  background: hsl(var(--elevated) / .76);
+  border-color: hsl(var(--border) / .78);
+}
+
+html.dark .metric-knob__option:hover,
+html.dark .metric-knob__option--active {
+  background: hsl(var(--brand) / .10);
+  border-color: hsl(var(--brand) / .30);
+}

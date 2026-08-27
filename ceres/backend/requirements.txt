@@ -1,0 +1,4 @@
+# API runtime dependencies. Install alongside the project requirements.
+fastapi
+uvicorn[standard]
+python-multipart

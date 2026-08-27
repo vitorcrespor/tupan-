@@ -1,0 +1,3 @@
+# AVM artifacts are trained and published through the deployment pipeline, not
+# generated as unreviewed working-tree changes.
+artifacts/

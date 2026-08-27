@@ -1,0 +1,23 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Set up Docker Compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+      - name: Build and start services
+        run: docker-compose up -d --build
+      - name: Wait for services
+        run: sleep 12
+      - name: Run smoke test
+        run: node scripts/smoke_test.js
+      - name: Tear down
+        run: docker-compose down -v

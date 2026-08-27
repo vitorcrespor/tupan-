@@ -1,0 +1,392 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 190 44% 95%;
+    --foreground: 200 32% 18%;
+    --card: 190 55% 99%;
+    --card-foreground: 200 32% 18%;
+    --popover: 190 55% 99%;
+    --popover-foreground: 200 32% 18%;
+    --primary: 174 68% 40%;
+    --primary-foreground: 190 55% 99%;
+    --secondary: 190 38% 92%;
+    --secondary-foreground: 200 32% 18%;
+    --muted: 190 38% 92%;
+    --muted-foreground: 200 16% 44%;
+    --accent: 186 42% 89%;
+    --accent-foreground: 200 32% 18%;
+    --destructive: 348 62% 54%;
+    --destructive-foreground: 190 55% 99%;
+    --border: 190 30% 86%;
+    --input: 190 30% 86%;
+    --ring: 174 68% 40%;
+    --surface: 190 55% 99%;
+    --elevated: 188 46% 96%;
+    --text-secondary: 200 16% 44%;
+    --text-muted: 200 12% 58%;
+    --positive: 158 62% 40%;
+    --warning: 42 88% 48%;
+    --negative: 348 62% 54%;
+    --brand: 174 68% 40%;
+    --brand-foreground: 190 55% 99%;
+    --aqua: 188 78% 52%;
+    --lagoon: 196 72% 46%;
+    --chart-1: 174 68% 42%;
+    --chart-2: 158 62% 42%;
+    --chart-3: 190 76% 50%;
+    --chart-4: 206 70% 54%;
+    --chart-5: 140 52% 48%;
+    --radius: 0.875rem;
+    --font-heading: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-display: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --sidebar-background: 190 46% 93%;
+    --sidebar-foreground: 200 16% 44%;
+    --sidebar-primary: 174 68% 40%;
+    --sidebar-primary-foreground: 190 55% 99%;
+    --sidebar-accent: 186 42% 89%;
+    --sidebar-accent-foreground: 200 32% 18%;
+    --sidebar-border: 190 30% 86%;
+    --sidebar-ring: 174 68% 40%;
+    --bg-glow-1: 188 78% 52% / 0.16;
+    --bg-glow-2: 158 62% 52% / 0.14;
+    --scrollbar: 190 30% 78%;
+  }
+
+  .dark {
+    --background: 190 44% 95%;
+    --foreground: 200 32% 18%;
+    --card: 190 55% 99%;
+    --card-foreground: 200 32% 18%;
+    --popover: 190 55% 99%;
+    --popover-foreground: 200 32% 18%;
+    --primary: 174 68% 40%;
+    --primary-foreground: 190 55% 99%;
+    --secondary: 190 38% 92%;
+    --secondary-foreground: 200 32% 18%;
+    --muted: 190 38% 92%;
+    --muted-foreground: 200 16% 44%;
+    --accent: 186 42% 89%;
+    --accent-foreground: 200 32% 18%;
+    --destructive: 348 62% 54%;
+    --destructive-foreground: 190 55% 99%;
+    --border: 190 30% 86%;
+    --input: 190 30% 86%;
+    --ring: 174 68% 40%;
+    --surface: 190 55% 99%;
+    --elevated: 188 46% 96%;
+    --text-secondary: 200 16% 44%;
+    --text-muted: 200 12% 58%;
+    --positive: 158 62% 40%;
+    --warning: 42 88% 48%;
+    --negative: 348 62% 54%;
+    --brand: 174 68% 40%;
+    --brand-foreground: 190 55% 99%;
+    --aqua: 188 78% 52%;
+    --lagoon: 196 72% 46%;
+    --chart-1: 174 68% 42%;
+    --chart-2: 158 62% 42%;
+    --chart-3: 190 76% 50%;
+    --chart-4: 206 70% 54%;
+    --chart-5: 140 52% 48%;
+    --sidebar-background: 190 46% 93%;
+    --sidebar-foreground: 200 16% 44%;
+    --sidebar-primary: 174 68% 40%;
+    --sidebar-primary-foreground: 190 55% 99%;
+    --sidebar-accent: 186 42% 89%;
+    --sidebar-accent-foreground: 200 32% 18%;
+    --sidebar-border: 190 30% 86%;
+    --sidebar-ring: 174 68% 40%;
+    --bg-glow-1: 188 78% 52% / 0.16;
+    --bg-glow-2: 158 62% 52% / 0.14;
+    --scrollbar: 190 30% 78%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    font-feature-settings: "tnum" 1, "cv01" 1;
+    background-image: radial-gradient(circle at 12% -8%, hsl(var(--bg-glow-1)), transparent 55%),
+      radial-gradient(circle at 92% 4%, hsl(var(--bg-glow-2)), transparent 50%);
+    background-attachment: fixed;
+  }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--scrollbar)); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--scrollbar)); filter: brightness(0.9); }
+}
+
+@layer utilities {
+  .tnum { font-variant-numeric: tabular-nums; }
+  .grid-bg {
+    background-image: none;
+  }
+  .aero-glass {
+    background: linear-gradient(160deg, hsl(var(--card) / 0.88), hsl(var(--elevated) / 0.72));
+    backdrop-filter: blur(10px) saturate(1.1);
+    border: 1px solid hsl(var(--border) / 0.78);
+    box-shadow: 0 8px 24px -16px hsl(var(--foreground) / 0.12), inset 0 1px 0 hsl(0 0% 100% / 0.18);
+  }
+  .aero-gloss {
+    position: relative;
+    overflow: hidden;
+  }
+  .aero-gloss::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 45%;
+    background: linear-gradient(to bottom, hsl(0 0% 100% / 0.16), transparent);
+    pointer-events: none;
+  }
+  .aero-sheen {
+    background-image: linear-gradient(180deg, hsl(0 0% 100% / 0.12), transparent 60%);
+  }
+
+  @keyframes ab9-float {
+    0%   { transform: scale(1.12) translate(0%, 0%); }
+    30%  { transform: scale(1.16) translate(-2.5%, -1.8%); }
+    65%  { transform: scale(1.13) translate(1.2%, -2.4%); }
+    100% { transform: scale(1.12) translate(0%, 0%); }
+  }
+  @keyframes ab9-drop-in {
+    0%   { opacity: 0; transform: translateY(-22px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .ab9-float { animation: ab9-float 20s ease-in-out infinite; }
+  .ab9-drop  { animation: ab9-drop-in 1.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+  @keyframes user-admin-menu-in {
+    0% { opacity: 0; transform: translateY(-9px) scale(0.96); filter: blur(2px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+  @keyframes user-admin-menu-out {
+    0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    100% { opacity: 0; transform: translateY(-6px) scale(0.975); filter: blur(1px); }
+  }
+  .user-admin-menu { transform-origin: right top; }
+  .user-admin-menu--enter { animation: user-admin-menu-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .user-admin-menu--exit { pointer-events: none; animation: user-admin-menu-out 180ms cubic-bezier(0.4, 0, 1, 1) both; }
+
+  @keyframes vb-rise {
+    0%   { transform: translateY(0) scale(1); opacity: 0; }
+    12%  { opacity: 0.55; }
+    88%  { opacity: 0.45; }
+    100% { transform: translateY(-104vh) scale(1.18); opacity: 0; }
+  }
+  .vb-bubble { animation-name: vb-rise; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .vb-bubble { animation: none; opacity: 0; }
+    .user-admin-menu--enter, .user-admin-menu--exit { animation: none; }
+  }
+
+  @keyframes vb-drift {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(3px, -4px); }
+    50%  { transform: translate(-3px, 3px); }
+    75%  { transform: translate(4px, 2px); }
+    100% { transform: translate(0, 0); }
+  }
+  .vb-drift { animation-name: vb-drift; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .vb-drift { animation: none; }
+  }
+
+  /* ── Stat Card (sc1) ── */
+  .sc1-section { container-type: inline-size; }
+  @keyframes sc1-shimmer {
+    0%   { opacity: 0.3; transform: scale(0.82); }
+    60%  { opacity: 1;   transform: scale(1.06); }
+    100% { opacity: 1;   transform: scale(1); }
+  }
+  .sc1-dot {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0.3;
+    transform: scale(0.82);
+    animation: sc1-shimmer 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--sc1-d, 0s) 1 forwards;
+    animation-play-state: paused;
+  }
+  .sc1-revealed .sc1-dot { animation-play-state: running; }
+  @media (prefers-reduced-motion: reduce) {
+    .sc1-dot { animation: none; opacity: 1; transform: none; }
+  }
+  .sc1-grain {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: overlay;
+    opacity: 0.5;
+    -webkit-mask-image: radial-gradient(125% 125% at 100% 0%, black 0%, black 22%, transparent 72%);
+    mask-image: radial-gradient(125% 125% at 100% 0%, black 0%, black 22%, transparent 72%);
+  }
+}
+
+/* ── Ceres voice orb (orb-ui circle, aqua-themed override) ──
+   orb-ui hardcodes grayscale state colors that vanish on the light
+   background, so we re-skin the orb spans via the container's data-state. */
+.ceres-orb > span > span:first-of-type {
+  box-shadow: 0 0 32px -4px hsl(188 82% 52% / 0.18) !important;
+}
+.ceres-orb > span > span:last-of-type {
+  background: radial-gradient(circle at 34% 28%, hsl(188 88% 76%), hsl(188 78% 54%) 52%, hsl(196 74% 42%)) !important;
+  box-shadow: inset 0 7px 16px -6px hsl(0 0% 100% / 0.65), inset 0 -8px 18px -10px hsl(196 80% 30% / 0.55) !important;
+}
+.ceres-orb[data-state="listening"] > span > span:last-of-type {
+  background: radial-gradient(circle at 34% 28%, hsl(174 82% 70%), hsl(174 68% 46%) 52%, hsl(190 72% 36%)) !important;
+}
+.ceres-orb[data-state="thinking"] > span > span:last-of-type {
+  background: radial-gradient(circle at 34% 28%, hsl(196 86% 74%), hsl(196 72% 50%) 52%, hsl(206 70% 40%)) !important;
+}
+.ceres-orb[data-state="speaking"] > span > span:last-of-type {
+  background: radial-gradient(circle at 34% 28%, hsl(188 92% 80%), hsl(188 84% 58%) 52%, hsl(196 78% 48%)) !important;
+}
+.ceres-orb[data-state="speaking"] > span > span:first-of-type {
+  box-shadow: 0 0 44px 2px hsl(188 88% 56% / 0.26) !important;
+}
+
+/* Shared dashboard chart treatment */
+.recharts-wrapper .recharts-cartesian-grid line,
+.recharts-wrapper .recharts-polar-grid line {
+  stroke: hsl(var(--border) / 0.72) !important;
+  stroke-dasharray: 2 5;
+}
+.recharts-wrapper .recharts-text,
+.recharts-wrapper .recharts-label {
+  fill: hsl(var(--text-secondary)) !important;
+  font-weight: 500;
+}
+.recharts-wrapper .recharts-tooltip-wrapper {
+  filter: drop-shadow(0 18px 22px hsl(196 42% 24% / 0.18));
+}
+.recharts-wrapper .recharts-active-dot circle {
+  filter: drop-shadow(0 0 7px hsl(var(--aqua) / 0.65));
+}
+.recharts-wrapper .recharts-line-curve,
+.recharts-wrapper .recharts-area-curve {
+  filter: drop-shadow(0 3px 5px hsl(var(--aqua) / 0.18));
+}
+/* Dashboard background: quiet color atmosphere, without a decorative grid. */
+.app-shell {
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(ellipse 58% 42% at 5% -10%, hsl(var(--aqua) / .08), transparent 72%),
+    radial-gradient(ellipse 44% 48% at 104% 8%, hsl(var(--positive) / .055), transparent 70%),
+    radial-gradient(ellipse 46% 40% at 52% 112%, hsl(var(--lagoon) / .045), transparent 72%);
+  background-position: center, center, center;
+  background-size: auto, auto, auto;
+}
+
+html.dark .app-shell {
+  background-image:
+    radial-gradient(ellipse 58% 42% at 5% -10%, hsl(var(--aqua) / .12), transparent 72%),
+    radial-gradient(ellipse 44% 48% at 104% 8%, hsl(var(--lagoon) / .085), transparent 70%),
+    radial-gradient(ellipse 46% 40% at 52% 112%, hsl(var(--positive) / .055), transparent 72%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .app-shell {
+    animation: dashboard-atmosphere 22s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes dashboard-atmosphere {
+  from { background-position: center, center, center; }
+  to { background-position: 0 -8px, 100% 8px, 50% 12px; }
+}
+
+/* Dark glass uses restrained edge light and depth instead of a light-theme gloss. */
+html.dark .aero-glass {
+  background: linear-gradient(160deg, hsl(var(--card) / .90), hsl(var(--elevated) / .78));
+  border-color: hsl(var(--border) / .88);
+  box-shadow: 0 18px 38px -30px hsl(220 50% 3% / .82), inset 0 1px 0 hsl(0 0% 100% / .09);
+  backdrop-filter: blur(16px) saturate(1.06);
+  -webkit-backdrop-filter: blur(16px) saturate(1.06);
+}
+
+html.dark .aero-gloss::after {
+  display: none;
+}
+
+html.dark .aero-sheen {
+  background-image: none;
+}
+
+html.dark .user-admin-menu {
+  box-shadow: 0 22px 56px hsl(220 50% 3% / .52), inset 0 1px 0 hsl(0 0% 100% / .08);
+}
+
+
+
+
+
+
+
+/* Dark controls are solid surfaces: no light-theme reflective inset. */
+html.dark button[class*="bg-card"],
+html.dark button[class*="bg-gradient"],
+html.dark [role="combobox"] {
+  background-image: none !important;
+  border-color: hsl(var(--border) / .58) !important;
+  box-shadow: 0 7px 16px hsl(220 38% 4% / .28) !important;
+}
+
+html.dark button[class*="bg-card"]:hover,
+html.dark button[class*="bg-gradient"]:hover,
+html.dark [role="combobox"]:hover {
+  box-shadow: 0 9px 20px hsl(220 38% 4% / .36) !important;
+}
+
+html.dark [role="listbox"] {
+  background-color: hsl(var(--popover) / .98) !important;
+  background-image: none !important;
+  border-color: hsl(var(--border) / .58) !important;
+  box-shadow: 0 20px 46px hsl(220 38% 4% / .48) !important;
+}
+
+html.dark .sc1-section > div[style] {
+  background-color: hsl(var(--card) / .92) !important;
+  background-image: none !important;
+  border-color: hsl(var(--border) / .58) !important;
+  box-shadow: 0 18px 45px hsl(220 38% 4% / .38) !important;
+}
+
+
+
+/* Ceres voice: a slow, token-driven ambient gradient for every active theme. */
+.voice-theme-gradient {
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(ellipse 82% 78% at 4% 2%, hsl(var(--aqua) / .20), transparent 64%),
+    radial-gradient(ellipse 72% 82% at 96% 8%, hsl(var(--lagoon) / .16), transparent 66%),
+    radial-gradient(ellipse 88% 72% at 52% 104%, hsl(var(--positive) / .12), transparent 68%),
+    linear-gradient(118deg, hsl(var(--background)), hsl(var(--accent) / .68) 50%, hsl(var(--surface)));
+  background-position: 0% 0%, 100% 0%, 50% 100%, 0% 50%;
+  background-size: 152% 152%, 144% 154%, 148% 142%, 180% 180%;
+  animation: voice-theme-gradient 20s ease-in-out infinite alternate;
+}
+
+@keyframes voice-theme-gradient {
+  from {
+    background-position: 0% 0%, 100% 0%, 50% 100%, 0% 50%;
+  }
+  to {
+    background-position: 18% 14%, 78% 20%, 58% 82%, 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .voice-theme-gradient {
+    animation: none;
+  }
+}

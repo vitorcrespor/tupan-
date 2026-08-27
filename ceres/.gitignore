@@ -1,0 +1,16 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+
+# Local runtimes and generated outputs
+.venv/
+__pycache__/
+*.py[cod]
+node_modules/
+dist/
+.vite/
+
+# Local vector data and runtime logs
+.tupan_chroma/
+logs/
