@@ -50,8 +50,8 @@ export default function AgentLog() {
   return (
     <>
       <TopBar title="Registro do agente" subtitle="Observabilidade de IA · Centro de controle" />
-      <div className="flex-1 flex min-h-0">
-        <div className="w-[280px] shrink-0 border-r border-border bg-surface overflow-y-auto">
+      <div className="flex-1 flex flex-col md:flex-row min-h-0">
+        <div className="w-full max-h-48 md:max-h-none md:w-[280px] shrink-0 border-b md:border-b-0 md:border-r border-border bg-surface overflow-y-auto">
           <div className="px-4 py-3 border-b border-border">
             <div className="flex items-center gap-2">
               <StatusDot status={status === 'Operacional' ? 'Operational' : 'Unknown'} />
@@ -74,7 +74,7 @@ export default function AgentLog() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div className="workspace-content flex-1 overflow-y-auto space-y-4">
           {!hasTrace && <div className="h-full flex items-center justify-center text-center text-xs text-text-muted">Nenhuma sessão do agente foi selecionada. Envie uma mensagem ao Ceres para ver os rastros deste atendimento.</div>}
           {hasTrace && (
             <>
@@ -95,7 +95,7 @@ export default function AgentLog() {
                 </div>
               </Panel>
 
-              <div className="flex items-center gap-1 border-b border-border">
+              <div className="flex items-center gap-1 overflow-x-auto whitespace-nowrap border-b border-border">
                 {TABS.map((item) => (
                   <button key={item} onClick={() => setTab(item)} className={cn('px-3 py-2 text-xs font-medium border-b-2 -mb-px', tab === item ? 'border-brand text-foreground' : 'border-transparent text-text-muted hover:text-text-secondary')}>{item}</button>
                 ))}

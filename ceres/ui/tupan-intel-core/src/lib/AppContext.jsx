@@ -24,6 +24,7 @@ export function AppContextProvider({ children }) {
   const [agentContextItems, setAgentContextItems] = useState([]);
   const [savedInsights, setSavedInsights] = useState([]);
   const [agentPrefill, setAgentPrefill] = useState('');
+  const [agentContextArrival, setAgentContextArrival] = useState(null);
   const [recentTrace, setRecentTrace] = useState(null);
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined') return 'midnight';
@@ -61,7 +62,7 @@ export function AppContextProvider({ children }) {
   const clearSavedInsights = useCallback(() => setSavedInsights([]), []);
 
   const sendToAgent = useCallback(
-    (contextItems = [], prefill = '') => {
+    (contextItems = [], prefill = '', source = 'direct') => {
       setAgentContextItems((prev) => {
         const merged = [...prev];
         contextItems.forEach((item) => {
@@ -70,6 +71,7 @@ export function AppContextProvider({ children }) {
         return merged;
       });
       setAgentPrefill(prefill);
+      setAgentContextArrival({ id: Date.now(), source, count: contextItems.length });
       navigate('/agent');
     },
     [navigate]
@@ -98,6 +100,7 @@ export function AppContextProvider({ children }) {
     clearAgentContext,
     agentPrefill,
     setAgentPrefill,
+    agentContextArrival,
     recentTrace,
     setRecentTrace,
     sendToAgent,

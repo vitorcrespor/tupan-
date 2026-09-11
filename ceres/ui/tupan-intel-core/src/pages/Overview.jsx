@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
 import TopBar from '@/components/tupan/TopBar';
+import SectionNav from '@/components/tupan/SectionNav';
 import { Panel, SectionTitle, KpiCard, ContextTag } from '@/components/tupan/primitives';
 import AiBrief from '@/components/tupan/AiBrief';
 import ListingCard from '@/components/tupan/ListingCard';
@@ -10,10 +11,9 @@ import { useApp } from '@/lib/AppContext';
 import { useTupanData } from '@/lib/useTupanData';
 import { computeMarketStats } from '@/lib/analytics';
 import { formatBRLCompact, formatBRL, formatM2, formatPct, formatNumber, heatLabel } from '@/lib/format';
-import { AlertTriangle, Sparkles, TrendingUp, TrendingDown } from 'lucide-react';
+import { AlertTriangle, ChevronDown, TrendingUp, TrendingDown } from 'lucide-react';
 import { ChartAreaInteractive } from '@/components/charts/chart-area-interactive';
 import { CHART, tooltipStyle } from '@/lib/chartTheme';
-import { apiErrorMessage } from '@/api/client';
 import { getMetricHistory, metricHistoryToChartSeries } from '@/api/market';
 import { getPortfolioAnalytics } from '@/api/portfolio';
 import { AsyncEmpty, AsyncError, AsyncLoading } from '@/components/tupan/AsyncState';
@@ -24,6 +24,8 @@ export default function Overview() {
   const { properties, regions, propertiesStatus, regionsStatus, propertiesError, regionsError } = useTupanData();
   const navigate = useNavigate();
   const { addAgentContext } = useApp();
+  const [activeSection, setActiveSection] = useState('overview-command');
+  const overviewScrollRef = useRef(null);
   const featured = useMemo(
     () => [...(properties || [])].sort((a, b) => (b.market_heat || 0) - (a.market_heat || 0)).slice(0, 3),
     [properties]
@@ -92,7 +94,7 @@ export default function Overview() {
     { id: 'median-m2', label: 'Último preço/m²', value: formatM2(latestPricePerM2), tag: 'DATA', series: kpiSeries.medianM2, seriesValueFormatter: formatM2 },
     { id: 'avg-dom', label: 'DOM médio', value: ps.avgDom == null ? '—' : `${Math.round(ps.avgDom)}d`, tag: 'DATA', sub: 'dias', series: kpiSeries.avgDom, seriesValueFormatter: (value) => `${Math.round(value)}d` },
     { id: 'market-heat', label: 'Aquecimento de mercado', value: ms.avgHeat == null ? '—' : `${Math.round(ms.avgHeat)}/100`, tag: 'MODEL', sub: ms.avgHeat == null ? 'Indisponível' : heatLabel(ms.avgHeat), series: kpiSeries.marketHeat, seriesValueFormatter: (value) => `${Math.round(value)}/100` },
-    { id: 'avm-deviation', label: 'Desvio médio AVM', value: formatPct(ps.avgDeviation), tag: 'MODEL', series: kpiSeries.avgDeviation, seriesValueFormatter: formatPct },
+    { id: 'avm-deviation', label: 'Desvio médio de preço', value: formatPct(ps.avgDeviation), tag: 'MODEL', series: kpiSeries.avgDeviation, seriesValueFormatter: formatPct },
   ];
 
   const concData = ps.concentration.slice(0, 6).map((c) => ({ name: c.name, value: Math.round(c.pct) }));
@@ -112,40 +114,44 @@ export default function Overview() {
   }, [ps, ms]);
 
   const briefPrompt = `Portfólio: ${formatNumber(ps.activeCount)} anúncios ativos, valor total ${formatBRL(ps.totalValue)}, preço médio ${formatBRL(ps.avgPrice)}, mediana ${formatBRL(ps.median)}, preço/m² médio ${formatM2(ps.avgM2)}, DOM médio ${ps.avgDom == null ? '—' : Math.round(ps.avgDom)} dias, desvio médio do AVM ${formatPct(ps.avgDeviation)}, liquidez prevista ${ps.avgLiquidity == null ? '—' : `${Math.round(ps.avgLiquidity)}/100`}. Concentração geográfica: as 2 principais regiões concentram ${ps.topConcentration == null ? '—' : `${ps.topConcentration.toFixed(0)}%`} (${ps.concentration.slice(0, 2).map((c) => c.name).join(', ') || '—'}). ${ps.overpriced.length} anúncios acima da estimativa, ${ps.underpriced.length} abaixo da estimativa. Mercado: mediana de preço/m² ${formatM2(ms.medianM2)}, aquecimento médio ${ms.avgHeat == null ? '—' : `${Math.round(ms.avgHeat)}/100`}, DOM médio ${ms.avgDom == null ? '—' : Math.round(ms.avgDom)}, inventário total ${formatNumber(ms.totalInventory)}, crescimento médio ${formatPct(ms.avgGrowth)}.`;
+  const overviewSections = [
+    { id: 'overview-command', label: 'Centro de comando', detail: 'Prioridades e indicadores' },
+    { id: 'overview-market', label: 'Mercado e demanda', detail: 'Tendências e interação' },
+    { id: 'overview-portfolio', label: 'Portfólio e anúncios', detail: 'Posicionamento e imóveis' },
+    { id: 'overview-geography', label: 'Análise geográfica', detail: 'Mapa e regiões' },
+  ];
 
   return (
-    <>
+    <div className="overview-executive flex h-full min-h-0 flex-col bg-background text-foreground">
       <TopBar title="Visão Geral" subtitle="Centro de Comando · São Paulo" />
-      <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-12">
+      <div ref={overviewScrollRef} className="overview-page-scroll workspace-content flex-1 overflow-y-auto space-y-6">
         {portfolioQuery.isError && <AsyncError error={portfolioQuery.error} />}
         {portfolioQuery.isLoading && <AsyncLoading className="h-6" label="Carregando indicadores do portfólio…" />}
         {regionsStatus === 'error' && <AsyncError error={regionsError} />}
         {regionsStatus === 'loading' && <AsyncLoading className="h-6" label="Carregando indicadores regionais…" />}
         {regionsStatus === 'success' && regions.length === 0 && <AsyncEmpty className="h-6">Nenhum indicador regional está disponível.</AsyncEmpty>}
 
-        <section aria-label="Inteligência Ceres" className="mx-auto w-full max-w-[1320px]">
+        <SectionNav className="sticky top-3 z-20" sections={overviewSections} activeId={activeSection} onSelect={setActiveSection} scrollContainerRef={overviewScrollRef} />
+
+        {activeSection === 'overview-command' && (
+        <section id="overview-command" aria-label="Prioridades da Ceres" className="w-full scroll-mt-6">
           <Panel
-            className="overflow-visible rounded-[24px] border-brand/20 bg-[linear-gradient(132deg,hsl(var(--card)/.70),hsl(182_54%_94%/.48)_48%,hsl(var(--card)/.62))] p-5 shadow-[0_18px_48px_hsl(185_40%_34%/.12),inset_0_1px_0_hsl(0_0%_100%/.96),inset_0_-18px_34px_hsl(188_60%_72%/.09)]"
+            className="intelligence-panel overflow-visible p-5"
             contextItem={{ id: 'overview-ceres-intelligence', type: 'AI Brief', label: 'Leitura Ceres do mercado', data: { prompt: briefPrompt, alerts: alerts.map((alert) => alert.text) } }}
           >
             <div className="mb-5 flex flex-wrap items-start justify-between gap-3 pr-10">
               <div className="flex items-start gap-3">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-positive/25 bg-positive/10 text-positive shadow-[inset_0_1px_0_hsl(0_0%_100%/.75)]">
-                  <Sparkles className="h-4 w-4" />
-                </span>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-positive">Ceres Intelligence</p>
-                  <h2 className="mt-0.5 text-base font-semibold tracking-tight text-foreground">Comentário e insights prioritários</h2>
-                  <p className="mt-1 text-xs text-text-muted">Interpretação da IA ancorada nos indicadores disponíveis e alertas calculados.</p>
+                  <h2 className="text-base font-semibold tracking-tight text-foreground">Prioridades da Ceres</h2>
+                  <p className="mt-1 text-xs text-text-muted">Leitura da IA ancorada nos indicadores e alertas disponíveis.</p>
                 </div>
               </div>
-              <ContextTag type="AI">Atualização ao vivo</ContextTag>
             </div>
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(280px,1fr)]">
-              <AiBrief prompt={briefPrompt} title="Comentário de mercado" className="rounded-2xl border border-white/75 bg-card/42 p-4 shadow-[inset_0_1px_0_hsl(0_0%_100%/.84)] backdrop-blur-xl" />
-              <div className="rounded-2xl border border-white/75 bg-card/42 p-4 shadow-[inset_0_1px_0_hsl(0_0%_100%/.84)] backdrop-blur-xl">
+              <AiBrief prompt={briefPrompt} title="Comentário de mercado" className="min-w-0" />
+              <div className="min-w-0 border-t border-border/60 pt-4 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary">Insights dos dados</h3>
+                  <h3 className="text-sm font-semibold text-foreground">Insights dos dados</h3>
                   <span className="text-[10px] font-medium text-text-muted">{alerts.length}</span>
                 </div>
                 <div className="space-y-2">
@@ -153,12 +159,7 @@ export default function Overview() {
                   {alerts.slice(0, 4).map((alert, index) => {
                     const Icon = alert.icon;
                     const tone = alert.tone === 'pos' ? 'text-positive' : alert.tone === 'neg' ? 'text-negative' : 'text-warning';
-                    return (
-                      <div key={`${alert.text}-${index}`} className="flex items-start gap-2.5 border-b border-border/55 py-2 last:border-0 last:pb-0">
-                        <Icon className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${tone}`} />
-                        <span className="text-xs leading-relaxed text-text-secondary">{alert.text}</span>
-                      </div>
-                    );
+                    return <div key={`${alert.text}-${index}`} className="flex items-start gap-2.5 border-b border-border/55 py-2 last:border-0 last:pb-0"><Icon className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${tone}`} /><span className="text-xs leading-relaxed text-text-secondary">{alert.text}</span></div>;
                   })}
                 </div>
               </div>
@@ -166,130 +167,83 @@ export default function Overview() {
           </Panel>
         </section>
 
-        <section aria-label="Resumo operacional" className="mx-auto w-full max-w-[1320px] space-y-5">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">Resumo</p>
-              <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Pulso do mercado e do portfólio</h2>
-            </div>
-            <ContextTag type="DATA">Agora</ContextTag>
-          </div>
-          <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">
-            {kpiMetricOptions.map((option) => <KpiCard key={option.id} {...option} className="aspect-[4/3] min-h-[270px]" metricOptions={kpiMetricOptions} />)}
+                )}
+
+        {activeSection === 'overview-command' && (
+        <section id="overview-pulse" aria-label="Pulso do mercado e do portfólio" className="w-full scroll-mt-6 space-y-5">
+          <div className="analysis-section-heading"><h2 className="text-base font-semibold tracking-tight text-foreground">Pulso do mercado e do portfólio</h2><ContextTag type="DATA">Agora</ContextTag></div>
+          <div className="overview-metrics">
+            {[kpiMetricOptions[0], kpiMetricOptions[2], ...kpiMetricOptions.filter((_, index) => index !== 0 && index !== 2)].map((option) => <KpiCard key={option.id} {...option} metricOptions={kpiMetricOptions} />)}
           </div>
         </section>
 
-        <section aria-label="Tendências de mercado" className="mx-auto w-full max-w-[1320px] space-y-4">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">Mercado</p>
-              <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Tendências de mercado</h2>
-            </div>
-            <ContextTag type="DATA">Histórico</ContextTag>
-          </div>
+                )}
+
+        {activeSection === 'overview-market' && (
+        <section id="overview-market" aria-label="Tendências de mercado" className="w-full scroll-mt-6 space-y-4">
+          <div className="analysis-section-heading"><h2 className="text-base font-semibold tracking-tight text-foreground">Tendências de mercado</h2><ContextTag type="DATA">Histórico</ContextTag></div>
           <MarketTrendMetrics embedded />
         </section>
 
-        <section aria-label="Atividade e interesse" className="mx-auto w-full max-w-[1320px] space-y-4">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">Atividade</p>
-              <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Interesse e interação</h2>
-            </div>
-            <ContextTag type="DATA">90 dias</ContextTag>
-          </div>
-          <Panel className="overflow-visible rounded-[22px] p-0" contextItem={{ id: 'overview-visitors-interaction', type: 'Chart', label: 'Visitantes — Interação', data: { period: '90 dias', metrics: ['visitantes desktop', 'visitantes mobile'] } }}>
-            <ChartAreaInteractive />
-          </Panel>
-        </section>
+                )}
 
-        <section aria-label="Diagnóstico do portfólio" className="mx-auto w-full max-w-[1320px] space-y-4">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">Portfólio</p>
-              <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Concentração e posicionamento</h2>
-            </div>
-            <ContextTag type="MODEL">AVM</ContextTag>
-          </div>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(250px,1fr)]">
-          <Panel className="rounded-[18px] p-5 shadow-soft-lg" contextItem={{ id: 'overview-geographic-concentration', type: 'Chart', label: 'Concentração geográfica', data: { concentration: concData } }}>
-            <SectionTitle right={<ContextTag type="DATA">Portfólio</ContextTag>}>Concentração geográfica</SectionTitle>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={concData} layout="vertical" margin={{ left: 20, right: 8, top: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="concGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor={CHART.aqua} stopOpacity={0.45} />
-                    <stop offset="100%" stopColor={CHART.lagoon} stopOpacity={0.95} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke={CHART.grid} strokeDasharray="3 4" horizontal={false} />
-                <XAxis type="number" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} unit="%" />
-                <YAxis type="category" dataKey="name" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} width={90} />
-                <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: CHART.tooltipLabel }} cursor={{ fill: CHART.aqua, fillOpacity: 0.08 }} />
-                <Bar dataKey="value" fill="url(#concGrad)" radius={[0, 8, 8, 0]} barSize={14} />
-              </BarChart>
-            </ResponsiveContainer>
-          </Panel>
-          <Panel className="rounded-[18px] p-5 shadow-soft-lg" contextItem={{ id: 'overview-price-positioning', type: 'Chart', label: 'Distribuição de posicionamento de preço', data: { distribution: distData } }}>
-            <SectionTitle right={<ContextTag type="MODEL">AVM</ContextTag>}>Distribuição de posicionamento de preço</SectionTitle>
-            <div className="flex items-center gap-4">
-              <ResponsiveContainer width={160} height={180}>
-                <PieChart>
-                  <Pie data={distData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={42} outerRadius={68} paddingAngle={3} stroke="hsl(190 55% 99%)" strokeWidth={2}>
-                    {distData.map((d) => <Cell key={d.name} fill={d.color} />)}
-                  </Pie>
-                  <Tooltip contentStyle={tooltipStyle} />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="flex-1 space-y-2">
-                {distData.map((d) => (
-                  <div key={d.name} className="flex items-center justify-between text-xs">
-                    <span className="flex items-center gap-2 text-text-secondary"><span className="w-2 h-2 rounded-full" style={{ background: d.color }} />{d.name}</span>
-                    <span className="tnum text-foreground">{d.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Panel>
-          </div>
-        </section>
+        {activeSection === 'overview-market' && (
+        <details open id="overview-engagement" className="analysis-disclosure group w-full scroll-mt-6">
+          <summary className="analysis-section-heading">
+            <span className="text-base font-semibold tracking-tight text-foreground">Interesse e interação</span>
+            <span className="flex items-center gap-2"><ContextTag type="DATA">90 dias</ContextTag><ChevronDown className="h-4 w-4 text-text-muted transition-transform group-open:rotate-180" /></span>
+          </summary>
+          <div className="pt-4"><Panel className="overflow-visible rounded-[22px] p-0" contextItem={{ id: 'overview-visitors-interaction', type: 'Chart', label: 'Visitantes — Interação', data: { period: '90 dias', metrics: ['visitantes desktop', 'visitantes mobile'] } }}><ChartAreaInteractive /></Panel></div>
+        </details>
 
-        <section id="market-metrics" aria-label="Análise geográfica de mercado" className="mx-auto w-full max-w-[1320px] space-y-5">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">Mercado</p>
-              <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Análise geográfica do mercado</h2>
-            </div>
-            <ContextTag type="MODEL">H3</ContextTag>
-          </div>
-          <MarketIntelligence embedded />
-        </section>
+                )}
 
-        <section aria-label="Anúncios em destaque" className="mx-auto w-full max-w-[1320px] space-y-4">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">Imóveis</p>
-              <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Anúncios em destaque</h2>
-            </div>
-            <ContextTag type="DATA">Portfólio</ContextTag>
+        {activeSection === 'overview-portfolio' && (
+        <details open id="overview-portfolio" className="analysis-disclosure group w-full scroll-mt-6">
+          <summary className="analysis-section-heading">
+            <span className="text-base font-semibold tracking-tight text-foreground">Concentração e posicionamento</span>
+            <span className="flex items-center gap-2"><ContextTag type="MODEL">Modelo</ContextTag><ChevronDown className="h-4 w-4 text-text-muted transition-transform group-open:rotate-180" /></span>
+          </summary>
+          <div className="grid grid-cols-1 gap-6 pt-4 lg:grid-cols-[minmax(0,2fr)_minmax(250px,1fr)]">
+            <Panel className="rounded-[18px] p-5" contextItem={{ id: 'overview-geographic-concentration', type: 'Chart', label: 'Concentração geográfica', data: { concentration: concData } }}>
+              <SectionTitle right={<ContextTag type="DATA">Portfólio</ContextTag>}>Concentração geográfica</SectionTitle>
+              <ResponsiveContainer width="100%" height={200}><BarChart data={concData} layout="vertical" margin={{ left: 20, right: 8, top: 0, bottom: 0 }}><defs><linearGradient id="concGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={CHART.aqua} stopOpacity={0.45} /><stop offset="100%" stopColor={CHART.lagoon} stopOpacity={0.95} /></linearGradient></defs><CartesianGrid stroke={CHART.grid} strokeDasharray="3 4" horizontal={false} /><XAxis type="number" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} unit="%" /><YAxis type="category" dataKey="name" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} width={90} /><Tooltip contentStyle={tooltipStyle} labelStyle={{ color: CHART.tooltipLabel }} cursor={{ fill: CHART.aqua, fillOpacity: 0.08 }} /><Bar dataKey="value" fill="url(#concGrad)" radius={[0, 8, 8, 0]} barSize={14} /></BarChart></ResponsiveContainer>
+            </Panel>
+            <Panel className="rounded-[18px] p-5" contextItem={{ id: 'overview-price-positioning', type: 'Chart', label: 'Distribuição de posicionamento de preço', data: { distribution: distData } }}>
+              <SectionTitle right={<ContextTag type="MODEL">Modelo</ContextTag>}>Distribuição de posicionamento de preço</SectionTitle>
+              <div className="flex items-center gap-4"><ResponsiveContainer width={160} height={180}><PieChart><Pie data={distData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={42} outerRadius={68} paddingAngle={3} stroke="hsl(var(--surface-popover))" strokeWidth={2}>{distData.map((d) => <Cell key={d.name} fill={d.color} />)}</Pie><Tooltip contentStyle={tooltipStyle} /></PieChart></ResponsiveContainer><div className="flex-1 space-y-2">{distData.map((d) => <div key={d.name} className="flex items-center justify-between text-xs"><span className="flex items-center gap-2 text-text-secondary"><span className="h-2 w-2 rounded-full" style={{ background: d.color }} />{d.name}</span><span className="tnum text-foreground">{d.value}</span></div>)}</div></div>
+            </Panel>
           </div>
-          {propertiesStatus === 'loading' && <AsyncLoading className="h-40" label="Carregando imóveis em destaque…" />}
-          {propertiesStatus === 'error' && <AsyncError error={propertiesError} />}
-          {propertiesStatus === 'success' && featured.length === 0 && <AsyncEmpty className="h-40">Nenhum imóvel disponível para destacar.</AsyncEmpty>}
-          {propertiesStatus === 'success' && featured.length > 0 && <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 justify-items-center">
-            {featured.map((p) => (
-              <ListingCard
-                key={p.id}
-                property={p}
-                onAdd={(prop) => addAgentContext({ id: prop.id, type: 'property', label: prop.title, data: prop })}
-              />
-            ))}
-          </div>}
-        </section>
+        </details>
+
+                )}
+
+        {activeSection === 'overview-geography' && (
+        <details open id="overview-geography" className="analysis-disclosure group w-full scroll-mt-6">
+          <summary className="analysis-section-heading">
+            <span className="text-base font-semibold tracking-tight text-foreground">Análise geográfica do mercado</span>
+            <span className="flex items-center gap-2"><ContextTag type="MODEL">H3</ContextTag><ChevronDown className="h-4 w-4 text-text-muted transition-transform group-open:rotate-180" /></span>
+          </summary>
+          <div className="pt-4"><MarketIntelligence embedded /></div>
+        </details>
+
+                )}
+
+        {activeSection === 'overview-portfolio' && (
+        <details open id="overview-listings" className="analysis-disclosure group w-full scroll-mt-6">
+          <summary className="analysis-section-heading">
+            <span className="text-base font-semibold tracking-tight text-foreground">Anúncios em destaque</span>
+            <span className="flex items-center gap-2"><ContextTag type="DATA">Portfólio</ContextTag><ChevronDown className="h-4 w-4 text-text-muted transition-transform group-open:rotate-180" /></span>
+          </summary>
+          <div className="pt-4">
+            {propertiesStatus === 'loading' && <AsyncLoading className="h-40" label="Carregando imóveis em destaque…" />}
+            {propertiesStatus === 'error' && <AsyncError error={propertiesError} />}
+            {propertiesStatus === 'success' && featured.length === 0 && <AsyncEmpty className="h-40">Nenhum imóvel disponível para destacar.</AsyncEmpty>}
+            {propertiesStatus === 'success' && featured.length > 0 && <div className="grid grid-cols-1 justify-items-center gap-5 md:grid-cols-2 xl:grid-cols-3">{featured.map((p) => <ListingCard key={p.id} property={p} onAdd={(prop) => addAgentContext({ id: prop.id, type: 'property', label: prop.title, data: prop })} />)}</div>}
+          </div>
+        </details>
+              )}
       </div>
-    </>
+    </div>
   );
 }
-
-
-

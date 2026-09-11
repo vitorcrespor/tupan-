@@ -1,9 +1,35 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+/**
+ * @typedef {object} AnimatedBeamProps
+ * @property {string} [className]
+ * @property {React.RefObject<any>} containerRef
+ * @property {React.RefObject<any>} fromRef
+ * @property {React.RefObject<any>} toRef
+ * @property {number} [curvature]
+ * @property {boolean} [reverse]
+ * @property {number} [pathWidth]
+ * @property {string} [pathColor]
+ * @property {number} [pathOpacity]
+ * @property {string} [gradientStartColor]
+ * @property {string} [gradientStopColor]
+ * @property {number} [delay]
+ * @property {number} [duration]
+ * @property {boolean} [active]
+ * @property {number} [startXOffset]
+ * @property {number} [startYOffset]
+ * @property {number} [endXOffset]
+ * @property {number} [endYOffset]
+ * @property {number} [width]
+ * @property {number} [height]
+ * @property {unknown} [refreshKey]
+ * @property {number} [refreshDuration]
+ */
 
 export const AnimatedBeam = React.forwardRef(
   (
+    /** @param {AnimatedBeamProps} props @param {React.ForwardedRef<SVGSVGElement>} ref */
     {
       className,
       containerRef,
@@ -25,6 +51,8 @@ export const AnimatedBeam = React.forwardRef(
       endYOffset = 0,
       width = 200,
       height = 200,
+      refreshKey,
+      refreshDuration = 0,
     },
     ref
   ) => {
@@ -39,8 +67,7 @@ export const AnimatedBeam = React.forwardRef(
       y2: "0%",
     });
 
-    React.useEffect(() => {
-      const updatePath = () => {
+    const updatePath = React.useCallback(() => {
         if (containerRef.current && fromRef.current && toRef.current) {
           const containerRect = containerRef.current.getBoundingClientRect();
           const fromRect = fromRef.current.getBoundingClientRect();
@@ -80,15 +107,6 @@ export const AnimatedBeam = React.forwardRef(
             y2: `${(coordinates[1].y / containerRect.height) * 100}%`,
           });
         }
-      };
-
-      const resizeObserver = new ResizeObserver(updatePath);
-      if (containerRef.current) resizeObserver.observe(containerRef.current);
-      if (fromRef.current) resizeObserver.observe(fromRef.current);
-      if (toRef.current) resizeObserver.observe(toRef.current);
-      updatePath();
-
-      return () => resizeObserver.disconnect();
     }, [
       containerRef,
       fromRef,
@@ -99,6 +117,35 @@ export const AnimatedBeam = React.forwardRef(
       endXOffset,
       endYOffset,
     ]);
+
+    React.useEffect(() => {
+      const resizeObserver = new ResizeObserver(updatePath);
+      if (containerRef.current) resizeObserver.observe(containerRef.current);
+      if (fromRef.current) resizeObserver.observe(fromRef.current);
+      if (toRef.current) resizeObserver.observe(toRef.current);
+      updatePath();
+
+      return () => resizeObserver.disconnect();
+    }, [updatePath]);
+
+    React.useEffect(() => {
+      if (!refreshDuration) {
+        updatePath();
+        return undefined;
+      }
+
+      let animationFrameId;
+      const startedAt = performance.now();
+      const updateDuringTransition = () => {
+        updatePath();
+        if (performance.now() - startedAt < refreshDuration) {
+          animationFrameId = requestAnimationFrame(updateDuringTransition);
+        }
+      };
+
+      animationFrameId = requestAnimationFrame(updateDuringTransition);
+      return () => cancelAnimationFrame(animationFrameId);
+    }, [refreshKey, refreshDuration, updatePath]);
 
     return (
       <svg

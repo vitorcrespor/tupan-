@@ -38,7 +38,9 @@ Configuration:
 fits a model or runs Optuna; the process lazily loads and caches the configured
 XGBoost artifact, prepares the recorded feature schema, and calls `predict()`.
 
-Train and publish a replacement artifact through an explicit offline command:
+The compatibility trainer below remains available for existing artifacts. It
+uses the legacy asking/estimate field and must not be treated as the
+transaction-price research model:
 
 ```powershell
 python -m train.train_avm path/to/training-properties.json --trials 100
@@ -50,6 +52,21 @@ spelling). Publish the model JSON and matching metadata JSON together; the API
 returns a structured 503 if either is absent or incompatible. Restart API
 workers after publishing a replacement so their process-level model cache loads
 the new artifact pair.
+
+The research-aligned transaction candidate is trained from the explicit,
+verified `valuation_observations` contract after migration `010`:
+
+```powershell
+python -m backend.platform_intelligence train-transaction-avm --n-estimators 1800
+```
+
+This path uses arm's-length `sale_price_brl`, point-in-time feature lineage,
+temporal/entity-isolated partitions, log-price XGBoost, and a held-out
+split-conformal interval scorecard. It writes `avm_transaction_v2.json` and
+matching metadata with `promotion_status = candidate`; it never overwrites the
+legacy serving artifact or promotes a model automatically. Promote only after
+reviewing the untouched out-of-time metrics, interval coverage/width, spatial
+holdout results, and data-quality exclusions.
 
 ## Property forecasting
 

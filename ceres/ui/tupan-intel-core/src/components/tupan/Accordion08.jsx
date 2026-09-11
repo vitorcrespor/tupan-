@@ -149,7 +149,7 @@ function Row({ item, isOpen, onToggle, uid }) {
                 border: '1px solid var(--ink)',
                 opacity: isOpen ? 1 : 0,
                 transform: isOpen ? 'scale(1) rotate(0deg)' : 'scale(0.5) rotate(-12deg)',
-                transition: 'opacity 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.05s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.05s',
+                transition: 'opacity 0.4s cubic-bezier(0.22,1,0.36,1) 0.05s, transform 0.4s cubic-bezier(0.22,1,0.36,1) 0.05s',
               }}
             >
               <Icon name={item.icon} />

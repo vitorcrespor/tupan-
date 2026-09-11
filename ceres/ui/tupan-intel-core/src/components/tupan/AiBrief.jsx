@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Sparkles, RefreshCw } from 'lucide-react';
-import { ContextTag } from './primitives';
 import { sendAgentMessage } from '@/api/agent';
 import { AsyncError, AsyncLoading } from './AsyncState';
 
@@ -35,14 +34,14 @@ export default function AiBrief({ prompt, title = 'Resumo de mercado com IA', cl
 
   return (
     <div className={className}>
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <div className="flex min-w-0 items-center gap-2">
           <Sparkles className="w-3.5 h-3.5 text-positive" />
-          <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary">{title}</h3>
+          <h3 className="text-sm font-semibold text-foreground">{title}</h3>
         </div>
         <div className="flex items-center gap-2">
-          <ContextTag type="AI">Interpretação IA</ContextTag>
-          <button onClick={() => run()} className="text-text-muted hover:text-foreground" disabled={status === 'loading'}>
+          <span className="text-[11px] text-text-secondary">Interpretação IA</span>
+          <button type="button" onClick={() => run()} aria-label="Atualizar comentário da Ceres" title="Atualizar comentário" className="icon-control h-8 w-8 text-text-muted hover:text-foreground" disabled={status === 'loading'}>
             <RefreshCw className={`w-3 h-3 ${status === 'loading' ? 'animate-spin' : ''}`} />
           </button>
         </div>
@@ -57,3 +56,4 @@ export default function AiBrief({ prompt, title = 'Resumo de mercado com IA', cl
     </div>
   );
 }
+

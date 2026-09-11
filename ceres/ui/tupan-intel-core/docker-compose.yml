@@ -1,3 +1,5 @@
+# Legacy development scaffolding. The supported application API is
+# ceres/backend/api/main.py (backend.api.main:app); do not deploy these services.
 version: '3.8'
 services:
   postgres:
@@ -12,6 +14,7 @@ services:
       - db_data:/var/lib/postgresql/data
 
   backend:
+    profiles: ['retired']
     build: ./backend
     working_dir: /app
     command: npm run dev
@@ -24,6 +27,7 @@ services:
       - postgres
 
   backend-fastapi:
+    profiles: ['retired']
     build: ./backend-fastapi
     working_dir: /app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload

@@ -1,22 +1,33 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import useOutsideDismiss from '@/lib/useOutsideDismiss';
 import './MetricKnob.css';
 
 const PANEL_HEIGHT = 318;
-const MIN_PANEL_HEIGHT = 144;
+const MIN_PANEL_HEIGHT = 96;
 const VIEWPORT_GUTTER = 16;
 
 export default function MetricKnob({ value, onChange, metrics = [], className }) {
   const [open, setOpen] = useState(false);
+  const [rendered, setRendered] = useState(false);
   const [placement, setPlacement] = useState({ direction: 'up', maxHeight: PANEL_HEIGHT });
   const ref = useRef(null);
+  const closeTimerRef = useRef(null);
 
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) setOpen(false);
-    };
-    document.addEventListener('pointerdown', handleOutsideClick);
-    return () => document.removeEventListener('pointerdown', handleOutsideClick);
-  }, []);
+  const openSelector = () => {
+    window.clearTimeout(closeTimerRef.current);
+    setRendered(true);
+    setOpen(true);
+  };
+  const closeSelector = () => {
+    if (!rendered) return;
+    setOpen(false);
+    window.clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = window.setTimeout(() => setRendered(false), 240);
+  };
+
+  useOutsideDismiss(ref, open, closeSelector);
+
+  useEffect(() => () => window.clearTimeout(closeTimerRef.current), []);
 
   useLayoutEffect(() => {
     if (!open) return undefined;
@@ -33,7 +44,7 @@ export default function MetricKnob({ value, onChange, metrics = [], className })
 
       setPlacement({
         direction,
-        maxHeight: Math.max(MIN_PANEL_HEIGHT, Math.min(PANEL_HEIGHT, Math.floor(availableSpace))),
+        maxHeight: Math.min(PANEL_HEIGHT, availableSpace >= MIN_PANEL_HEIGHT ? Math.floor(availableSpace) : Math.max(64, Math.floor(availableSpace))),
       });
     };
 
@@ -54,13 +65,16 @@ export default function MetricKnob({ value, onChange, metrics = [], className })
     <div
       ref={ref}
       onClick={(event) => event.stopPropagation()}
-      className={`metric-knob ${open ? 'metric-knob--open' : ''} ${placementClass} ${className || ''}`}
-      style={open ? { '--metric-knob-open-height': `${placement.maxHeight}px` } : undefined}
+      className={`metric-knob ${rendered ? 'metric-knob--active' : ''} ${open ? 'metric-knob--open' : rendered ? 'metric-knob--closing' : ''} ${placementClass} ${className || ''}`}
+      style={rendered ? {
+        '--metric-knob-open-height': `${placement.maxHeight}px`,
+        '--metric-knob-closed-scale-y': `${Math.min(1, 12 / placement.maxHeight)}`,
+      } : undefined}
     >
       <button
         className="metric-knob__handle"
         type="button"
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => (open ? closeSelector() : openSelector())}
         aria-label={open ? 'Fechar seletor de métricas' : 'Abrir seletor de métricas'}
         aria-expanded={open}
       />
@@ -72,7 +86,7 @@ export default function MetricKnob({ value, onChange, metrics = [], className })
             const label = typeof metric === 'string' ? metric : metric.label;
             const active = id === value;
             return (
-              <button key={id} type="button" className={`metric-knob__option ${active ? 'metric-knob__option--active' : ''}`} onClick={() => { onChange?.(metric); setOpen(false); }}>
+              <button key={id} type="button" className={`metric-knob__option ${active ? 'metric-knob__option--active' : ''}`} onClick={() => { onChange?.(metric); closeSelector(); }}>
                 <span>{label}</span>{active && <span className="metric-knob__dot" />}
               </button>
             );

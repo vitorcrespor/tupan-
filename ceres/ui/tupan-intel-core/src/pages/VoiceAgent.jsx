@@ -1,39 +1,50 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Orb } from 'orb-ui';
+import { ChevronUp } from 'lucide-react';
 import VoiceBeams from '@/components/tupan/VoiceBeams';
 import VoiceToolbar from '@/components/tupan/VoiceToolbar';
 import VoiceBackground from '@/components/tupan/VoiceBackground';
-import { Ripple } from '@/registry/magicui/ripple';
+import VoiceChatHistory from '@/components/tupan/VoiceChatHistory';
 import { useApp } from '@/lib/AppContext';
 import MenuWindow from '@/components/tupan/MenuWindow';
 import { loadPersona, buildVoicePrompt } from '@/lib/voicePersona';
 import { useSpeech } from '@/lib/useSpeech';
 import { sendAgentMessage } from '@/api/agent';
-import { apiErrorMessage } from '@/api/client';
 
 export default function VoiceAgent() {
   const persona = loadPersona();
-  const { setNavOpen } = useApp();
+  const { setNavOpen, agentContextItems, agentPrefill, setAgentPrefill, agentContextArrival } = useApp();
   const [turns, setTurns] = useState([]);
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
   const [requestError, setRequestError] = useState(null);
-  const scrollRef = useRef(null);
+  const [responsePulse, setResponsePulse] = useState(false);
+  const [contextPulse, setContextPulse] = useState(false);
+  const [chatCollapsed, setChatCollapsed] = useState(false);
   const orbRef = useRef(null);
+  const responsePulseTimerRef = useRef(null);
+  const contextPulseTimerRef = useRef(null);
+  const seenContextArrivalRef = useRef(null);
 
-  const ask = async (question, viaVoice = false) => {
+  const ask = async (question, viaVoice = false, contextItems = agentContextItems) => {
     const q = question.trim();
     if (!q || thinking) return;
     setInput('');
+    setChatCollapsed(false);
     setRequestError(null);
-    setTurns((t) => [...t, { role: 'user', text: q }]);
+    setTurns((turns) => [...turns, { role: 'user', text: q }]);
     setThinking(true);
     try {
-      const reply = await sendAgentMessage({ message: buildVoicePrompt(persona, q) });
+      const reply = await sendAgentMessage({ message: buildVoicePrompt(persona, q), contextItems });
       const text = reply.message.content;
-      setTurns((t) => [...t, { role: 'agent', text }]);
+      setTurns((turns) => [...turns, { role: 'agent', text }]);
+      setChatCollapsed(false);
+      setResponsePulse(true);
+      window.clearTimeout(responsePulseTimerRef.current);
+      responsePulseTimerRef.current = window.setTimeout(() => setResponsePulse(false), 760);
       if (viaVoice && persona.speak) speech.speak(text);
     } catch (error) {
+      setChatCollapsed(false);
       setRequestError(error);
     } finally {
       setThinking(false);
@@ -41,93 +52,71 @@ export default function VoiceAgent() {
   };
 
   const speech = useSpeech({ onResult: (text) => ask(text, true), rate: persona.rate });
+  const chatActive = turns.length > 0 || thinking || Boolean(requestError);
+  const chatVisible = chatActive && !chatCollapsed;
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-  }, [turns, thinking]);
+    const question = new URLSearchParams(window.location.search).get('q');
+    if (question) ask(question);
+  }, []);
 
   useEffect(() => {
-    const q = new URLSearchParams(window.location.search).get('q');
-    if (q) ask(q);
+    if (!agentPrefill) return;
+    const prompt = agentPrefill;
+    setAgentPrefill('');
+    ask(prompt, false, agentContextItems);
+  }, [agentPrefill]);
+
+  useEffect(() => {
+    if (!agentContextArrival || agentContextArrival.source !== 'insight-tray' || seenContextArrivalRef.current === agentContextArrival.id) return;
+    seenContextArrivalRef.current = agentContextArrival.id;
+    setContextPulse(true);
+    window.clearTimeout(contextPulseTimerRef.current);
+    contextPulseTimerRef.current = window.setTimeout(() => setContextPulse(false), 920);
+  }, [agentContextArrival]);
+
+  useEffect(() => () => {
+    window.clearTimeout(responsePulseTimerRef.current);
+    window.clearTimeout(contextPulseTimerRef.current);
   }, []);
 
   const orbState = speech.speaking ? 'speaking' : speech.listening ? 'listening' : thinking ? 'thinking' : 'idle';
 
+
   return (
     <div className="relative h-screen overflow-hidden bg-background">
-      {/* soft aqua ambient filling the whole window */}
       <VoiceBackground />
-
-      {/* central layer — sphere centered on the whole window */}
       <div className="fixed inset-0 z-10 pointer-events-none">
-        <Ripple className="opacity-80" />
         <VoiceBeams
           orbRef={orbRef}
-          orb={<Orb state={orbState} data-state={orbState} theme="circle" size={320} interactive={false} className="ceres-orb" aria-label="Ceres voice assistant" />}
+          dismissed={chatVisible}
+          conversationActive={chatVisible}
+          responding={thinking || speech.speaking || responsePulse}
+          contextArrival={contextPulse}
+          orb={<Orb state={orbState} data-state={orbState} theme="circle" size={320} disabled className="ceres-orb" aria-label="Ceres voice assistant" />}
         />
-
-        {/* small transparent menu button below the sphere + corner options */}
-        <button
-          type="button"
-          onClick={() => setNavOpen(true)}
-          className="absolute left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 h-7 px-3 rounded-full border border-border/70 bg-card/25 text-text-secondary hover:text-foreground transition-all duration-300 hover:border-brand/50 pointer-events-auto backdrop-blur-md"
-          style={{ top: 'calc(50% + 176px)' }}
-        >
-          <span
-            className="w-1.5 h-1.5 rounded-full"
-            style={{ background: 'radial-gradient(circle at 34% 28%, hsl(188 88% 76%), hsl(188 78% 54%))', boxShadow: '0 0 6px -1px hsl(188 82% 52% / 0.6)' }}
-          />
+        <button type="button" onClick={() => setNavOpen(true)} aria-label="Abrir menu" className="voice-menu-toggle voice-menu-toggle--conversation absolute z-30 flex items-center gap-1.5 h-7 px-3 rounded-full border border-border/70 bg-card/25 text-text-secondary hover:text-foreground hover:border-brand/50 pointer-events-auto backdrop-blur-md">
+          <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'radial-gradient(circle at 34% 28%, hsl(188 88% 76%), hsl(188 78% 54%))', boxShadow: '0 0 6px -1px hsl(188 82% 52% / 0.6)' }} />
           <span className="text-[10px] font-mono tracking-[0.2em] uppercase">Menu</span>
         </button>
-
-        {/* transcript kept near the sphere */}
-        <div
-          ref={scrollRef}
-          className="absolute left-1/2 -translate-x-1/2 z-30 w-full max-w-2xl max-h-[16vh] overflow-y-auto px-6 space-y-3 text-center pointer-events-auto"
-          style={{ top: 'calc(50% + 248px)' }}
-        >
-          {turns.map((t, i) => (
-            <div key={i} className={t.role === 'user' ? 'text-right' : 'text-left'}>
-              <p
-                className={`text-sm leading-relaxed ${
-                  t.role === 'user' ? 'text-text-secondary' : 'text-foreground'
-                }`}
-              >
-                {t.role === 'agent' && (
-                  <span className="mr-1.5 text-[10px] uppercase tracking-widest text-brand align-middle">
-                    Ceres ·
-                  </span>
-                )}
-                {t.text}
-              </p>
-            </div>
-          ))}
-          {thinking && (
-            <div className="flex justify-center gap-1.5 pt-1">
-              {[0, 1, 2].map((d) => (
-                <span
-                  key={d}
-                  className="w-1.5 h-1.5 rounded-full bg-brand animate-bounce"
-                  style={{ animationDelay: `${d * 120}ms` }}
-                />
-              ))}
-            </div>
+        <div className={`voice-chat-shell ${chatActive ? 'voice-chat-shell--active' : ''} ${chatCollapsed ? 'voice-chat-shell--collapsed' : ''}`}>
+          <VoiceChatHistory turns={turns} thinking={thinking} error={requestError} visible={chatVisible} />
+          {chatActive && !chatCollapsed && (
+            <button
+              type="button"
+              aria-controls="voice-chat-history"
+              aria-expanded="true"
+              aria-label="Recolher conversa"
+              onClick={() => setChatCollapsed(true)}
+              className="voice-chat-collapse-toggle pointer-events-auto"
+            >
+              <ChevronUp className="h-3 w-3" strokeWidth={1.75} aria-hidden="true" />
+            </button>
           )}
-          {requestError && <div role="alert" className="text-xs text-negative">{apiErrorMessage(requestError)}</div>}
         </div>
       </div>
-
       <MenuWindow />
-
-      {/* sleek transparent toolbar — expands on click */}
-      <VoiceToolbar
-        input={input}
-        setInput={setInput}
-        onAsk={() => ask(input)}
-        speech={speech}
-        thinking={thinking}
-      />
+      <VoiceToolbar input={input} setInput={setInput} onAsk={() => ask(input)} speech={speech} thinking={thinking} />
     </div>
   );
 }
-

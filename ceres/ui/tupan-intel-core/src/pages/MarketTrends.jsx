@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { ResponsiveContainer, AreaChart, Area, LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
-import { Building2, ExternalLink, MapPin, Search, Sparkles } from 'lucide-react';
+import { ExternalLink, MapPin, Search, Sparkles } from 'lucide-react';
 import TopBar from '@/components/tupan/TopBar';
 import { Panel, SectionTitle, ContextTag, KpiCard } from '@/components/tupan/primitives';
 import { CITIES } from '@/lib/tupanData';
@@ -33,7 +33,7 @@ const METRIC_OPTIONS = [
 
 function ChartState({ metric, query, data, height, children }) {
   const className = 'flex items-center justify-center px-6 text-center text-xs';
-  if (!metric.history) return <div style={{ height }} className={`${className} text-text-muted`}>O backend ainda não fornece série histórica para esta métrica.</div>;
+  if (!metric.history) return <div style={{ height }} className={`${className} text-text-muted`}>Histórico ainda indisponível para esta métrica.</div>;
   if (query.isLoading) return <div style={{ height }} className={`${className} text-text-muted`}>Carregando histórico…</div>;
   if (query.isError) return <div role="alert" style={{ height }} className={`${className} text-negative`}>{apiErrorMessage(query.error)}</div>;
   if (data.length === 0) return <div style={{ height }} className={`${className} text-text-muted`}>Sem observações históricas para este recorte.</div>;
@@ -55,7 +55,7 @@ export function MarketTrendMetrics({ embedded = false }) {
     retry: false,
   });
   const allPriceSeries = useMemo(
-    () => metricHistoryToChartSeries(priceHistoryQuery.data).map((point) => ({ ...point, price: point.value })),
+    () => metricHistoryToChartSeries(priceHistoryQuery.data),
     [priceHistoryQuery.data],
   );
   const data = useMemo(() => limitMetricHistoryToMonths(allPriceSeries, horizon), [allPriceSeries, horizon]);
@@ -63,7 +63,7 @@ export function MarketTrendMetrics({ embedded = false }) {
   const primaryMetric = METRIC_OPTIONS.find((option) => option.id === primaryMetricId) || METRIC_OPTIONS[0];
   const barMetric = METRIC_OPTIONS.find((option) => option.id === barMetricId) || METRIC_OPTIONS[1];
   const lineMetric = METRIC_OPTIONS.find((option) => option.id === lineMetricId) || METRIC_OPTIONS[2];
-  const latestPrice = data.at(-1)?.price;
+  const latestPrice = data.at(-1)?.value;
   const kpiOptions = [
     { id: 'price', label: 'Último preço por m²', value: latestPrice == null ? '—' : formatM2(latestPrice), tag: 'DATA', sub: `${data.length} observações`, series: data, seriesValueFormatter: formatM2 },
     { id: 'inventory', label: 'Variação de inventário', value: '—', tag: 'MODEL', sub: 'Histórico indisponível', series: [] },
@@ -73,14 +73,14 @@ export function MarketTrendMetrics({ embedded = false }) {
   const contextData = (metric) => ({
     metric: metric.label,
     period: `${horizon} meses`,
-    series: metric.history ? data.map((point) => ({ label: point.label, value: point.price })) : [],
+    series: metric.history ? data.map((point) => ({ label: point.label, value: point.value })) : [],
   });
 
   return (
     <>
       {!embedded && <TopBar title="Tendências de Mercado" subtitle="Análise histórica de longo prazo · São Paulo" />}
       <div className={embedded ? 'space-y-4' : 'flex-1 overflow-y-auto p-5 space-y-4'}>
-        <Panel className="rounded-[22px] border-white/70 bg-card/55 p-4 shadow-[0_5px_18px_hsl(220_12%_18%/0.09),inset_0_1px_0_hsl(0_0%_100%/0.82)] backdrop-blur-xl">
+        <div className="analysis-toolbar">
           <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] uppercase text-text-muted">Região</span>
@@ -100,57 +100,60 @@ export function MarketTrendMetrics({ embedded = false }) {
               </Select>
             </div>
           </div>
-        </Panel>
-
-        <div className="mx-auto grid w-full max-w-[820px] grid-cols-1 gap-x-5 gap-y-6 md:grid-cols-2">
-          {kpiOptions.map((option) => <KpiCard key={option.id} {...option} className="aspect-[16/10] min-h-[220px]" series={enableChartExpansion ? option.series : []} metricOptions={enableChartExpansion ? kpiOptions : []} />)}
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <Panel className="aspect-[4/3] min-h-[320px] p-5" metricOptions={METRIC_OPTIONS} activeMetricId={primaryMetricId} onMetricSelect={(option) => setPrimaryMetricId(option.id)} contextItem={{ id: `chart-trends-${primaryMetric.key}`, type: 'Chart', label: primaryMetric.title, data: contextData(primaryMetric) }}>
+
+        <div className="market-trend-layout">
+          <Panel className="p-5" metricOptions={METRIC_OPTIONS} activeMetricId={primaryMetricId} onMetricSelect={(option) => setPrimaryMetricId(option.id)} contextItem={{ id: `chart-trends-${primaryMetric.key}`, type: 'Chart', label: primaryMetric.title, data: contextData(primaryMetric) }}>
           <SectionTitle right={<ContextTag type="DATA">{horizon}M</ContextTag>}>{primaryMetric.title}</SectionTitle>
-          <ChartState metric={primaryMetric} query={priceHistoryQuery} data={data} height={240}>
-            <ResponsiveContainer width="100%" height={240}>
+          <ChartState metric={primaryMetric} query={priceHistoryQuery} data={data} height={280}>
+            <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={data} margin={{ left: -10, right: 8, top: 8, bottom: 0 }}>
                 <defs><linearGradient id="gPrimary" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={primaryMetric.color} stopOpacity={0.35} /><stop offset="100%" stopColor={primaryMetric.color} stopOpacity={0.02} /></linearGradient></defs>
                 <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="label" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
                 <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} tickFormatter={primaryMetric.formatter} />
                 <Tooltip contentStyle={tooltipStyle} formatter={(value) => primaryMetric.formatter(value)} />
-                <Area type="monotone" dataKey="price" stroke={primaryMetric.color} strokeWidth={2} fill="url(#gPrimary)" />
+                <Area type="monotone" dataKey="value" stroke={primaryMetric.color} strokeWidth={2} fill="url(#gPrimary)" />
               </AreaChart>
             </ResponsiveContainer>
           </ChartState>
         </Panel>
-          <Panel className="aspect-[4/3] min-h-[320px] p-5" metricOptions={METRIC_OPTIONS} activeMetricId={barMetricId} onMetricSelect={(option) => setBarMetricId(option.id)} contextItem={{ id: `chart-trends-bar-${barMetric.key}`, type: 'Chart', label: `${barMetric.label} — movimento`, data: contextData(barMetric) }}>
+        <div className="market-trend-indicators">
+          {kpiOptions.map((option) => <KpiCard key={option.id} {...option} series={enableChartExpansion ? option.series : []} metricOptions={enableChartExpansion ? kpiOptions : []} />)}
+        </div>
+          <div className="market-trend-support">
+          <Panel className="p-5" metricOptions={METRIC_OPTIONS} activeMetricId={barMetricId} onMetricSelect={(option) => setBarMetricId(option.id)} contextItem={{ id: `chart-trends-bar-${barMetric.key}`, type: 'Chart', label: `${barMetric.label} — movimento`, data: contextData(barMetric) }}>
             <SectionTitle right={<ContextTag type="MODEL">{horizon}M</ContextTag>}>{barMetric.label} — movimento</SectionTitle>
-            <ChartState metric={barMetric} query={priceHistoryQuery} data={data} height={240}>
-              <ResponsiveContainer width="100%" height={240}>
+            <ChartState metric={barMetric} query={priceHistoryQuery} data={data} height={160}>
+              <ResponsiveContainer width="100%" height={160}>
                 <BarChart data={data} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
                   <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="label" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
                   <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} tickFormatter={barMetric.formatter} />
                   <Tooltip contentStyle={tooltipStyle} cursor={{ fill: CHART.grid, opacity: 0.3 }} formatter={(value) => barMetric.formatter(value)} />
-                  <Bar dataKey="price" fill={barMetric.color} radius={[6, 6, 0, 0]} barSize={14} />
+                  <Bar dataKey="value" fill={barMetric.color} radius={[6, 6, 0, 0]} barSize={14} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartState>
           </Panel>
-          <Panel className="aspect-[4/3] min-h-[320px] p-5" metricOptions={METRIC_OPTIONS} activeMetricId={lineMetricId} onMetricSelect={(option) => setLineMetricId(option.id)} contextItem={{ id: `chart-trends-line-${lineMetric.key}`, type: 'Chart', label: `${lineMetric.label} — tendência`, data: contextData(lineMetric) }}>
+          <Panel className="p-5" metricOptions={METRIC_OPTIONS} activeMetricId={lineMetricId} onMetricSelect={(option) => setLineMetricId(option.id)} contextItem={{ id: `chart-trends-line-${lineMetric.key}`, type: 'Chart', label: `${lineMetric.label} — tendência`, data: contextData(lineMetric) }}>
             <SectionTitle right={<ContextTag type="DATA">{horizon}M</ContextTag>}>{lineMetric.label} — tendência</SectionTitle>
-            <ChartState metric={lineMetric} query={priceHistoryQuery} data={data} height={240}>
-              <ResponsiveContainer width="100%" height={240}>
+            <ChartState metric={lineMetric} query={priceHistoryQuery} data={data} height={160}>
+              <ResponsiveContainer width="100%" height={160}>
                 <LineChart data={data} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
                   <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="label" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
                   <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} tickFormatter={lineMetric.formatter} />
                   <Tooltip contentStyle={tooltipStyle} formatter={(value) => lineMetric.formatter(value)} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
-                  <Line type="monotone" dataKey="price" name={lineMetric.label} stroke={lineMetric.color} strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="value" name={lineMetric.label} stroke={lineMetric.color} strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </ChartState>
           </Panel>
+          </div>
+
         </div>
       </div>
     </>
@@ -200,8 +203,8 @@ function EstateAnalysisWorkspace() {
   return (
     <>
       <TopBar title="Análise de imóveis" subtitle={estatesQuery.isLoading ? 'Carregando imóveis…' : `${estatesQuery.data?.page?.total ?? estates.length} imóveis · Seleção visual e análise da Ceres`} />
-      <div className="flex-1 overflow-y-auto p-6 space-y-6">
-        <Panel className="rounded-[22px] border-white/75 bg-card/48 p-4 shadow-soft-lg">
+      <div className="workspace-content flex-1 overflow-y-auto space-y-6">
+        <div className="border-b border-border/60 pb-4">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex h-9 min-w-[220px] flex-1 items-center gap-2 rounded-xl border border-border/75 bg-card/60 px-3 backdrop-blur-sm transition-colors focus-within:border-brand/45">
               <Search className="h-3.5 w-3.5 text-text-muted" />
@@ -222,9 +225,9 @@ function EstateAnalysisWorkspace() {
               </SelectContent>
             </Select>
           </div>
-        </Panel>
+        </div>
 
-        <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.8fr)_minmax(320px,1fr)]">
           <section aria-label="Lista de imóveis">
             {estatesQuery.isLoading && <AsyncLoading className="h-64" label="Carregando imóveis para análise…" />}
             {estatesQuery.isError && <AsyncError error={estatesQuery.error} />}
@@ -244,32 +247,30 @@ function EstateAnalysisWorkspace() {
           </section>
 
           <aside className="xl:sticky xl:top-4">
-            <Panel className="rounded-[22px] border-positive/20 bg-[linear-gradient(145deg,hsl(var(--card)/.70),hsl(161_53%_94%/.36))] p-5 shadow-[0_18px_46px_hsl(160_40%_32%/.10),inset_0_1px_0_hsl(0_0%_100%/.90)]">
+            <Panel className="p-5">
               <div className="mb-4 flex items-start gap-3 pr-8">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-positive/25 bg-positive/10 text-positive"><Building2 className="h-4 w-4" /></span>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-positive">Ceres Analysis</p>
                   <h2 className="mt-0.5 text-sm font-semibold text-foreground">{selectedEstate ? selectedEstate.title : 'Selecione um imóvel'}</h2>
                 </div>
               </div>
 
-              {!selectedEstate && <div className="rounded-2xl border border-dashed border-border/80 bg-card/35 px-5 py-10 text-center text-xs leading-relaxed text-text-muted">Escolha um cartão de imóvel para ver seus indicadores e pedir uma leitura contextual à Ceres.</div>}
+              {!selectedEstate && <p className="py-4 text-sm leading-relaxed text-text-secondary">Escolha um imóvel para ver seus indicadores e pedir uma leitura contextual à Ceres.</p>}
 
               {selectedEstate && <div className="space-y-4">
                 <div className="flex items-center gap-1.5 text-xs text-text-muted"><MapPin className="h-3.5 w-3.5" />{selectedEstate.neighborhood}, {selectedEstate.city}</div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-xl border border-white/70 bg-card/45 p-3"><p className="text-[9px] font-semibold uppercase tracking-wide text-text-muted">Preço listado</p><p className="mt-1 text-sm font-semibold text-foreground tnum">{formatBRL(selectedEstate.price)}</p></div>
-                  <div className="rounded-xl border border-white/70 bg-card/45 p-3"><p className="text-[9px] font-semibold uppercase tracking-wide text-text-muted">Preço / m²</p><p className="mt-1 text-sm font-semibold text-foreground tnum">{formatM2(selectedEstate.price_per_m2)}</p></div>
-                  <div className="rounded-xl border border-white/70 bg-card/45 p-3"><p className="text-[9px] font-semibold uppercase tracking-wide text-text-muted">Sugestão AVM</p><p className="mt-1 text-sm font-semibold text-brand tnum">{formatBRL(selectedEstate.suggested_price)}</p></div>
-                  <div className="rounded-xl border border-white/70 bg-card/45 p-3"><p className="text-[9px] font-semibold uppercase tracking-wide text-text-muted">Desvio</p><p className="mt-1 text-sm font-semibold text-text-secondary tnum">{formatPct(selectedEstate.price_deviation)}</p></div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-5 border-y border-border/60 py-4">
+                  <div><p className="text-xs text-text-secondary">Preço listado</p><p className="mt-1 text-sm font-semibold text-foreground tnum">{formatBRL(selectedEstate.price)}</p></div>
+                  <div><p className="text-xs text-text-secondary">Preço / m²</p><p className="mt-1 text-sm font-semibold text-foreground tnum">{formatM2(selectedEstate.price_per_m2)}</p></div>
+                  <div><p className="text-xs text-text-secondary">Sugestão AVM</p><p className="mt-1 text-sm font-semibold text-brand tnum">{formatBRL(selectedEstate.suggested_price)}</p></div>
+                  <div><p className="text-xs text-text-secondary">Desvio</p><p className="mt-1 text-sm font-semibold text-text-secondary tnum">{formatPct(selectedEstate.price_deviation)}</p></div>
                 </div>
-                {selectedEstate.api_property?.summary && <p className="rounded-xl border border-border/65 bg-card/35 p-3 text-xs leading-relaxed text-text-secondary">{selectedEstate.api_property.summary}</p>}
+                {selectedEstate.api_property?.summary && <p className="text-xs leading-relaxed text-text-secondary">{selectedEstate.api_property.summary}</p>}
                 <div className="space-y-2">
                   <button type="button" onClick={runAnalysis} disabled={analysis.status === 'loading'} className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-brand text-xs font-medium text-brand-foreground transition-colors hover:bg-brand/90 disabled:cursor-wait disabled:opacity-70"><Sparkles className={`h-3.5 w-3.5 ${analysis.status === 'loading' ? 'animate-pulse' : ''}`} />{analysis.status === 'loading' && analysis.propertyId === selectedEstate.id ? 'Analisando com a Ceres…' : 'Analisar com Ceres'}</button>
                   <button type="button" onClick={() => navigate(`/properties/${selectedEstate.id}`)} className="flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-border bg-card/45 text-xs text-text-secondary transition-colors hover:text-foreground"><ExternalLink className="h-3.5 w-3.5" />Ver inteligência completa</button>
                 </div>
                 {analysis.status === 'error' && analysis.propertyId === selectedEstate.id && <AsyncError error={analysis.error} onRetry={runAnalysis} />}
-                {analysis.status === 'success' && analysis.propertyId === selectedEstate.id && <div className="rounded-2xl border border-positive/20 bg-positive/5 p-3"><p className="mb-2 text-[10px] font-bold uppercase tracking-[0.13em] text-positive">Leitura da Ceres</p><div className="prose prose-sm max-w-none text-xs leading-relaxed text-text-secondary [&_p]:my-1.5 [&_strong]:text-foreground"><ReactMarkdown>{analysis.text}</ReactMarkdown></div></div>}
+                {analysis.status === 'success' && analysis.propertyId === selectedEstate.id && <div className="border-t border-border pt-4"><p className="mb-2 text-sm font-semibold text-foreground">Leitura da Ceres</p><div className="prose prose-sm max-w-none text-xs leading-relaxed text-text-secondary [&_p]:my-1.5 [&_strong]:text-foreground"><ReactMarkdown>{analysis.text}</ReactMarkdown></div></div>}
               </div>}
             </Panel>
           </aside>

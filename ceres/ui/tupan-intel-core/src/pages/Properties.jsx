@@ -123,13 +123,13 @@ export default function Properties() {
   return (
     <>
       <TopBar title="Imóveis" subtitle={isLoading ? 'Carregando anúncios…' : `${propertyPage?.page?.total ?? rows.length} anúncios · Tabela de inteligência`} />
-      <div className="flex-1 flex min-h-0">
-        <div className="flex-1 overflow-y-auto p-5">
+      <div className="relative flex-1 flex min-h-0">
+        <div className="workspace-content flex-1 overflow-y-auto">
           <Panel className="overflow-hidden">
-            <div className="flex items-center gap-2 p-3 border-b border-border flex-wrap">
-              <div className="flex items-center gap-1.5 h-8 px-3 rounded-full border border-border/70 bg-card/70 backdrop-blur-sm flex-1 min-w-[200px] focus-within:border-brand/40 transition-colors">
+            <div className="analysis-toolbar">
+              <div className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-border/70 bg-card/70 flex-1 min-w-[200px] focus-within:border-brand/40 transition-colors">
                 <Search className="w-3.5 h-3.5 text-text-muted" />
-                <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar imóveis, bairros, endereços…" className="bg-transparent outline-none text-xs font-mono tracking-wide text-text-secondary w-full" />
+                <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar imóveis, bairros, endereços…" className="bg-transparent outline-none text-xs text-text-secondary w-full" />
               </div>
               <Select value={type || 'all'} onValueChange={(v) => setType(v === 'all' ? '' : v)}>
                 <SelectTrigger className="h-8 w-auto min-w-[120px]"><SelectValue /></SelectTrigger>
@@ -149,11 +149,11 @@ export default function Properties() {
               {isLoading && <div className="py-10 text-center text-xs text-text-muted">Carregando imóveis…</div>}
               {isError && <div role="alert" className="m-3 rounded border border-negative/30 bg-negative/10 p-3 text-xs text-negative">{apiErrorMessage(error)}</div>}
               {!isLoading && !isError && <>
-                <TableProvider columns={columns} data={rows} className="w-full text-xs">
+                <TableProvider columns={columns} data={rows} className="ceres-table w-full">
                   <TableHeader>
                     {({ headerGroup }) => (
                       <TableHeaderGroup headerGroup={headerGroup} key={headerGroup.id}>
-                        {({ header }) => <TableHead header={header} key={header.id} className="text-text-muted" />}
+                        {({ header }) => <TableHead header={header} key={header.id} className={cn("text-text-muted", ['price', 'price_per_m2', 'suggested_price', 'price_deviation', 'days_on_market', 'market_heat', 'liquidity_score'].includes(header.column.id) && "text-right [&>button]:ml-auto")} />}
                       </TableHeaderGroup>
                     )}
                   </TableHeader>
@@ -165,7 +165,7 @@ export default function Properties() {
                         onClick={() => setSelected(row.original)}
                         className={cn('cursor-pointer hover:bg-elevated/50 transition-colors', selected?.id === row.original.id && 'bg-brand/5')}
                       >
-                        {({ cell }) => <TableCell cell={cell} key={cell.id} className="whitespace-nowrap" />}
+                        {({ cell }) => <TableCell cell={cell} key={cell.id} className={cn("whitespace-nowrap", ['price', 'price_per_m2', 'suggested_price', 'price_deviation', 'days_on_market', 'market_heat', 'liquidity_score'].includes(cell.column.id) && "text-right")} />}
                       </TableRow>
                     )}
                   </TableBody>
@@ -177,20 +177,20 @@ export default function Properties() {
         </div>
 
         {sel && (
-          <div className="w-[340px] shrink-0 border-l border-border bg-surface flex flex-col overflow-y-auto">
+          <div className="absolute inset-0 z-30 md:static md:w-[340px] shrink-0 border-l border-border bg-surface flex flex-col overflow-y-auto">
             <div className="flex items-center justify-between px-4 h-11 border-b border-border sticky top-0 bg-surface z-10">
               <span className="text-sm font-semibold text-foreground truncate">{sel.title}</span>
-              <button onClick={() => setSelected(null)} className="text-text-muted hover:text-foreground"><X className="w-4 h-4" /></button>
+              <button type="button" aria-label="Fechar detalhes do imóvel" onClick={() => setSelected(null)} className="icon-control text-text-muted hover:text-foreground"><X className="w-4 h-4" /></button>
             </div>
             <div className="p-4 space-y-4">
               <div className="flex items-center gap-1.5 text-xs text-text-muted"><MapPin className="w-3 h-3" />{sel.neighborhood}, {sel.city}</div>
               <div className="grid grid-cols-2 gap-2">
-                <div className="rounded border border-border bg-elevated/50 p-2.5">
+                <div className="py-2">
                   <div className="text-[10px] uppercase text-text-muted">Preço de pedido</div>
                   <div className="text-base font-semibold tnum text-foreground">{formatBRL(sel.price)}</div>
                   <div className="text-[10px] text-text-muted">{formatM2(sel.price_per_m2)}/m²</div>
                 </div>
-                <div className="rounded border border-border bg-elevated/50 p-2.5">
+                <div className="py-2">
                   <div className="text-[10px] uppercase text-text-muted">AVM sugerido</div>
                   <div className="text-base font-semibold tnum text-brand">{formatBRL(sel.suggested_price)}</div>
                   <div className={cn('text-[10px] font-medium', sel.price_deviation > 5 ? 'text-negative' : sel.price_deviation < -5 ? 'text-positive' : 'text-text-secondary')}>{formatPct(sel.price_deviation)} desvio</div>

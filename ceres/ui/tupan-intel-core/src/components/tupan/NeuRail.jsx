@@ -109,8 +109,8 @@ export default function NeuRail() {
           outline: none;
           box-shadow: inset 1px 1px 3px hsl(0 0% 0% / .45), inset -1px -1px 3px hsl(0 0% 100% / .15);
         }
-        .neu-panel{ width:0; transition: width .38s cubic-bezier(.6,.02,.1,1); }
-        .neu-rail[data-open="true"] .neu-panel{ width: 214px; }
+        .neu-panel{ flex-basis:0; transition: flex-basis .32s cubic-bezier(.22,1,.36,1); }
+        .neu-rail[data-open="true"] .neu-panel{ flex-basis:214px; }
         .neu-panel-inner{
           box-shadow: inset 5px 0 8px -6px var(--neu-dark);
           opacity:0; transform: translateX(6px);

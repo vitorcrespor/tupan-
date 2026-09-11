@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '@/lib/AppContext';
 import { NAV_GROUPS } from '@/lib/navGroups';
+import useOutsideDismiss from '@/lib/useOutsideDismiss';
 
 export default function VoiceNav({ showTrigger = false }) {
   const { navOpen, setNavOpen } = useApp();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const open = navOpen;
+  const navRef = useRef(null);
 
   const go = (to) => { navigate(to); setNavOpen(false); };
+  useOutsideDismiss(navRef, open, () => setNavOpen(false), { ignoreSelector: '[data-main-nav-toggle]' });
 
   return (
     <>
@@ -17,6 +20,7 @@ export default function VoiceNav({ showTrigger = false }) {
         <div className="h-16 shrink-0 flex items-center px-5">
           <button
             onClick={() => setNavOpen(!open)}
+            data-main-nav-toggle
             aria-label="Menu"
             aria-expanded={open}
             className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
@@ -40,6 +44,7 @@ export default function VoiceNav({ showTrigger = false }) {
       >
         <div className="overflow-hidden min-h-0">
           <nav
+            ref={navRef}
             className="bg-background border-y border-border"
             style={{
               boxShadow: '0 18px 40px -18px rgba(20,90,105,0.28)',

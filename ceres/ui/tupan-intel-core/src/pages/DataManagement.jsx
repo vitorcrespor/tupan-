@@ -7,6 +7,7 @@ import { CITIES, PROPERTY_TYPES } from '@/lib/tupanData';
 import { formatBRL, formatM2 } from '@/lib/format';
 import { propertyTypeLabel } from '@/lib/labels';
 import { cn } from '@/lib/utils';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 const TABS = [
   { id: 'properties', label: 'Imóveis', icon: Building2 },
@@ -33,6 +34,8 @@ export default function DataManagement() {
   const [saving, setSaving] = useState(false);
   const [importStatus, setImportStatus] = useState(null);
   const [searchQ, setSearchQ] = useState('');
+  const [feedback, setFeedback] = useState(null);
+  const [pendingDelete, setPendingDelete] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -40,7 +43,7 @@ export default function DataManagement() {
       const [p, r] = await Promise.all([appClient.entities.Property.list('-created_date', 500), appClient.entities.MarketRegion.list('-created_date', 200)]);
       setProperties(p || []);
       setRegions(r || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { setFeedback({ tone: 'error', text: 'Não foi possível carregar os dados. Atualize a página e tente novamente.' }); }
     finally { setLoading(false); }
   };
   useEffect(() => { load(); }, []);
@@ -48,6 +51,13 @@ export default function DataManagement() {
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const submit = async (e) => {
     e.preventDefault();
+    setFeedback(null);
+    const requestedPrice = Number(form.price);
+    const requestedArea = Number(form.area_m2);
+    if (!form.title.trim() || !Number.isFinite(requestedPrice) || requestedPrice <= 0 || !Number.isFinite(requestedArea) || requestedArea <= 0) {
+      setFeedback({ tone: 'error', text: 'Informe título, preço atual e área em m² antes de cadastrar o imóvel.' });
+      return;
+    }
     setSaving(true);
     try {
       const numberOrUndefined = (value) => (value === '' || value == null ? undefined : Number(value));
@@ -70,12 +80,21 @@ export default function DataManagement() {
       });
       setForm(emptyForm);
       await load();
-    } catch (e) { console.error(e); }
+    } catch (e) { setFeedback({ tone: 'error', text: 'Não foi possível carregar os dados. Atualize a página e tente novamente.' }); }
     finally { setSaving(false); }
   };
 
-  const remove = async (id) => {
-    try { await appClient.entities.Property.delete(id); setProperties((p) => p.filter((x) => x.id !== id)); } catch (e) { console.error(e); }
+  const confirmRemove = async () => {
+    if (!pendingDelete) return;
+    const id = pendingDelete;
+    setPendingDelete(null);
+    try {
+      await appClient.entities.Property.delete(id);
+      setProperties((items) => items.filter((item) => item.id !== id));
+      setFeedback({ tone: 'success', text: 'Imóvel removido do banco de dados.' });
+    } catch (e) {
+      setFeedback({ tone: 'error', text: 'Não foi possível remover o imóvel. Tente novamente.' });
+    }
   };
 
   const onImport = async (e) => {
@@ -104,21 +123,22 @@ export default function DataManagement() {
     }
   };
 
-  const inputCls = 'h-8 rounded border border-border bg-elevated text-xs text-foreground px-2 outline-none focus:border-brand/50 w-full';
+  const inputCls = 'field-control h-9 w-full text-sm outline-none';
   const labelCls = 'text-[10px] uppercase tracking-wide text-text-muted';
 
   return (
     <>
       <TopBar title="Gestão de dados" subtitle="Banco de dados imobiliário · Administração" />
-      <div className="flex-1 flex min-h-0">
-        <div className="w-[200px] shrink-0 border-r border-border bg-surface py-3 px-2 space-y-0.5">
+      <div className="flex-1 flex flex-col md:flex-row min-h-0">
+        <div className="flex md:block w-full md:w-[200px] shrink-0 overflow-x-auto border-b md:border-b-0 md:border-r border-border bg-surface py-3 px-2 space-y-0.5">
           {TABS.map((t) => {
             const Icon = t.icon;
-            return <button key={t.id} onClick={() => setTab(t.id)} className={cn('w-full flex items-center gap-2.5 px-3 py-2 rounded text-[13px]', tab === t.id ? 'bg-brand/10 text-brand font-medium' : 'text-text-secondary hover:text-foreground hover:bg-elevated/60')}><Icon className="w-4 h-4" />{t.label}</button>;
+            return <button key={t.id} onClick={() => setTab(t.id)} className={cn('w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px]', tab === t.id ? 'bg-brand/10 text-brand font-medium' : 'text-text-secondary hover:text-foreground hover:bg-elevated/60')}><Icon className="w-4 h-4" />{t.label}</button>;
           })}
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div className="workspace-content flex-1 overflow-y-auto space-y-4">
+          {feedback && <div role={feedback.tone === 'error' ? 'alert' : 'status'} className={cn('rounded-xl border px-3 py-2 text-sm', feedback.tone === 'error' ? 'border-negative/30 bg-negative/10 text-negative' : 'border-positive/30 bg-positive/10 text-positive')}>{feedback.text}</div>}
           {tab === 'properties' && (
             <>
               <Panel className="p-4">
@@ -127,47 +147,47 @@ export default function DataManagement() {
                   <div>
                     <div className={labelCls}>Localização</div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-1.5">
-                      <input className={inputCls} placeholder="Título" value={form.title} onChange={(e) => set('title', e.target.value)} required />
-                      <input className={inputCls} placeholder="Endereço" value={form.address} onChange={(e) => set('address', e.target.value)} />
-                      <select className={inputCls} value={form.city} onChange={(e) => set('city', e.target.value)}>{CITIES.map((c) => <option key={c.name}>{c.name}</option>)}</select>
-                      <select className={inputCls} value={form.neighborhood} onChange={(e) => set('neighborhood', e.target.value)}>{CITIES.find((c) => c.name === form.city)?.neighborhoods.map((n) => <option key={n}>{n}</option>)}</select>
-                      <input className={inputCls} type="number" step="0.0001" placeholder="Latitude" value={form.latitude} onChange={(e) => set('latitude', e.target.value)} />
-                      <input className={inputCls} type="number" step="0.0001" placeholder="Longitude" value={form.longitude} onChange={(e) => set('longitude', e.target.value)} />
+                      <input className={inputCls} aria-label="Título do imóvel" placeholder="Título" value={form.title} onChange={(e) => set('title', e.target.value)} required />
+                      <input className={inputCls} aria-label="Endereço" placeholder="Endereço" value={form.address} onChange={(e) => set('address', e.target.value)} />
+                      <select aria-label="Cidade" className={inputCls} value={form.city} onChange={(e) => set('city', e.target.value)}>{CITIES.map((c) => <option key={c.name}>{c.name}</option>)}</select>
+                      <select aria-label="Bairro" className={inputCls} value={form.neighborhood} onChange={(e) => set('neighborhood', e.target.value)}>{CITIES.find((c) => c.name === form.city)?.neighborhoods.map((n) => <option key={n}>{n}</option>)}</select>
+                      <input className={inputCls} type="number" step="0.0001" aria-label="Latitude" placeholder="Latitude" value={form.latitude} onChange={(e) => set('latitude', e.target.value)} />
+                      <input className={inputCls} type="number" step="0.0001" aria-label="Longitude" placeholder="Longitude" value={form.longitude} onChange={(e) => set('longitude', e.target.value)} />
                     </div>
                   </div>
                   <div>
                     <div className={labelCls}>Métricas do imóvel</div>
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mt-1.5">
-                      <input className={inputCls} type="number" placeholder="Quartos" value={form.bedrooms} onChange={(e) => set('bedrooms', e.target.value)} />
-                      <input className={inputCls} type="number" placeholder="Banheiros" value={form.bathrooms} onChange={(e) => set('bathrooms', e.target.value)} />
-                      <input className={inputCls} type="number" placeholder="Vagas" value={form.parking_spaces} onChange={(e) => set('parking_spaces', e.target.value)} />
-                      <input className={inputCls} type="number" placeholder="Área m²" value={form.area_m2} onChange={(e) => set('area_m2', e.target.value)} />
-                      <select className={inputCls} value={form.property_type} onChange={(e) => set('property_type', e.target.value)}>{PROPERTY_TYPES.map((t) => <option key={t} value={t}>{propertyTypeLabel(t)}</option>)}</select>
+                      <input className={inputCls} type="number" aria-label="Quartos" placeholder="Quartos" value={form.bedrooms} onChange={(e) => set('bedrooms', e.target.value)} />
+                      <input className={inputCls} type="number" aria-label="Banheiros" placeholder="Banheiros" value={form.bathrooms} onChange={(e) => set('bathrooms', e.target.value)} />
+                      <input className={inputCls} type="number" aria-label="Vagas" placeholder="Vagas" value={form.parking_spaces} onChange={(e) => set('parking_spaces', e.target.value)} />
+                      <input className={inputCls} type="number" aria-label="Área em metros quadrados" placeholder="Área m²" value={form.area_m2} onChange={(e) => set('area_m2', e.target.value)} />
+                      <select aria-label="Tipo de imóvel" className={inputCls} value={form.property_type} onChange={(e) => set('property_type', e.target.value)}>{PROPERTY_TYPES.map((t) => <option key={t} value={t}>{propertyTypeLabel(t)}</option>)}</select>
                     </div>
                   </div>
                   <div>
                     <div className={labelCls}>Preço</div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-1.5">
-                      <input className={inputCls} type="number" placeholder="Preço atual" value={form.price} onChange={(e) => set('price', e.target.value)} />
-                      <input className={inputCls} type="number" placeholder="Sugerido (AVM)" value={form.suggested_price} onChange={(e) => set('suggested_price', e.target.value)} />
-                      <input className={inputCls} type="number" placeholder="Preço da última venda" value={form.last_sale_price} onChange={(e) => set('last_sale_price', e.target.value)} />
-                      <input className={inputCls} type="date" value={form.last_sale_date} onChange={(e) => set('last_sale_date', e.target.value)} />
+                      <input className={inputCls} type="number" aria-label="Preço atual" placeholder="Preço atual" value={form.price} onChange={(e) => set('price', e.target.value)} />
+                      <input className={inputCls} type="number" aria-label="Preço sugerido" placeholder="Sugerido" value={form.suggested_price} onChange={(e) => set('suggested_price', e.target.value)} />
+                      <input className={inputCls} type="number" aria-label="Preço da última venda" placeholder="Preço da última venda" value={form.last_sale_price} onChange={(e) => set('last_sale_price', e.target.value)} />
+                      <input className={inputCls} type="date" aria-label="Data da última venda" value={form.last_sale_date} onChange={(e) => set('last_sale_date', e.target.value)} />
                     </div>
                   </div>
                   <div>
                     <div className={labelCls}>Inteligência do imóvel (0–100)</div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-1.5">
-                      <input className={inputCls} type="number" placeholder="Luxo" value={form.luxury_score} onChange={(e) => set('luxury_score', e.target.value)} />
-                      <input className={inputCls} type="number" placeholder="Lazer" value={form.leisure_score} onChange={(e) => set('leisure_score', e.target.value)} />
-                      <input className={inputCls} type="number" placeholder="Localização" value={form.location_score} onChange={(e) => set('location_score', e.target.value)} />
-                      <input className={inputCls} type="number" placeholder="Alavancagem" value={form.leverage_score} onChange={(e) => set('leverage_score', e.target.value)} />
+                      <input className={inputCls} type="number" aria-label="Índice de luxo" placeholder="Luxo" value={form.luxury_score} onChange={(e) => set('luxury_score', e.target.value)} />
+                      <input className={inputCls} type="number" aria-label="Índice de lazer" placeholder="Lazer" value={form.leisure_score} onChange={(e) => set('leisure_score', e.target.value)} />
+                      <input className={inputCls} type="number" aria-label="Índice de localização" placeholder="Localização" value={form.location_score} onChange={(e) => set('location_score', e.target.value)} />
+                      <input className={inputCls} type="number" aria-label="Índice de alavancagem" placeholder="Alavancagem" value={form.leverage_score} onChange={(e) => set('leverage_score', e.target.value)} />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <input className={inputCls} type="number" placeholder="Aquecimento de mercado" value={form.market_heat} onChange={(e) => set('market_heat', e.target.value)} />
-                    <input className={inputCls} type="number" placeholder="DOM" value={form.days_on_market} onChange={(e) => set('days_on_market', e.target.value)} />
-                    <input className={inputCls} type="number" placeholder="Idade do imóvel" value={form.property_age} onChange={(e) => set('property_age', e.target.value)} />
-                    <select className={inputCls} value={form.status} onChange={(e) => set('status', e.target.value)}><option value="Active">Ativo</option><option value="Sold">Vendido</option><option value="Off Market">Fora do mercado</option></select>
+                    <input className={inputCls} type="number" aria-label="Aquecimento de mercado" placeholder="Aquecimento de mercado" value={form.market_heat} onChange={(e) => set('market_heat', e.target.value)} />
+                    <input className={inputCls} type="number" aria-label="Dias no mercado" placeholder="DOM" value={form.days_on_market} onChange={(e) => set('days_on_market', e.target.value)} />
+                    <input className={inputCls} type="number" aria-label="Idade do imóvel" placeholder="Idade do imóvel" value={form.property_age} onChange={(e) => set('property_age', e.target.value)} />
+                    <select aria-label="Status do imóvel" className={inputCls} value={form.status} onChange={(e) => set('status', e.target.value)}><option value="Active">Ativo</option><option value="Sold">Vendido</option><option value="Off Market">Fora do mercado</option></select>
                   </div>
                   <button disabled={saving} className="h-9 px-4 rounded bg-brand text-brand-foreground text-xs font-medium hover:bg-brand/90 disabled:opacity-40 flex items-center gap-1.5">
                     <Plus className="w-3.5 h-3.5" /> {saving ? 'Salvando…' : 'Cadastrar imóvel'}
@@ -189,7 +209,7 @@ export default function DataManagement() {
                           <td className="px-3 py-2 text-text-secondary">{propertyTypeLabel(p.property_type)}</td>
                           <td className="px-3 py-2 text-right tnum text-foreground">{formatBRL(p.price)}</td>
                           <td className="px-3 py-2 text-right tnum text-text-secondary">{formatM2(p.price_per_m2)}</td>
-                          <td className="px-3 py-2 text-right"><button onClick={() => remove(p.id)} className="text-text-muted hover:text-negative"><Trash2 className="w-3.5 h-3.5" /></button></td>
+                          <td className="px-3 py-2 text-right"><button type="button" onClick={() => setPendingDelete(p.id)} aria-label={`Remover ${p.title}`} title={`Remover ${p.title}`} className="icon-control h-8 w-8 text-text-muted hover:text-negative"><Trash2 className="w-3.5 h-3.5" /></button></td>
                         </tr>
                       ))}
                     </tbody>
@@ -259,6 +279,19 @@ export default function DataManagement() {
           )}
         </div>
       </div>
+      <AlertDialog open={Boolean(pendingDelete)} onOpenChange={(open) => !open && setPendingDelete(null)}>
+        <AlertDialogContent className="surface-popover max-w-md rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remover imóvel?</AlertDialogTitle>
+            <AlertDialogDescription>Esta ação remove o imóvel do banco de dados e não pode ser desfeita.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPendingDelete(null)}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmRemove} className="bg-negative text-destructive-foreground hover:bg-negative/90">Remover imóvel</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
+

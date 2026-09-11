@@ -9,7 +9,9 @@ export function useSpeech({ onResult, rate = 1 }) {
   const cbRef = useRef(onResult);
   cbRef.current = onResult;
 
-  const SR = typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition);
+  // Browser vendors still expose these constructors outside the standard Window type.
+  const speechWindow = typeof window === 'undefined' ? null : /** @type {any} */ (window);
+  const SR = speechWindow?.SpeechRecognition || speechWindow?.webkitSpeechRecognition;
   const canListen = !!SR;
   const canSpeak = typeof window !== 'undefined' && 'speechSynthesis' in window;
 

@@ -33,15 +33,6 @@ class MarketContext(pyda.BaseModel):
     fipezap_index: float
 
 
-class Kind(str, Enum):
-    STREET_HOUSE = "casa de rua"
-    CONDO_HOUSE = "casa de condomínio"
-    APARTMENT = "apartamento"
-    STUDIO = "studio"
-    PENTHOUSE = "cobertura"
-    SOBRADO = "sobrado"
-    FARMHOUSE = "chácara"
-    SITE = "sítio"
 
 
 class MapPoint(pyda.BaseModel):
@@ -86,6 +77,7 @@ class Transaction(pyda.BaseModel):
 class RealEstateMetrics(pyda.BaseModel):
     number_of_rooms: int | None = None
     number_of_bathrooms: int | None = None
+    number_of_suites: int | None = None
     number_of_parking_spaces: int | None = None
     area_m2: float | None = None
     price_m2: float | None = None
@@ -112,6 +104,15 @@ class FourMetric(pyda.BaseModel):
     location_: float = pyda.Field(ge=0, le=5)
     leverage: float = pyda.Field(ge=0, le=5)
 
+class Kind(str, Enum):
+    STREET_HOUSE = "casa de rua"
+    CONDO_HOUSE = "casa de condomínio"
+    APARTMENT = "apartamento"
+    STUDIO = "studio"
+    PENTHOUSE = "cobertura"
+    SOBRADO = "sobrado"
+    FARMHOUSE = "chácara"
+    SITIO = "sítio"
 
 class RealEstate(pyda.BaseModel):
     market_context: MarketContext | None = None
@@ -136,7 +137,7 @@ class RealEstate(pyda.BaseModel):
     real_estate_metrics: RealEstateMetrics | None = None
 
     @property
-    def predictions(self) -> Predictions | None:
+    def predictions_(self) -> Predictions | None:
         return self.predictions
 
     def get_neighboring_estates(self) -> list[RealEstate] | None:
@@ -149,7 +150,7 @@ class RealEstate(pyda.BaseModel):
             [self],
             api_key=os.getenv("GOOGLE_API_KEY")
         )
-
+    
 
 class SoldEstate(RealEstate):
     sale: Transaction

@@ -117,11 +117,19 @@ export async function getMarketCells({
  * @param {MarketCellFilters} [filters]
  * @returns {Promise<{ cell: MarketCell, source: object }>}
  */
+/**
+ * @param {string} h3Index
+ * @param {MarketCellFilters} [filters]
+ */
 export async function getMarketRegion(h3Index, { signal, ...filters } = {}) {
   const response = await getMarketRegionRaw(h3Index, { signal, ...filters });
   return { ...response, cell: marketCellToView(response.cell) };
 }
 
+/**
+ * @param {string} h3Index
+ * @param {MarketCellFilters} [filters]
+ */
 async function getMarketRegionRaw(h3Index, {
   city,
   neighborhood,

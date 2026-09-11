@@ -83,7 +83,7 @@ export default function TeamManagement() {
   return (
     <>
       <TopBar title="Gestão de Equipe" subtitle="Convites, papéis enterprise e permissões" />
-      <div className="flex-1 overflow-y-auto p-5 space-y-4">
+      <div className="workspace-content workspace-stack flex-1 overflow-y-auto">
         {error && <div className="rounded-xl border border-negative/25 bg-negative/10 text-negative text-sm px-3 py-2">{error}</div>}
         <Panel className="p-4">
           <SectionTitle>Convidar membro</SectionTitle>
@@ -109,7 +109,7 @@ export default function TeamManagement() {
             <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-text-muted" /></div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="ceres-table w-full">
                 <thead>
                   <tr className="text-text-muted text-left border-b border-border text-[11px] uppercase">
                     <th className="py-2 font-medium">Membro</th>

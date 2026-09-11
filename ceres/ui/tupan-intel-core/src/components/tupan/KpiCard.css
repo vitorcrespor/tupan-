@@ -1,0 +1,55 @@
+.kpi-morph-dialog {
+  border: 1px solid hsl(var(--border) / 0.88);
+  background: hsl(var(--card));
+  box-shadow: 0 32px 90px hsl(215 25% 12% / 0.32), 0 10px 32px hsl(215 25% 12% / 0.18), inset 0 1px 0 hsl(0 0% 100% / 0.66);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  transition: left 500ms cubic-bezier(0.22, 1, 0.36, 1), top 500ms cubic-bezier(0.22, 1, 0.36, 1), width 500ms cubic-bezier(0.22, 1, 0.36, 1), height 500ms cubic-bezier(0.22, 1, 0.36, 1), border-radius 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kpi-morph-mask {
+  background:
+    radial-gradient(118% 92% at 5% 0%, hsl(0 0% 100% / 0.74), transparent 56%),
+    linear-gradient(135deg, hsl(205 34% 96%), hsl(210 24% 88%) 48%, hsl(214 22% 76%));
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.92), inset 0 -14px 26px hsl(215 25% 35% / 0.18), inset 12px 0 22px -22px hsl(215 25% 28% / 0.28);
+}
+
+.kpi-morph-mask__highlight {
+  background: linear-gradient(to bottom, hsl(0 0% 100% / 0.58), transparent 74%);
+}
+
+.kpi-morph-backdrop {
+  background: hsl(var(--foreground) / 0.30);
+  backdrop-filter: blur(12px) saturate(1.04);
+  -webkit-backdrop-filter: blur(12px) saturate(1.04);
+}
+
+html.dark .kpi-morph-backdrop {
+  background: hsl(220 38% 4% / 0.46);
+  backdrop-filter: blur(12px) saturate(0.94);
+  -webkit-backdrop-filter: blur(12px) saturate(0.94);
+}
+
+html.dark .kpi-morph-dialog {
+  border-color: hsl(var(--border) / 0.84);
+  background: hsl(var(--card));
+  box-shadow: 0 32px 90px hsl(220 38% 4% / 0.66), 0 10px 32px hsl(220 38% 4% / 0.42), inset 0 1px 0 hsl(var(--foreground) / 0.08);
+}
+
+html.dark .kpi-morph-mask {
+  background:
+    radial-gradient(118% 92% at 5% 0%, hsl(0 0% 100% / 0.12), transparent 56%),
+    linear-gradient(135deg, hsl(224 28% 25%), hsl(223 30% 18%) 48%, hsl(220 34% 12%));
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.12), inset 0 -14px 26px hsl(220 42% 3% / 0.52), inset 12px 0 22px -22px hsl(220 38% 2% / 0.66);
+}
+
+html.dark .kpi-morph-mask__highlight {
+  background: linear-gradient(to bottom, hsl(0 0% 100% / 0.11), transparent 74%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kpi-morph-dialog {
+    transition: none;
+  }
+}

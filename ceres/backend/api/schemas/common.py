@@ -42,3 +42,7 @@ class PaginatedResponse(ApiSchema, Generic[ItemT]):
 
 class HealthResponse(ApiSchema):
     status: Literal["ok"] = "ok"
+
+class ReadinessResponse(ApiSchema):
+    status: Literal["ready"] = "ready"
+    checks: dict[str, Literal["ok"]] = Field(default_factory=dict)

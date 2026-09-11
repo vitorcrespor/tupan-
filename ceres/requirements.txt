@@ -30,5 +30,7 @@ xgboost
 
 # HTTP API
 fastapi
+httpx
 uvicorn[standard]
 python-multipart
+asyncpg

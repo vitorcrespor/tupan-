@@ -1,0 +1,27 @@
+# Never send credentials, persistent local data, or developer tooling to the
+# Railway build context.
+.env
+.env.*
+!.env.example
+.git
+.github
+.venv*
+__pycache__
+*.py[cod]
+logs
+.tupan_chroma
+node_modules
+ui/tupan-intel-core/node_modules
+ui/tupan-intel-core/dist
+dist
+.pytest_cache
+.mypy_cache
+*.ipynb
+mock_db
+AI_INTERPRETATION.md
+BACKGROUND_JOBS.md
+CONCURRENT_REQUESTS.md
+DESKTOP_CLOUD_BOUNDARY.md
+DEPLOYMENT.md
+DESKTOP_BUILD.md
+PRODUCTION_READINESS.md

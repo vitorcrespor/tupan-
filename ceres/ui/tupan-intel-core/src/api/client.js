@@ -4,6 +4,8 @@
  */
 
 const DEFAULT_TIMEOUT_MS = 20_000;
+// This is build-time public metadata, never an authentication token or secret.
+const CLIENT_VERSION = import.meta.env.VITE_TUPAN_CLIENT_VERSION || '1.0.0';
 
 export class ApiError extends Error {
   /**
@@ -21,9 +23,9 @@ export class ApiError extends Error {
 }
 
 function apiBaseUrl() {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const baseUrl = import.meta.env.VITE_TUPAN_API_URL || import.meta.env.VITE_API_BASE_URL;
   if (!baseUrl) {
-    throw new ApiError('A URL da API não foi configurada. Defina VITE_API_BASE_URL.', {
+    throw new ApiError('A URL da API não foi configurada. Defina VITE_TUPAN_API_URL.', {
       code: 'API_CONFIGURATION_ERROR',
     });
   }
@@ -31,7 +33,11 @@ function apiBaseUrl() {
 }
 
 function apiUrl(path, query) {
-  const url = new URL(`${apiBaseUrl()}/${path.replace(/^\/+/, '')}`);
+  const configuredBaseUrl = apiBaseUrl();
+  const baseUrl = configuredBaseUrl.startsWith('/')
+    ? new URL(configuredBaseUrl, window.location.origin).toString().replace(/\/+$/, '')
+    : configuredBaseUrl;
+  const url = new URL(`${baseUrl}/${path.replace(/^\/+/, '')}`);
   for (const [key, value] of Object.entries(query || {})) {
     if (value !== undefined && value !== null && value !== '') {
       url.searchParams.set(key, String(value));
@@ -53,7 +59,7 @@ async function parseResponseBody(response) {
 
 /**
  * @template T
- * @param {'GET' | 'POST' | 'PATCH' | 'DELETE'} method
+ * @param {'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'} method
  * @param {string} path
  * @param {{ query?: Record<string, unknown>, body?: unknown, signal?: AbortSignal, timeoutMs?: number }} [options]
  * @returns {Promise<T>}
@@ -72,9 +78,11 @@ async function request(method, path, { query, body, signal, timeoutMs = DEFAULT_
       method,
       headers: {
         Accept: 'application/json',
+        'X-Tupan-Client-Version': CLIENT_VERSION,
         ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
       },
       body: body === undefined ? undefined : JSON.stringify(body),
+      credentials: 'include',
       signal: timeoutController.signal,
     });
     const payload = await parseResponseBody(response);
@@ -108,6 +116,7 @@ async function request(method, path, { query, body, signal, timeoutMs = DEFAULT_
 export const api = {
   get: (path, options) => request('GET', path, options),
   post: (path, body, options) => request('POST', path, { ...options, body }),
+  put: (path, body, options) => request('PUT', path, { ...options, body }),
   patch: (path, body, options) => request('PATCH', path, { ...options, body }),
   delete: (path, options) => request('DELETE', path, options),
 };

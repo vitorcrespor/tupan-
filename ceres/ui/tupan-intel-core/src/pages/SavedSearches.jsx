@@ -21,6 +21,7 @@ export default function SavedSearches() {
   const [expanded, setExpanded] = useState(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: '', neighborhood: '', property_type: '', status: '', minPrice: '', maxPrice: '' });
+  const [operationError, setOperationError] = useState(null);
 
   const load = async () => {
     try {
@@ -28,6 +29,7 @@ export default function SavedSearches() {
       setSearches(res || []);
     } catch (e) {
       setSearches([]);
+      setOperationError('Não foi possível carregar as buscas salvas. Tente atualizar a página.');
     } finally {
       setLoadingSearches(false);
     }
@@ -51,6 +53,7 @@ export default function SavedSearches() {
     e.preventDefault();
     if (!form.name.trim() || saving) return;
     setSaving(true);
+    setOperationError(null);
     try {
       const filters = {
         neighborhood: form.neighborhood || '',
@@ -62,13 +65,22 @@ export default function SavedSearches() {
       await appClient.entities.SavedSearch.create({ name: form.name.trim(), filters });
       setForm({ name: '', neighborhood: '', property_type: '', status: '', minPrice: '', maxPrice: '' });
       load();
+    } catch (e) {
+      setOperationError('Não foi possível salvar a busca. Seus filtros foram preservados; tente novamente.');
     } finally {
       setSaving(false);
     }
   };
 
-  const remove = async (id) => {
-    try { await appClient.entities.SavedSearch.delete(id); load(); } catch (e) {}
+  const remove = async (id, name) => {
+    if (!window.confirm(`Remover a busca salva “${name}”?`)) return;
+    setOperationError(null);
+    try {
+      await appClient.entities.SavedSearch.delete(id);
+      load();
+    } catch (e) {
+      setOperationError('Não foi possível remover a busca salva. Tente novamente.');
+    }
   };
 
   const chips = (f) => {
@@ -84,29 +96,29 @@ export default function SavedSearches() {
 
   return (
     <>
-      <TopBar title="Buscas Salvas" subtitle="Workspaces recorrentes para acesso rápido a tendências" />
-      <div className="flex-1 overflow-y-auto p-5">
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4">
+      <TopBar title="Buscas Salvas" subtitle="Consultas recorrentes para acesso rápido a tendências" />
+      <div className="workspace-content flex-1 overflow-y-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] gap-6">
           <Panel className="p-4 h-fit">
             <SectionTitle>Nova busca salva</SectionTitle>
             <form onSubmit={save} className="space-y-3">
-              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nome (ex: Apartamentos Pinheiros)" className="w-full h-9 rounded-xl border border-border bg-surface px-3 text-sm text-foreground outline-none focus:border-brand/40" />
+              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-label="Nome da busca salva" placeholder="Nome (ex.: Apartamentos Pinheiros)" className="field-control w-full h-9 text-sm outline-none" />
               <div className="grid grid-cols-2 gap-2">
                 <Select value={form.neighborhood} onValueChange={(v) => setForm({ ...form, neighborhood: v })}>
-                  <SelectTrigger className="h-9"><SelectValue placeholder="Bairro" /></SelectTrigger>
+                  <SelectTrigger aria-label="Bairro" className="h-9"><SelectValue placeholder="Bairro" /></SelectTrigger>
                   <SelectContent>{NEIGHBORHOODS.map((n) => <SelectItem key={n} value={n}>{n}</SelectItem>)}</SelectContent>
                 </Select>
                 <Select value={form.property_type} onValueChange={(v) => setForm({ ...form, property_type: v })}>
-                  <SelectTrigger className="h-9"><SelectValue placeholder="Tipo" /></SelectTrigger>
+                  <SelectTrigger aria-label="Tipo de imóvel" className="h-9"><SelectValue placeholder="Tipo" /></SelectTrigger>
                   <SelectContent>{PROPERTY_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                 </Select>
                 <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
-                  <SelectTrigger className="h-9"><SelectValue placeholder="Status" /></SelectTrigger>
+                  <SelectTrigger aria-label="Status do imóvel" className="h-9"><SelectValue placeholder="Status" /></SelectTrigger>
                   <SelectContent>{STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                 </Select>
                 <div />
-                <input type="number" value={form.minPrice} onChange={(e) => setForm({ ...form, minPrice: e.target.value })} placeholder="Preço mín." className="h-9 rounded-xl border border-border bg-surface px-3 text-sm outline-none focus:border-brand/40" />
-                <input type="number" value={form.maxPrice} onChange={(e) => setForm({ ...form, maxPrice: e.target.value })} placeholder="Preço máx." className="h-9 rounded-xl border border-border bg-surface px-3 text-sm outline-none focus:border-brand/40" />
+                <input type="number" value={form.minPrice} onChange={(e) => setForm({ ...form, minPrice: e.target.value })} aria-label="Preço mínimo" placeholder="Preço mín." className="field-control h-9 text-sm outline-none" />
+                <input type="number" value={form.maxPrice} onChange={(e) => setForm({ ...form, maxPrice: e.target.value })} aria-label="Preço máximo" placeholder="Preço máx." className="field-control h-9 text-sm outline-none" />
               </div>
               <button type="submit" disabled={!form.name.trim() || saving} className="w-full h-9 rounded-full bg-brand text-brand-foreground text-sm font-medium flex items-center justify-center gap-1.5 disabled:opacity-50">
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
@@ -116,6 +128,7 @@ export default function SavedSearches() {
           </Panel>
 
           <div className="space-y-3">
+            {operationError && <div role="alert" className="rounded-xl border border-negative/30 bg-negative/10 p-3 text-xs text-negative">{operationError}</div>}
             {propertiesStatus === 'loading' && <AsyncLoading className="h-10" label="Atualizando imóveis das buscas salvas…" />}
             {propertiesStatus === 'error' && <AsyncError error={propertiesError} />}
             {loadingSearches ? (
@@ -142,10 +155,10 @@ export default function SavedSearches() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
-                        <button onClick={() => setExpanded(open ? null : s.id)} className="w-8 h-8 rounded-full flex items-center justify-center text-text-secondary hover:bg-foreground/5">
+                        <button type="button" onClick={() => setExpanded(open ? null : s.id)} aria-label={open ? `Recolher ${s.name}` : `Expandir ${s.name}`} className="icon-control h-8 w-8 text-text-secondary">
                           {open ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                         </button>
-                        <button onClick={() => remove(s.id)} className="w-8 h-8 rounded-full flex items-center justify-center text-text-muted hover:text-negative hover:bg-negative/5">
+                        <button type="button" onClick={() => remove(s.id, s.name)} aria-label={`Remover ${s.name}`} className="icon-control h-8 w-8 text-text-muted hover:text-negative">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -177,3 +190,4 @@ export default function SavedSearches() {
     </>
   );
 }
+

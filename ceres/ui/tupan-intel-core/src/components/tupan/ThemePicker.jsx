@@ -62,6 +62,8 @@ export default function ThemePicker() {
           return (
             <button
               key={t.id}
+              type="button"
+              aria-pressed={active}
               onClick={() => setTheme(t.id)}
               className={cn(
                 'group text-left rounded-2xl p-3 transition-all duration-200',
@@ -73,11 +75,6 @@ export default function ThemePicker() {
                 <div className="min-w-0">
                   <div className="text-sm font-semibold text-foreground truncate">{t.name}</div>
                   <div className="text-[10px] font-mono uppercase tracking-wide text-text-muted">{t.tagline}</div>
-                </div>
-                <div className="flex items-center gap-1 shrink-0">
-                  {t.swatch.map((c) => (
-                    <span key={c} className="w-2.5 h-2.5 rounded-full" style={{ background: hsl(c) }} />
-                  ))}
                 </div>
               </div>
               <p className="text-[11px] text-text-muted leading-snug mt-1.5">{t.description}</p>

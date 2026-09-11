@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import useOutsideDismiss from '@/lib/useOutsideDismiss';
 
 export default function MenuCollapsible({ items }) {
   const [open, setOpen] = useState(false);
+  const ref = useRef(null);
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
+  useOutsideDismiss(ref, open, () => setOpen(false));
+
   return (
-    <div className="flex flex-col items-center w-full max-w-xs">
+    <div ref={ref} className="flex flex-col items-center w-full max-w-xs">
       <button
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex items-center gap-1.5 h-7 px-3 rounded-full border border-white/50 text-text-secondary/80 hover:text-foreground transition-all duration-300 hover:border-brand/50 backdrop-blur-md"
-        style={{ background: 'rgba(255,255,255,0.16)' }}
+        className="surface-control flex h-7 items-center gap-1.5 rounded-full px-3 text-text-secondary/80 transition-all duration-300 hover:border-brand/50 hover:text-foreground"
       >
         <span
           className="w-1.5 h-1.5 rounded-full"
@@ -35,7 +38,12 @@ export default function MenuCollapsible({ items }) {
         <div className="overflow-hidden min-h-0">
           <nav
             className="mt-3 aero-glass rounded-2xl p-2 flex flex-col gap-0.5"
-            style={{ opacity: open ? 1 : 0, transition: 'opacity 0.3s ease 0.08s' }}
+            style={{
+              opacity: open ? 1 : 0,
+              transform: open ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.975)',
+              transformOrigin: 'center top',
+              transition: 'opacity 0.3s ease 0.08s, transform 0.36s cubic-bezier(0.22,1,0.36,1)',
+            }}
             aria-label="Primary"
           >
             {items.map((it, idx) => {
@@ -44,7 +52,7 @@ export default function MenuCollapsible({ items }) {
               return (
                 <button
                   key={it.to}
-                  onClick={() => navigate(it.to)}
+                  onClick={() => { setOpen(false); navigate(it.to); }}
                   className={`flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-left text-[13px] transition-colors ${
                     active ? 'text-foreground font-semibold bg-brand/10' : 'text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04]'
                   }`}

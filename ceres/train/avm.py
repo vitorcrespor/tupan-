@@ -1,8 +1,13 @@
-"""Persisted XGBoost AVM training and inference.
+"""Legacy persisted XGBoost AVM training and inference.
 
 Training is explicit through :func:`train_price_model` (or
 ``python -m train.train_avm``). Runtime callers use :func:`predict_price`,
 which only loads a saved artifact and calls ``model.predict``.
+
+This module is retained for compatibility with the existing serving artifact.
+New transaction-price training must use ``backend.platform_intelligence
+train-transaction-avm`` and the point-in-time observation contract instead of
+the legacy asking/estimate target.
 """
 
 from __future__ import annotations
@@ -103,6 +108,7 @@ def train_price_model(
     n_trials: int = 100,
     model_path: str | Path | None = None,
     metadata_path: str | Path | None = None,
+    target_label: str = "predictions.suggested_price",
 ) -> dict[str, Any]:
     """Explicitly optimize, fit, and persist the price AVM.
 
@@ -141,7 +147,7 @@ def train_price_model(
     metadata = {
         "schema_version": ARTIFACT_SCHEMA_VERSION,
         "model_type": "xgboost.XGBRegressor",
-        "target": "predictions.suggested_price",
+        "target": target_label,
         "target_transform": "none",
         "feature_columns": list(FEATURE_COLUMNS),
         "categorical_features": list(CATEGORICAL_FEATURES),

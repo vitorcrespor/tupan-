@@ -7,6 +7,7 @@ import { ContextTag, Panel, SectionTitle } from '@/components/tupan/primitives';
 import { useApp } from '@/lib/AppContext';
 import { formatM2, formatNumber, formatPct } from '@/lib/format';
 import { apiErrorMessage } from '@/api/client';
+import { CHART, tooltipStyle } from '@/lib/chartTheme';
 import { formatMetricDate, getMarketCells, getMarketRegion, getMetricHistory } from '@/api/market';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -101,8 +102,8 @@ export default function MarketIntelligence({ embedded = false }) {
   return (
     <>
       {!embedded && <TopBar title="Inteligência de Mercado" subtitle="Análises geográficas calculadas por células H3" />}
-      <div className={embedded ? "space-y-6" : "flex-1 overflow-y-auto p-5 space-y-4"}>
-        <Panel className="rounded-[22px] border-white/80 bg-card/35 p-4 shadow-[0_7px_22px_hsl(220_12%_18%/0.10),inset_0_1px_0_hsl(0_0%_100%/0.92),inset_0_-1px_0_hsl(220_10%_55%/0.10)] backdrop-blur-2xl">
+      <div className={embedded ? "space-y-6" : "workspace-content workspace-stack flex-1 overflow-y-auto"}>
+        <div className="analysis-toolbar">
           <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] uppercase text-text-muted">Métrica</span>
@@ -142,34 +143,34 @@ export default function MarketIntelligence({ embedded = false }) {
                 <SelectContent><SelectItem value="h3">Célula H3</SelectItem></SelectContent>
               </Select>
             </div>
-            <button onClick={() => sendToAgent([{ id: `mi-${metric.id}-${geo}`, type: 'Metric', label: metric.label, data: promptData }], `Explique ${metric.label} para ${geo === 'all' ? 'as células H3 consultadas' : cellName(primaryCell)}.`)} className="ml-auto h-8 px-3.5 rounded-full bg-brand text-brand-foreground text-xs font-medium hover:bg-brand/90 flex items-center gap-1.5">
+            <button onClick={() => sendToAgent([{ id: `mi-${metric.id}-${geo}`, type: 'Metric', label: metric.label, data: promptData }], `Explique ${metric.label} para ${geo === 'all' ? 'as células H3 consultadas' : cellName(primaryCell)}.`)} className="ml-auto h-8 px-3.5 rounded-lg bg-brand text-brand-foreground text-xs font-medium hover:bg-brand/90 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> Explicar esta análise
             </button>
           </div>
-        </Panel>
+        </div>
 
         {allCellsQuery.isError && <div role="alert" className="rounded border border-negative/30 bg-negative/10 p-3 text-xs text-negative">{apiErrorMessage(allCellsQuery.error)}</div>}
         {allCellsQuery.isLoading && <div className="flex items-center justify-center py-16"><div className="w-8 h-8 border-4 border-border border-t-brand rounded-full animate-spin" /></div>}
         {!allCellsQuery.isLoading && !allCellsQuery.isError && cells.length === 0 && <div className="py-12 text-center text-xs text-text-muted">Nenhuma célula H3 retornada para este mercado.</div>}
 
         {!allCellsQuery.isLoading && !allCellsQuery.isError && cells.length > 0 && <>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="analysis-split">
             <Panel className="p-4">
               <SectionTitle right={<ContextTag type="DATA">Histórico</ContextTag>}>{metric.label} — Tendência</SectionTitle>
               {metric.history && primaryHistoryQuery.isLoading && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Carregando histórico…</div>}
               {metric.history && primaryHistoryQuery.isError && <div role="alert" className="h-[240px] flex items-center justify-center text-xs text-negative text-center px-6">{apiErrorMessage(primaryHistoryQuery.error)}</div>}
               {metric.history && !primaryHistoryQuery.isLoading && !primaryHistoryQuery.isError && comparisonHistoryQuery.isError && <div role="alert" className="mb-2 rounded border border-negative/30 bg-negative/10 p-2 text-xs text-negative">O histórico da célula de comparação não pôde ser carregado: {apiErrorMessage(comparisonHistoryQuery.error)}</div>}
-              {!metric.history && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted text-center px-6">O backend ainda não fornece série histórica para esta métrica.</div>}
+              {!metric.history && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted text-center px-6">Histórico ainda indisponível para esta métrica.</div>}
               {metric.history && !primaryHistoryQuery.isLoading && !primaryHistoryQuery.isError && historyData.length === 0 && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Sem pontos históricos para este recorte.</div>}
               {metric.history && !primaryHistoryQuery.isLoading && !primaryHistoryQuery.isError && historyData.length > 0 && <ResponsiveContainer width="100%" height={240}>
                 <LineChart data={historyData} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
-                  <CartesianGrid stroke="#E8DFD0" strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="label" stroke="#9A8A78" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#9A8A78" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(0)}K` : value} />
-                  <Tooltip contentStyle={{ background: '#FFFCF7', border: '1px solid #E8DFD0', borderRadius: 10, fontSize: 12 }} />
+                  <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="label" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(0)}K` : value} />
+                  <Tooltip contentStyle={tooltipStyle} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
-                  <Line type="monotone" dataKey="a" name={geo === 'all' ? 'São Paulo' : cellName(primaryCell)} stroke="#DC6A4A" strokeWidth={2} dot={false} />
-                  {comparisonCell && <Line type="monotone" dataKey="b" name={cellName(comparisonCell)} stroke="#4D8A66" strokeWidth={2} dot={false} />}
+                  <Line type="monotone" dataKey="a" name={geo === 'all' ? 'São Paulo' : cellName(primaryCell)} stroke={CHART.aqua} strokeWidth={2} dot={false} />
+                  {comparisonCell && <Line type="monotone" dataKey="b" name={cellName(comparisonCell)} stroke={CHART.positive} strokeWidth={2} dot={false} />}
                 </LineChart>
               </ResponsiveContainer>}
             </Panel>
@@ -179,11 +180,11 @@ export default function MarketIntelligence({ embedded = false }) {
               {primaryCellQuery.isError && geo !== 'all' && <div role="alert" className="mb-2 rounded border border-negative/30 bg-negative/10 p-2 text-xs text-negative">{apiErrorMessage(primaryCellQuery.error)}</div>}
               {!primaryCellQuery.isLoading && (barData.length === 0 ? <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Sem valores para esta métrica.</div> : <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={barData} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
-                  <CartesianGrid stroke="#E8DFD0" strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="name" stroke="#9A8A78" fontSize={9} tickLine={false} axisLine={false} angle={-30} textAnchor="end" height={60} />
-                  <YAxis stroke="#9A8A78" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(0)}K` : value} />
-                  <Tooltip formatter={(value) => metric.format(value)} contentStyle={{ background: '#FFFCF7', border: '1px solid #E8DFD0', borderRadius: 10, fontSize: 12 }} cursor={{ fill: '#E8DFD033' }} />
-                  <Bar dataKey="value" fill="#DC6A4A" radius={[8, 8, 0, 0]} barSize={18} />
+                  <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="name" stroke={CHART.axis} fontSize={9} tickLine={false} axisLine={false} angle={-30} textAnchor="end" height={60} />
+                  <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(0)}K` : value} />
+                  <Tooltip formatter={(value) => metric.format(value)} contentStyle={tooltipStyle} cursor={{ fill: CHART.aqua, fillOpacity: 0.12 }} />
+                  <Bar dataKey="value" fill={CHART.aqua} radius={[8, 8, 0, 0]} barSize={18} />
                 </BarChart>
               </ResponsiveContainer>)}
             </Panel>
@@ -194,12 +195,12 @@ export default function MarketIntelligence({ embedded = false }) {
               <SectionTitle right={<ContextTag type="MODEL">H3</ContextTag>}>Aquecimento de mercado vs Preço/m²</SectionTitle>
               {scatter.length === 0 ? <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">As células retornadas não possuem aquecimento e preço/m² simultaneamente.</div> : <ResponsiveContainer width="100%" height={240}>
                 <ScatterChart margin={{ left: -10, right: 12, top: 4, bottom: 4 }}>
-                  <CartesianGrid stroke="#E8DFD0" strokeDasharray="3 3" />
-                  <XAxis type="number" dataKey="x" name="Aquecimento" stroke="#9A8A78" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis type="number" dataKey="y" name="Preço/m²" stroke="#9A8A78" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`} />
+                  <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" />
+                  <XAxis type="number" dataKey="x" name="Aquecimento" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis type="number" dataKey="y" name="Preço/m²" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`} />
                   <ZAxis type="number" dataKey="z" range={[60, 400]} />
-                  <Tooltip contentStyle={{ background: '#FFFCF7', border: '1px solid #E8DFD0', borderRadius: 10, fontSize: 12 }} cursor={{ stroke: '#DC6A4A', strokeDasharray: '3 3' }} />
-                  <Scatter data={scatter} fill="#DC6A4A" fillOpacity={0.6} />
+                  <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: CHART.aqua, strokeDasharray: '3 3' }} />
+                  <Scatter data={scatter} fill={CHART.aqua} fillOpacity={0.6} />
                 </ScatterChart>
               </ResponsiveContainer>}
             </Panel>

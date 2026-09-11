@@ -6,10 +6,10 @@ import AboutSection from '@/components/tupan/AboutSection';
 import Accordion08 from '@/components/tupan/Accordion08';
 
 const STAGES = [
-  'Loading portfolio',
-  'Connecting market data',
-  'Initializing analytical models',
-  'Connecting AI agent',
+  'Carregando portfólio',
+  'Conectando dados de mercado',
+  'Inicializando modelos analíticos',
+  'Conectando agente de IA',
 ];
 
 export default function Welcome() {
@@ -46,7 +46,7 @@ export default function Welcome() {
 
           <div className="flex flex-col items-center gap-1.5 -mt-1">
             <h1 className="text-3xl font-bold tracking-[0.25em] leading-none">CERES</h1>
-            <p className="text-[11px] text-text-secondary tracking-[0.18em] uppercase">Real Estate Intelligence</p>
+            <p className="text-[11px] text-text-secondary tracking-[0.18em] uppercase">Inteligência imobiliária</p>
           </div>
 
           <div className="w-full flex flex-col gap-2 mt-1">
@@ -88,7 +88,7 @@ export default function Welcome() {
             </div>
           )}
         </div>
-        <p className="absolute bottom-6 text-[10px] text-text-muted tracking-wider uppercase z-10">Ceres Intelligence Platform · v2.4</p>
+        <p className="absolute bottom-6 text-[10px] text-text-muted tracking-wider uppercase z-10">Plataforma de inteligência Ceres · v2.4</p>
       </div>
 
       <AboutSection />

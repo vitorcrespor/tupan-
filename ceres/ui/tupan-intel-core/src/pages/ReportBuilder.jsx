@@ -105,8 +105,8 @@ export default function ReportBuilder() {
   return (
     <>
       <TopBar title="Gerador de Relatórios" subtitle="Monte e exporte relatórios compartilháveis" />
-      <div className="flex-1 overflow-y-auto p-5">
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4">
+      <div className="workspace-content flex-1 overflow-y-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-6">
           <Panel className="p-4 h-fit space-y-4">
             <SectionTitle>Seções</SectionTitle>
             <div className="flex flex-col gap-2">
@@ -147,7 +147,7 @@ export default function ReportBuilder() {
             {exportError && <AsyncError error={exportError} />}
           </Panel>
 
-          <div ref={previewRef} className="bg-card rounded-2xl border border-border shadow-soft p-6 space-y-5">
+          <div ref={previewRef} className="min-w-0 bg-card rounded-2xl border border-border p-4 sm:p-6 space-y-5">
             <div className="border-b border-border pb-3">
               <h1 className="text-2xl font-semibold text-foreground">Relatório de Mercado — Ceres</h1>
               <p className="text-sm text-text-secondary">{regionName === 'all' ? 'Todas as regiões' : regionName} · {new Date().toLocaleDateString('pt-BR')}</p>
@@ -207,7 +207,7 @@ export default function ReportBuilder() {
                 {propertiesStatus === 'error' && <AsyncError error={propertiesError} />}
                 {propertiesStatus === 'success' && topProps.length === 0 && <AsyncEmpty className="h-20">Nenhum imóvel disponível para este relatório.</AsyncEmpty>}
                 {propertiesStatus === 'success' && topProps.length > 0 &&
-                <table className="w-full text-xs">
+                <table className="ceres-table w-full">
                   <thead>
                     <tr className="text-text-muted text-left border-b border-border">
                       <th className="py-1.5 font-medium">Imóvel</th>

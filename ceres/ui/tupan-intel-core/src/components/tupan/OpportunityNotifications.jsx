@@ -7,11 +7,14 @@ import { sendAgentMessage } from '@/api/agent';
 import { apiErrorMessage } from '@/api/client';
 import { formatBRL } from '@/lib/format';
 import { useApp } from '@/lib/AppContext';
+import useOutsideDismiss from '@/lib/useOutsideDismiss';
 
 export default function OpportunityNotifications() {
   const { sendToAgent } = useApp();
   const [open, setOpen] = useState(false);
+  const [rendered, setRendered] = useState(false);
   const containerRef = useRef(null);
+  const closeTimerRef = useRef(null);
   const portfolioQuery = useQuery({
     queryKey: ['header-hot-opportunities'],
     queryFn: ({ signal }) => getPortfolioAnalytics({ signal }),
@@ -45,13 +48,21 @@ export default function OpportunityNotifications() {
     staleTime: 5 * 60 * 1000,
   });
 
-  useEffect(() => {
-    const closeOnOutsidePointer = (event) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) setOpen(false);
-    };
-    document.addEventListener('pointerdown', closeOnOutsidePointer);
-    return () => document.removeEventListener('pointerdown', closeOnOutsidePointer);
-  }, []);
+  const openPanel = () => {
+    window.clearTimeout(closeTimerRef.current);
+    setRendered(true);
+    setOpen(true);
+  };
+  const closePanel = () => {
+    if (!rendered) return;
+    setOpen(false);
+    window.clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = window.setTimeout(() => setRendered(false), 180);
+  };
+
+  useOutsideDismiss(containerRef, open, closePanel);
+
+  useEffect(() => () => window.clearTimeout(closeTimerRef.current), []);
 
   const openOpportunity = (property) => {
     sendToAgent(
@@ -61,20 +72,20 @@ export default function OpportunityNotifications() {
   };
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="notification-anchor relative">
       <button
         type="button"
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => (open ? closePanel() : openPanel())}
         aria-label="Abrir oportunidades da Ceres"
         aria-expanded={open}
-        className={`relative flex h-8 w-8 items-center justify-center rounded-full border border-border/80 bg-card/38 text-text-secondary shadow-[0_2px_8px_hsl(var(--foreground)/0.08),inset_0_1px_0_hsl(0_0%_100%/0.16)] backdrop-blur-2xl transition-colors hover:text-foreground ${open ? 'border-positive/40 bg-positive/10 text-positive' : ''}`}
+        className={`icon-control relative flex h-8 w-8 items-center justify-center text-text-secondary hover:text-foreground ${open ? 'border-positive/40 bg-positive/10 text-positive' : ''}`}
       >
         <Bell className="h-4 w-4" />
         {!portfolioQuery.isLoading && opportunities.length > 0 && <span className="absolute -right-0.5 -top-0.5 grid h-3.5 min-w-3.5 place-items-center rounded-full border border-card bg-positive px-0.5 text-[8px] font-bold leading-none text-white">{opportunities.length}</span>}
       </button>
 
-      {open && (
-        <aside className="absolute right-0 top-10 z-50 w-[360px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-[22px] border border-border/85 bg-[linear-gradient(145deg,hsl(var(--card)/.96),hsl(var(--elevated)/.82))] shadow-[0_24px_60px_hsl(var(--foreground)/.24),inset_0_1px_0_hsl(0_0%_100%/.16)] backdrop-blur-2xl">
+      {rendered && (
+        <aside className={`surface-popover anchored-popover ${open ? 'anchored-popover--enter' : 'anchored-popover--exit'} absolute right-0 top-10 z-50 w-[360px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-[22px]`}>
           <div className="border-b border-border/65 px-4 py-3.5">
             <div className="flex items-start gap-2.5">
               <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl border border-positive/25 bg-positive/10 text-positive"><Sparkles className="h-3.5 w-3.5" /></span>
@@ -95,7 +106,7 @@ export default function OpportunityNotifications() {
             {opportunities.map((property, index) => {
 
               return (
-                <article key={property.property_id} className="rounded-2xl border border-border/75 bg-card/52 p-3 shadow-[inset_0_1px_0_hsl(0_0%_100%/.14)]">
+                <article key={property.property_id} className="rounded-2xl border border-border/75 bg-card/52 p-3 shadow-[inset_0_1px_0_hsl(var(--surface-highlight))]">
                   <div className="flex items-start gap-2.5">
                     <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-positive/10 text-[10px] font-bold text-positive">{index + 1}</span>
                     <div className="min-w-0 flex-1">
@@ -124,6 +135,5 @@ export default function OpportunityNotifications() {
     </div>
   );
 }
-
 
 

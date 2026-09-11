@@ -8,11 +8,12 @@ import { formatBRL, formatBRLCompact, formatM2, formatPct } from '@/lib/format';
 import { propertyTypeLabel } from '@/lib/labels';
 import { useApp } from '@/lib/AppContext';
 import StatCard from '@/components/tupan/StatCard';
-import { Sparkles, AlertTriangle } from 'lucide-react';
+import { Sparkles, AlertTriangle, ChevronDown } from 'lucide-react';
 import { apiErrorMessage } from '@/api/client';
+import { CHART, tooltipStyle } from '@/lib/chartTheme';
 import { getPortfolioAnalytics } from '@/api/portfolio';
 
-const typeColors = ['#DC6A4A', '#4D8A66', '#D6962E', '#C95A4E', '#9B7FB8'];
+const typeColors = [CHART.aqua, CHART.positive, CHART.warning, CHART.negative, CHART.lagoon];
 const percent = (ratio) => ratio == null ? null : ratio * 100;
 
 export default function Portfolio() {
@@ -39,7 +40,7 @@ export default function Portfolio() {
     return (
       <>
         <TopBar title="Inteligência de Portfólio" subtitle="Análises de corretagem · Risco e Oportunidade" />
-        <div className="flex-1 overflow-y-auto p-5">
+        <div className="workspace-content flex-1 overflow-y-auto">
           <div role="alert" className="rounded-lg border border-negative/30 bg-negative/10 p-4 text-sm text-negative">{apiErrorMessage(portfolioQuery.error)}</div>
         </div>
       </>
@@ -81,32 +82,38 @@ export default function Portfolio() {
   return (
     <>
       <TopBar title="Inteligência de Portfólio" subtitle="Análises de corretagem · Risco e Oportunidade" />
-      <div className="flex-1 overflow-y-auto p-5 space-y-4">
-        <StatCard
+      <div className="workspace-content workspace-stack flex-1 overflow-y-auto">
+        <section className="portfolio-summary" aria-label="Resumo do portfólio">
+          <div><StatCard
           title="Valor do portfólio"
           value={analytics.portfolio_value}
           prefix="R$"
           change={null}
           changeLabel="Variação histórica"
           periodLabel="Dados atuais"
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-8">
-          {kpiMetricOptions.slice(0, 6).map((option) => <KpiCard key={option.id} {...option} series={enableChartExpansion ? option.series : []} metricOptions={kpiMetricOptions} />)}
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-8">
-          {kpiMetricOptions.slice(6).map((option) => <KpiCard key={option.id} {...option} series={enableChartExpansion ? option.series : []} metricOptions={kpiMetricOptions} />)}
-        </div>
+        /></div>
+          <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2">
+            {[kpiMetricOptions.slice(1, 6), kpiMetricOptions.slice(6)].map((group, index) => (
+              <dl key={index} className="data-ledger">
+                {group.map((option) => <div key={option.id}>
+                  <dt>{option.label}</dt>
+                  <dd>{option.value}{option.sub && <small>{option.sub}</small>}</dd>
+                </div>)}
+              </dl>
+            ))}
+          </div>
+        </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="analysis-split">
           <Panel className="p-4" contextItem={{ id: 'portfolio-geographic-concentration', type: 'Chart', label: 'Concentração geográfica', data: { concentration } }}>
             <SectionTitle right={<ContextTag type="DATA">Exposição</ContextTag>}>Concentração geográfica</SectionTitle>
             {concData.length === 0 ? <div className="h-[220px] flex items-center justify-center text-xs text-text-muted">Sem regiões com valor de anúncio disponível.</div> : <ResponsiveContainer width="100%" height={220}>
               <BarChart data={concData} layout="vertical" margin={{ left: 24, right: 12, top: 0, bottom: 0 }}>
-                <CartesianGrid stroke="#E8DFD0" strokeDasharray="3 3" horizontal={false} />
-                <XAxis type="number" stroke="#9A8A78" fontSize={10} tickLine={false} axisLine={false} unit="%" />
-                <YAxis type="category" dataKey="name" stroke="#8A7A68" fontSize={11} tickLine={false} axisLine={false} width={100} />
-                <Tooltip contentStyle={{ background: '#FFFCF7', border: '1px solid #E8DFD0', borderRadius: 10, fontSize: 12 }} cursor={{ fill: '#E8DFD033' }} formatter={(value) => `${value}%`} />
-                <Bar dataKey="value" fill="#DC6A4A" radius={[0, 8, 8, 0]} barSize={12} />
+                <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" horizontal={false} />
+                <XAxis type="number" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} unit="%" />
+                <YAxis type="category" dataKey="name" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} width={100} />
+                <Tooltip contentStyle={tooltipStyle} cursor={{ fill: CHART.aqua, fillOpacity: 0.12 }} formatter={(value) => `${value}%`} />
+                <Bar dataKey="value" fill={CHART.aqua} radius={[0, 8, 8, 0]} barSize={12} />
               </BarChart>
             </ResponsiveContainer>}
           </Panel>
@@ -118,7 +125,7 @@ export default function Portfolio() {
                   <Pie data={typeData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={44} outerRadius={70} paddingAngle={2}>
                     {typeData.map((_, index) => <Cell key={index} fill={typeColors[index % typeColors.length]} />)}
                   </Pie>
-                  <Tooltip contentStyle={{ background: '#FFFCF7', border: '1px solid #E8DFD0', borderRadius: 10, fontSize: 12 }} />
+                  <Tooltip contentStyle={tooltipStyle} />
                 </PieChart>
               </ResponsiveContainer>
               <div className="flex-1 space-y-2">
@@ -145,7 +152,7 @@ export default function Portfolio() {
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] px-1.5 py-0.5 rounded border bg-negative/10 text-negative border-negative/20">{formatPct(percent(property.price_gap))}</span>
-                    <button onClick={() => sendToAgent([{ id: `portfolio-property-${property.property_id}`, type: 'Property', label: property.title, data: property }], `Explique a diferença entre o preço de anúncio e a estimativa de ${property.title}.`)} className="text-brand hover:text-brand/80"><Sparkles className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => sendToAgent([{ id: `portfolio-property-${property.property_id}`, type: 'Property', label: property.title, data: property }], `Explique a diferença entre o preço de anúncio e a estimativa de ${property.title}.`)} aria-label="Explicar diferença de preço" className="icon-control text-brand"><Sparkles className="w-3.5 h-3.5" /></button>
                   </div>
                 </div>
               ))}
@@ -163,7 +170,7 @@ export default function Portfolio() {
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] px-1.5 py-0.5 rounded border bg-positive/10 text-positive border-positive/20">{formatPct(percent(property.price_gap))}</span>
-                    <button onClick={() => sendToAgent([{ id: `portfolio-property-${property.property_id}`, type: 'Property', label: property.title, data: property }], `Explique a diferença entre o preço de anúncio e a estimativa de ${property.title}.`)} className="text-brand hover:text-brand/80"><Sparkles className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => sendToAgent([{ id: `portfolio-property-${property.property_id}`, type: 'Property', label: property.title, data: property }], `Explique a diferença entre o preço de anúncio e a estimativa de ${property.title}.`)} aria-label="Explicar diferença de preço" className="icon-control text-brand"><Sparkles className="w-3.5 h-3.5" /></button>
                   </div>
                 </div>
               ))}
@@ -187,6 +194,12 @@ export default function Portfolio() {
             </button>
           </div>
         </Panel>
+        <details className="analysis-disclosure">
+          <summary>Séries e indicadores <span className="text-xs font-normal text-text-secondary">12 indicadores <ChevronDown className="h-4 w-4" /></span></summary>
+          <div className="portfolio-indicators pt-5">
+            {kpiMetricOptions.map((option) => <KpiCard key={option.id} {...option} series={enableChartExpansion ? option.series : []} metricOptions={kpiMetricOptions} />)}
+          </div>
+        </details>
       </div>
     </>
   );

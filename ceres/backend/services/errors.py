@@ -27,6 +27,11 @@ class UnavailableError(ServiceError):
     code = "dependency_unavailable"
 
 
+class RequestTimeoutError(ServiceError):
+    status_code = 504
+    code = "request_timeout"
+
+
 class InsufficientDataError(ServiceError):
     status_code = 424
     code = "insufficient_data"

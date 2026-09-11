@@ -6,11 +6,12 @@ import { ArrowLeft, FileText, MapPin, Sparkles } from 'lucide-react';
 import TopBar from '@/components/tupan/TopBar';
 import { ContextTag, MetricRow, Panel, ScoreBar, SectionTitle } from '@/components/tupan/primitives';
 import { useApp } from '@/lib/AppContext';
-import { classBadge, formatBRL, formatM2, formatPct } from '@/lib/format';
-import { cn } from '@/lib/utils';
+import { formatBRL, formatM2, formatPct } from '@/lib/format';
 import { apiErrorMessage } from '@/api/client';
 import { getPropertyForecast } from '@/api/forecast';
 import { getProperty, getPropertyValuation } from '@/api/properties';
+import { CHART } from '@/lib/chartTheme';
+import { AsyncEmpty } from '@/components/tupan/AsyncState';
 
 function valueOrDash(value) {
   return value == null ? '—' : value;
@@ -95,23 +96,17 @@ export default function PropertyDetail() {
           <ArrowLeft className="w-3.5 h-3.5" /> Voltar
         </button>
       } />
-      <div className="flex-1 overflow-y-auto p-5 space-y-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <Panel className="p-4 lg:col-span-2">
+      <div className="workspace-content workspace-stack flex-1 overflow-y-auto">
+        <div className="property-analysis-layout">
+          <section className="property-summary">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-foreground">{title}</h2>
                 <div className="flex items-center gap-1.5 text-xs text-text-muted mt-1"><MapPin className="w-3 h-3" />{address}</div>
               </div>
-              <span className={cn('text-[10px] px-2 py-1 rounded border', classBadge('Unavailable'))}>{valuationStatus}</span>
+
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-              <div><div className="text-[10px] uppercase text-text-muted">Preço de pedido</div><div className="text-xl font-semibold tnum text-foreground">{formatBRL(property.price)}</div></div>
-              <div><div className="text-[10px] uppercase text-text-muted">Preço/m²</div><div className="text-xl font-semibold tnum text-foreground">{formatM2(property.price_per_m2)}</div></div>
-              <div><div className="text-[10px] uppercase text-text-muted">Sugerido (AVM)</div><div className="text-xl font-semibold tnum text-brand">{isValuationLoading ? 'Calculando…' : formatBRL(valuation?.suggested_price)}</div></div>
-              <div><div className="text-[10px] uppercase text-text-muted">Desvio</div><div className={cn('text-xl font-semibold tnum', valuationDeviationPct > 5 ? 'text-negative' : valuationDeviationPct < -5 ? 'text-positive' : 'text-text-secondary')}>{isValuationLoading ? '…' : formatPct(valuationDeviationPct)}</div></div>
-            </div>
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mt-4 pt-4 border-t border-border">
+            <div className="grid grid-cols-3 gap-4 mt-6">
               {[
                 { l: 'Quartos', v: property.bedrooms }, { l: 'Banhos', v: property.bathrooms }, { l: 'Vagas', v: property.parking_spaces },
                 { l: 'Área', v: property.area_m2 == null ? null : `${property.area_m2}m²` }, { l: 'Idade', v: property.property_age == null ? null : `${property.property_age}a` }, { l: 'Status', v: null },
@@ -119,14 +114,18 @@ export default function PropertyDetail() {
                 <div key={item.l}><div className="text-[10px] uppercase text-text-muted">{item.l}</div><div className="text-sm font-medium text-foreground">{valueOrDash(item.v)}</div></div>
               ))}
             </div>
-          </Panel>
-          <Panel className="p-4">
-            <SectionTitle right={<ContextTag type="MODEL">AVM</ContextTag>}>Avaliação</SectionTitle>
+          </section>
+          <section className="property-valuation">
+            <SectionTitle right={<span className="text-xs text-text-secondary">{valuationStatus}</span>}>Avaliação</SectionTitle>
+            <p className="text-xs text-text-secondary">Valor estimado · AVM</p>
+            <div className="property-valuation__value">{isValuationLoading ? 'Calculando…' : formatBRL(valuation?.estimated_price ?? valuation?.suggested_price)}</div>
+            <div className="grid gap-x-6 sm:grid-cols-2">
+              <MetricRow label="Preço de pedido" value={formatBRL(property.price)} />
+              <MetricRow label="Preço/m²" value={formatM2(property.price_per_m2)} />
+            </div>
             {isValuationLoading && <div className="py-4 text-xs text-text-muted">Executando inferência do modelo…</div>}
             {isValuationError && <div role="alert" className="my-3 rounded border border-negative/30 bg-negative/10 p-2 text-xs text-negative">{apiErrorMessage(valuationError)}</div>}
             {!isValuationLoading && !isValuationError && valuation && <>
-              <MetricRow label="Preço listado" value={formatBRL(valuation.listed_price ?? valuation.current_price)} />
-              <MetricRow label="Preço sugerido" value={formatBRL(valuation.estimated_price ?? valuation.suggested_price)} />
               <MetricRow label="Diferença" value={formatBRL(valuationDifference)} />
               <MetricRow label="Desvio" value={<span className={valuationDeviationPct > 5 ? 'text-negative' : valuationDeviationPct < -5 ? 'text-positive' : 'text-text-secondary'}>{formatPct(valuationDeviationPct)}</span>} />
               <MetricRow label="Preço/m² listado" value={formatM2(valuation.price_per_m2 ?? property.price_per_m2)} />
@@ -135,13 +134,13 @@ export default function PropertyDetail() {
               <MetricRow label="Modelo" value={valuation.model_available ? 'Disponível' : 'Indisponível'} />
             </>}
             {!isValuationLoading && !isValuationError && !valuation && <div className="py-4 text-xs text-text-muted">Avaliação indisponível.</div>}
-            <button onClick={() => sendToAgent([{ id: `prop-${property.id}`, type: 'Property', label: title, data: property }], `Explique a avaliação de ${title}.`)} className="w-full mt-3 h-9 rounded bg-brand text-brand-foreground text-xs font-medium hover:bg-brand/90 flex items-center justify-center gap-1.5">
+            <button onClick={() => sendToAgent([{ id: `prop-${property.id}`, type: 'Property', label: title, data: property }], `Explique a avaliação de ${title}.`)} className="mt-4 px-4 h-9 rounded bg-brand text-brand-foreground text-xs font-medium hover:bg-brand/90 flex items-center justify-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> Explicar avaliação
             </button>
-          </Panel>
+          </section>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Panel className="p-4">
             <SectionTitle right={<ContextTag type="DATA">Mercado</ContextTag>}>Contexto de mercado</SectionTitle>
             <MetricRow label="Aquecimento de mercado" value="—" />
@@ -153,14 +152,14 @@ export default function PropertyDetail() {
           </Panel>
           <Panel className="p-4">
             <SectionTitle right={<ContextTag type="MODEL">Ceres 4L</ContextTag>}>Perfil do imóvel</SectionTitle>
-            <ResponsiveContainer width="100%" height={180}>
+            {profile.some((metric) => metric.value != null) ? <ResponsiveContainer width="100%" height={180}>
               <RadarChart data={profile}>
-                <PolarGrid stroke="#E8DFD0" strokeDasharray="3 3" />
-                <PolarAngleAxis dataKey="name" tick={{ fill: '#8A7A68', fontSize: 10 }} />
-                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#9A8A78', fontSize: 9 }} stroke="#E8DFD0" strokeDasharray="3 3" />
-                <Radar dataKey="value" stroke="#DC6A4A" fill="#DC6A4A" fillOpacity={0.3} />
+                <PolarGrid stroke={CHART.grid} strokeDasharray="3 3" />
+                <PolarAngleAxis dataKey="name" tick={{ fill: CHART.axis, fontSize: 11 }} />
+                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: CHART.axis, fontSize: 10 }} stroke={CHART.grid} strokeDasharray="3 3" />
+                <Radar dataKey="value" stroke={CHART.aqua} fill={CHART.aqua} fillOpacity={0.18} />
               </RadarChart>
-            </ResponsiveContainer>
+            </ResponsiveContainer> : <AsyncEmpty className="py-6">Perfil ainda não disponível para este imóvel.</AsyncEmpty>}
             <div className="space-y-2 mt-2">
               {profile.map((metric) => metric.value == null
                 ? <MetricRow key={metric.name} label={metric.name} value="—" />
@@ -168,13 +167,13 @@ export default function PropertyDetail() {
               )}
             </div>
           </Panel>
-          <Panel className="p-4">
-            <SectionTitle right={<ContextTag type="DATA">—</ContextTag>}>Imóveis comparáveis</SectionTitle>
-            <div className="py-8 text-center text-xs text-text-muted">Comparáveis não são fornecidos pelo contrato de propriedades atual.</div>
+          <Panel className="p-4 md:col-span-2">
+            <SectionTitle>Imóveis comparáveis</SectionTitle>
+            <div className="py-4 text-xs text-text-secondary">Comparáveis ainda indisponíveis para este imóvel.</div>
           </Panel>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button onClick={() => sendToAgent([{ id: `prop-${property.id}`, type: 'Property', label: title, data: property }], `Analise ${title} em ${property.neighborhood}.`)} className="h-9 px-4 rounded bg-brand text-brand-foreground text-xs font-medium hover:bg-brand/90 flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5" /> Analisar com Ceres
           </button>

@@ -1,28 +1,28 @@
-// Shared aqua/lagoon chart palette (Frutiger Aero theme).
-// Recharts needs concrete color strings, so we resolve the CSS tokens to hsl().
-
+// Shared chart palette resolved from the active Ceres theme.
+// CSS custom properties keep Recharts surfaces and series aligned with every theme.
 export const CHART = {
-  aqua: 'hsl(188 78% 52%)',
-  lagoon: 'hsl(196 72% 46%)',
-  teal: 'hsl(174 68% 42%)',
-  mint: 'hsl(158 62% 42%)',
-  sky: 'hsl(206 70% 54%)',
-  positive: 'hsl(158 62% 40%)',
-  negative: 'hsl(348 62% 54%)',
-  warning: 'hsl(42 88% 48%)',
-  grid: 'hsl(190 42% 84%)',
-  axis: 'hsl(202 20% 39%)',
-  tooltipBg: 'hsl(190 70% 98% / 0.94)',
-  tooltipBorder: 'hsl(188 62% 62% / 0.38)',
-  tooltipLabel: 'hsl(202 28% 30%)',
+  aqua: 'hsl(var(--aqua))',
+  lagoon: 'hsl(var(--lagoon))',
+  teal: 'hsl(var(--chart-1))',
+  mint: 'hsl(var(--chart-2))',
+  sky: 'hsl(var(--chart-5))',
+  positive: 'hsl(var(--positive))',
+  negative: 'hsl(var(--negative))',
+  warning: 'hsl(var(--warning))',
+  grid: 'hsl(var(--border) / 0.72)',
+  axis: 'hsl(var(--text-secondary))',
+  tooltipBg: 'hsl(var(--surface-popover))',
+  tooltipBorder: 'hsl(var(--edge-subtle))',
+  tooltipLabel: 'hsl(var(--foreground))',
 };
 
 export const tooltipStyle = {
   background: CHART.tooltipBg,
   border: `1px solid ${CHART.tooltipBorder}`,
-  borderRadius: 16,
+  borderRadius: 14,
   fontSize: 12,
   padding: '10px 12px',
-  boxShadow: '0 18px 42px -16px rgba(16,92,110,0.34), inset 0 1px 0 rgba(255,255,255,0.8)',
+  color: CHART.tooltipLabel,
+  boxShadow: '0 18px 42px -22px hsl(var(--surface-shadow)), inset 0 1px 0 hsl(var(--surface-highlight))',
   backdropFilter: 'blur(12px)',
 };

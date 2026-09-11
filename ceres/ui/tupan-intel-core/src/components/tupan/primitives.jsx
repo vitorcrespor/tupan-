@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { Check, Plus } from "lucide-react";
 import {
   CartesianGrid,
   Line,
@@ -12,6 +13,15 @@ import {
 import { cn } from "@/lib/utils";
 import { useApp } from "@/lib/AppContext";
 import MetricKnob from "./MetricKnob";
+import "./KpiCard.css";
+
+const METRIC_CONTEXT_KEY = {
+  'median-m2': 'price_m2',
+  'market-heat': 'market_heat',
+  'active-listings': 'active_listings',
+  'avg-dom': 'dom',
+  'avm-deviation': 'avm_deviation',
+};
 
 
 function MetricPicker({ options = [], onSelect, className }) {
@@ -33,7 +43,7 @@ function MetricPicker({ options = [], onSelect, className }) {
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
         className={cn(
-          "group relative grid h-7 w-8 place-items-center overflow-hidden rounded-lg border border-border/80 bg-gradient-to-br from-card via-card to-brand/[0.07] shadow-[0_5px_14px_hsl(var(--foreground)/0.10),inset_0_1px_0_hsl(0_0%_100%/0.65)] backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-brand/45 hover:shadow-[0_8px_20px_hsl(var(--brand)/0.18)] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50",
+          "icon-control group relative h-8 w-9 overflow-hidden rounded-lg focus:outline-none",
           open && "border-brand/45 bg-brand/10 text-brand",
         )}
       >
@@ -45,7 +55,7 @@ function MetricPicker({ options = [], onSelect, className }) {
         </span>
       </button>
       {open && (
-        <div className="absolute right-0 top-9 z-40 w-52 overflow-hidden rounded-2xl border border-border/85 bg-card/95 p-1.5 shadow-[0_24px_60px_hsl(var(--foreground)/0.20),inset_0_1px_0_hsl(0_0%_100%/0.6)] backdrop-blur-xl">
+        <div className="surface-popover absolute right-0 top-10 z-40 w-52 overflow-hidden rounded-2xl p-1.5">
           <div className="mb-1 flex items-center gap-2 border-b border-border/65 px-2 py-2">
             <span className="grid h-5 w-5 place-items-center rounded-md bg-brand/10 text-brand"><span className="h-2 w-2 rounded-sm border border-current/80" /></span>
             <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-text-muted">Trocar métrica</p>
@@ -77,64 +87,84 @@ function InsightButton({ item, className }) {
       aria-label={added ? "Indicador adicionado" : "Adicionar ao painel de contexto"}
       title={added ? "Adicionado ao painel" : "Adicionar ao painel de contexto"}
       className={cn(
-        "grid h-7 w-7 place-items-center rounded-full border text-sm font-light leading-none shadow-[0_5px_14px_hsl(var(--foreground)/0.12)] backdrop-blur-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50",
-        !attachedTab && "hover:-translate-y-0.5",
+        "icon-control grid h-8 w-8 place-items-center leading-none focus:outline-none",
         added ? "border-brand/35 bg-brand/15 text-brand" : "border-border/80 bg-card/90 text-text-muted hover:border-brand/45 hover:bg-brand/10 hover:text-brand",
         className,
       )}
     >
-      {added ? "✓" : "+"}
+      {added ? (
+        <Check aria-hidden="true" className={attachedTab ? "h-2.5 w-2.5 stroke-[2]" : "h-3.5 w-3.5 stroke-[2]"} />
+      ) : (
+        <Plus aria-hidden="true" className={attachedTab ? "h-2.5 w-2.5 stroke-[2]" : "h-3.5 w-3.5 stroke-[2]"} />
+      )}
     </button>
   );
 }
 
-export function Panel({ className, children, metricOptions, onMetricSelect, activeMetricId, contextItem, ...props }) {
+export function Panel({
+  className = "",
+  children = null,
+  metricOptions = [],
+  onMetricSelect = undefined,
+  activeMetricId = undefined,
+  contextItem = undefined,
+  ...props
+}) {
   return (
     <div
       className={cn(
-        "metric-host panel-host relative isolate rounded-2xl border border-white/75 bg-card/38 shadow-[0_10px_28px_hsl(220_12%_18%/0.09),inset_0_1px_0_hsl(0_0%_100%/0.88),inset_0_-1px_0_hsl(220_10%_55%/0.10)] backdrop-blur-2xl",
-
+        "panel-host relative isolate",
+        metricOptions.length || contextItem
+          ? "metric-host surface-panel rounded-2xl"
+          : "panel-static",
         className,
       )}
       {...props}
     >
       {children}
-      <MetricKnob metrics={metricOptions} value={activeMetricId} onChange={onMetricSelect} />
+      <MetricKnob className="" metrics={metricOptions} value={activeMetricId} onChange={onMetricSelect} />
       <InsightButton item={contextItem} className="metric-insight-tab" />
     </div>
   );
 }
 
-export function SectionTitle({ children, right, className }) {
+export function SectionTitle({ children, right = null, className = "" }) {
   return (
-    <div className={cn("flex items-center justify-between mb-3 pr-8", className)}>
-      <h3 className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
+    <div className={cn("ceres-section-title flex flex-wrap items-center justify-between gap-2 mb-4 pr-8", className)}>
+      <h3 className="text-sm font-semibold leading-snug tracking-tight text-foreground">
         {children}
       </h3>
-      {right}
+      {right && <div className="shrink-0 text-xs text-text-secondary">{right}</div>}
     </div>
   );
 }
 
 export function ContextTag({ type, children }) {
   const styles = {
-    DATA: "bg-brand/10 text-brand border-brand/20",
-    MODEL: "bg-chart-4/10 text-chart-4 border-chart-4/25",
-    AI: "bg-positive/10 text-positive border-positive/20",
+    DATA: "text-text-secondary",
+    MODEL: "text-text-secondary",
+    AI: "text-brand",
+  };
+  const labels = { DATA: 'Dados', MODEL: 'Modelo', AI: 'IA' };
+  const descriptions = {
+    DATA: 'Indicador baseado em dados observados.',
+    MODEL: 'Indicador calculado por modelo estatístico.',
+    AI: 'Interpretação gerada pela Ceres a partir do contexto disponível.',
   };
   return (
     <span
+      title={descriptions[type]}
       className={cn(
-        "inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wider uppercase border",
+        "inline-flex items-center text-[11px] font-medium",
         styles[type],
       )}
     >
-      {children || type}
+      {children || labels[type] || type}
     </span>
   );
 }
 
-export function Delta({ value, suffix = "", className }) {
+export function Delta({ value, suffix = "", className = "" }) {
   if (value == null || Number.isNaN(value))
     return <span className="text-text-muted">—</span>;
   const positive = value > 0;
@@ -192,6 +222,7 @@ function KpiThreeMonthSeries({ series = [], glow }) {
   );
 }
 export function KpiCard({
+  id: metricId,
   label,
   value,
   delta,
@@ -207,7 +238,7 @@ export function KpiCard({
 
   const [selectedMetric, setSelectedMetric] = useState(null);
   const configuredMetric = metricOptions.find((option) => option.id === selectedMetric);
-  const display = configuredMetric || { label, value, delta, deltaSuffix, tag, sub, series, seriesValueFormatter };
+  const display = configuredMetric || { id: metricId, label, value, delta, deltaSuffix, tag, sub, series, seriesValueFormatter };
   const displayLabel = display.label;
   const displayValue = display.value;
   const displayDelta = display.delta;
@@ -218,17 +249,17 @@ export function KpiCard({
   const displaySeriesFormatter = display.seriesValueFormatter ?? seriesValueFormatter;
   const tints = {
     DATA: {
-      glow: "188 78% 52%",
+      glow: "var(--aqua)",
       bar: "bg-aqua",
       chip: "bg-aqua/12 text-aqua border-aqua/25",
     },
     MODEL: {
-      glow: "196 72% 46%",
+      glow: "var(--lagoon)",
       bar: "bg-lagoon",
       chip: "bg-lagoon/12 text-lagoon border-lagoon/25",
     },
     AI: {
-      glow: "158 62% 42%",
+      glow: "var(--positive)",
       bar: "bg-positive",
       chip: "bg-positive/12 text-positive border-positive/25",
     },
@@ -239,13 +270,22 @@ export function KpiCard({
   const [morphing, setMorphing] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [origin, setOrigin] = useState(null);
+  const [destination, setDestination] = useState(null);
   const openDetail = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
+    const width = Math.min(760, window.innerWidth - 32);
+    const height = Math.min(480, window.innerHeight - 32);
     setOrigin({
       left: rect.left,
       top: rect.top,
       width: rect.width,
       height: rect.height,
+    });
+    setDestination({
+      left: Math.round((window.innerWidth - width) / 2),
+      top: Math.round((window.innerHeight - height) / 2),
+      width,
+      height,
     });
     setExpanded(true);
     requestAnimationFrame(() => requestAnimationFrame(() => setMorphing(true)));
@@ -257,6 +297,7 @@ export function KpiCard({
     window.setTimeout(() => {
       setExpanded(false);
       setOrigin(null);
+      setDestination(null);
     }, 430);
   };
   useEffect(() => {
@@ -269,7 +310,7 @@ export function KpiCard({
     <>
       <div
         className="absolute -top-8 -right-8 w-20 h-20 rounded-full blur-2xl opacity-20 pointer-events-none"
-        style={{ background: "hsl(220 12% 55% / 0.045)" }}
+        style={{ background: "hsl(var(--brand) / 0.06)" }}
       />
       <div className="relative flex items-center justify-between">
         <span className="text-[11px] text-text-secondary font-semibold">
@@ -291,11 +332,11 @@ export function KpiCard({
         {displaySub && <span className="text-[11px] text-text-muted">{displaySub}</span>}
       </div>
       <KpiThreeMonthSeries series={displaySeries} glow={tint.glow} />
-      <InsightButton className="absolute bottom-3 right-3 z-10" item={contextItem || {
+      <InsightButton className="pointer-events-auto absolute bottom-3 right-3 z-10" item={contextItem || {
         id: `kpi-${displayLabel.toLowerCase().replace(/[^a-z0-9]+/gi, "-")}`,
         type: "KPI",
         label: displayLabel,
-        data: { value: displayValue, delta: displayDelta, unit: displaySub, series: displaySeries },
+        data: { metric: METRIC_CONTEXT_KEY[display.id], value: displayValue, delta: displayDelta, unit: displaySub, series: displaySeries },
       }} />
     </>
   );
@@ -303,70 +344,53 @@ export function KpiCard({
   return (
     <>
       <div
-
-        role={interactive ? "button" : undefined}
-        tabIndex={interactive ? 0 : undefined}
-        onClick={interactive ? openDetail : undefined}
-        onKeyDown={(event) => {
-          if (interactive && (event.key === "Enter" || event.key === " ")) openDetail(event);
-        }}
         className={cn(
-          "metric-host relative w-full min-h-[174px] overflow-visible rounded-[14px] border border-white/75 bg-card/36 p-5 flex flex-col gap-3 text-left shadow-[0_4px_12px_hsl(220_12%_18%/0.07),0_14px_30px_hsl(220_12%_18%/0.06),inset_0_1px_0_hsl(0_0%_100%/0.9)] backdrop-blur-2xl transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/35 hover:shadow-[0_8px_18px_hsl(220_12%_18%/0.10),0_20px_38px_hsl(220_12%_18%/0.08),inset_0_1px_0_hsl(0_0%_100%/0.96)] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60",
+          "metric-host kpi-card surface-panel relative w-full min-h-[174px] overflow-visible rounded-[14px] p-5 text-left hover:-translate-y-0.5",
           expanded && "pointer-events-none opacity-0",
-          !interactive && "cursor-default hover:translate-y-0 hover:border-border/80 hover:shadow-[0_2px_5px_hsl(var(--foreground)/0.04),0_12px_24px_hsl(var(--foreground)/0.055)]",
+          !interactive && "cursor-default hover:translate-y-0",
           className,
         )}
-        style={{
-          backgroundColor: "var(--metric-knob-background-color)",
-          backgroundImage: "var(--metric-knob-background-image)",
-          "--metric-knob-background-color": "hsl(var(--card) / 0.44)",
-          "--metric-knob-background-image": "linear-gradient(145deg, hsl(0 0% 100% / 0.55) 0%, hsl(var(--card) / 0.44) 38%, hsl(188 60% 90% / 0.14) 100%)",
-          "--metric-tab-radius": "14px",
-          "--metric-tab-border": "hsl(0 0% 100% / .84)",
-        }}
-        aria-label={interactive ? `Ver série histórica: ${displayLabel}` : undefined}
       >
-
-        {cardBody}
+        {interactive && (
+          <button
+            type="button"
+            onClick={openDetail}
+            className="absolute inset-0 z-0 cursor-pointer rounded-[inherit] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
+            aria-label={`Ver série histórica: ${displayLabel}`}
+          />
+        )}
+        <div className="relative z-[1] flex h-full flex-col gap-3 pointer-events-none">
+          {cardBody}
+        </div>
         <MetricKnob className="metric-knob--kpi" metrics={metricOptions} value={selectedMetric} onChange={(option) => setSelectedMetric(option.id)} />
       </div>
       {expanded &&
         origin &&
+        destination &&
         createPortal(
           <>
             <div
-              className="fixed inset-0 z-[90] bg-slate-700/45 backdrop-blur-md transition-opacity duration-500"
+              className="kpi-morph-backdrop fixed inset-0 z-[90] transition-opacity duration-500"
               onClick={closeDetail}
             />
             <section
-              className="fixed z-[100] overflow-hidden border border-white/40 bg-card shadow-[0_32px_90px_hsl(215_25%_12%/0.32),0_10px_32px_hsl(215_25%_12%/0.18)] will-change-[transform,left,top,width,height] transition-[left,top,width,height,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+              className="kpi-morph-dialog fixed z-[100] overflow-hidden will-change-[left,top,width,height,border-radius]"
               style={
                 morphing
-                  ? {
-                      left: "50%",
-                      top: "50%",
-                      width: "min(760px, calc(100vw - 32px))",
-                      height: "min(480px, calc(100vh - 32px))",
-                      transform: "translate(-50%, -50%)",
-                      borderRadius: 28,
-                    }
-                  : {
-                      ...origin,
-                      transform: "translate(0, 0)",
-                      borderRadius: 28,
-                    }
+                  ? { ...destination, borderRadius: 28 }
+                  : { ...origin, borderRadius: 28 }
               }
               onClick={(event) => event.stopPropagation()}
             >
               {!revealed ? (
-                <div className="relative h-full overflow-hidden rounded-t-[28px] bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 shadow-[inset_0_1px_0_rgb(255_255_255/0.9),inset_0_-14px_26px_rgb(71_85_105/0.18)]">
-                  <div className="absolute inset-x-0 top-0 h-1/2 rounded-t-[28px] bg-gradient-to-b from-white/55 to-transparent" />
+                <div className="kpi-morph-mask relative h-full overflow-hidden rounded-t-[28px]">
+                  <div className="kpi-morph-mask__highlight absolute inset-x-0 top-0 h-1/2 rounded-t-[28px]" />
                 </div>
               ) : (
                 <div className="h-full animate-in fade-in duration-300">
                   <button
                     onClick={closeDetail}
-                    className="absolute right-4 top-3 z-10 text-lg text-text-muted"
+                    aria-label="Fechar série histórica" className="icon-control absolute right-4 top-3 z-10 text-lg text-text-muted"
                   >
                     ×
                   </button>
@@ -462,7 +486,7 @@ export function ScoreBar({ label, value, tone }) {
   );
 }
 
-export function MetricRow({ label, value, valueClass }) {
+export function MetricRow({ label, value, valueClass = "" }) {
   return (
     <div className="flex items-center justify-between py-1.5 border-b border-border/60 last:border-0">
       <span className="text-xs text-text-secondary">{label}</span>

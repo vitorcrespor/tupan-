@@ -1,3 +1,7 @@
+# Retired backend scaffold
+
+> **Do not deploy or add features here.** Tupan's canonical backend is `ceres/backend/api/main.py`, served as `backend.api.main:app` under `/api/v1`. This directory is retained solely to support a controlled data migration from its old schema.
+
 # Tupan FastAPI scaffold
 
 Minimal FastAPI communication base for `tupan-intel-core` frontend.

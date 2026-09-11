@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { BarChart3, ChevronRight, GripVertical, Send, X } from 'lucide-react';
 import { useApp } from '@/lib/AppContext';
+import useOutsideDismiss from '@/lib/useOutsideDismiss';
 
 export default function InsightTray() {
   const { savedInsights, removeSavedInsight, clearSavedInsights, sendToAgent } = useApp();
   const [open, setOpen] = useState(true);
+  const trayRef = useRef(null);
+
+  useOutsideDismiss(trayRef, open, () => setOpen(false));
 
   if (!savedInsights.length) return null;
 
   const handoff = () => {
     sendToAgent(
       savedInsights,
-      'Use the selected dashboard indicators and graphics as attached reference documents. Explain the most relevant relationships, evidence, and recommended next actions.'
+      'Use the selected dashboard indicators as authorized evidence. Explain the most relevant relationships, evidence, and recommended next actions.',
+      'insight-tray'
     );
   };
 
   return (
-    <aside className={`absolute bottom-4 right-4 z-50 w-[290px] overflow-hidden rounded-2xl border border-white/80 bg-card/58 shadow-[0_22px_60px_hsl(220_12%_18%/0.16),inset_0_1px_0_hsl(0_0%_100%/0.9)] backdrop-blur-2xl transition-transform duration-300 ${open ? 'translate-x-0' : 'translate-x-[262px]'}`}>
+    <aside ref={trayRef} className={`surface-popover absolute bottom-4 right-4 z-50 w-[290px] overflow-hidden rounded-2xl transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,_1,_0.36,_1)] ${open ? 'translate-x-0' : 'translate-x-[262px]'}`}>
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
