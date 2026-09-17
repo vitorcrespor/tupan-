@@ -24,13 +24,13 @@ export const formatM2 = (n) =>
   n == null || Number.isNaN(n) ? '—' : 'R$ ' + Math.round(n).toLocaleString('pt-BR');
 
 export const classColor = (cls) =>
-  ({ Overpriced: 'text-negative', Underpriced: 'text-positive', 'Fair Value': 'text-text-secondary' }[cls] || 'text-text-secondary');
+  ({ ABOVE_ESTIMATED_RANGE: 'text-negative', BELOW_ESTIMATED_RANGE: 'text-positive', WITHIN_ESTIMATED_RANGE: 'text-text-secondary' }[cls] || 'text-text-secondary');
 
 export const classBadge = (cls) =>
   ({
-    Overpriced: 'bg-negative/10 text-negative border-negative/20',
-    Underpriced: 'bg-positive/10 text-positive border-positive/20',
-    'Fair Value': 'bg-brand/10 text-brand border-brand/20',
+    ABOVE_ESTIMATED_RANGE: 'bg-negative/10 text-negative border-negative/20',
+    BELOW_ESTIMATED_RANGE: 'bg-positive/10 text-positive border-positive/20',
+    WITHIN_ESTIMATED_RANGE: 'bg-brand/10 text-brand border-brand/20',
   }[cls] || 'bg-muted text-muted-foreground border-border');
 
 export const heatColor = (h) => {

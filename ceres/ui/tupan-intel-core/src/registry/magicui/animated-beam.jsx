@@ -27,9 +27,11 @@ import { cn } from "@/lib/utils";
  * @property {number} [refreshDuration]
  */
 
-export const AnimatedBeam = React.forwardRef(
-  (
-    /** @param {AnimatedBeamProps} props @param {React.ForwardedRef<SVGSVGElement>} ref */
+/**
+ * @param {AnimatedBeamProps} props
+ * @param {React.ForwardedRef<SVGSVGElement>} ref
+ */
+function AnimatedBeamView(
     {
       className,
       containerRef,
@@ -55,7 +57,7 @@ export const AnimatedBeam = React.forwardRef(
       refreshDuration = 0,
     },
     ref
-  ) => {
+) {
     const id = React.useId();
     const [pathD, setPathD] = React.useState("");
     const [svgWidth, setSvgWidth] = React.useState(width);
@@ -201,8 +203,9 @@ export const AnimatedBeam = React.forwardRef(
         />
       </svg>
     );
-  }
-);
+}
+
+export const AnimatedBeam = React.forwardRef(AnimatedBeamView);
 
 AnimatedBeam.displayName = "AnimatedBeam";
 

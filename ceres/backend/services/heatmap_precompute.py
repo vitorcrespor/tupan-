@@ -28,9 +28,9 @@ class HeatmapPrecomputer:
             raise DomainValidationError("Heatmap period_end cannot precede period_start.")
         input_version = str(payload.get("input_version") or "estate-base-v1")
 
-        await queue.set_progress(context, job.job_id, 10)
+        await queue.set_progress(context, job, 10)
         sources = await queue.heatmap_source_estates(context, city=city, area=area)
-        await queue.set_progress(context, job.job_id, 35)
+        await queue.set_progress(context, job, 35)
         aggregates = _aggregate_sources(
             sources,
             resolution=resolution,
@@ -38,7 +38,7 @@ class HeatmapPrecomputer:
             period_end=period_end,
             input_version=input_version,
         )
-        await queue.set_progress(context, job.job_id, 75)
+        await queue.set_progress(context, job, 75)
         await queue.upsert_heatmap_aggregates(context, aggregates)
         reference = f"heatmap:{context.organization_id}:{resolution}:{period_start.isoformat()}:{period_end.isoformat()}:{input_version}"
         return JobResult(
@@ -60,24 +60,28 @@ def _aggregate_sources(
     except ImportError as exc:
         raise RuntimeError("The H3 dependency is unavailable to the worker.") from exc
 
-    grouped: dict[tuple[str, str | None, str | None], list[dict[str, Any]]] = defaultdict(list)
+    # A cell is the geographic aggregation key. Grouping by city/area as
+    # well would emit duplicate rows for one H3 index when a cell crosses a
+    # neighbourhood boundary; the platform unique key would then retain an
+    # arbitrary last row.
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for source in sources:
         latitude, longitude = source.get("latitude"), source.get("longitude")
         if latitude is None or longitude is None:
             continue
         cell = _latlng_to_cell(h3, float(latitude), float(longitude), resolution)
-        grouped[(cell, source.get("city"), source.get("area"))].append(source)
+        grouped[cell].append(source)
 
     aggregates: list[dict[str, Any]] = []
-    for (cell, city, area), rows in grouped.items():
+    for cell, rows in grouped.items():
         boundary = _boundary_geojson(h3, cell)
         center_lat, center_lng = _cell_center(h3, cell)
         aggregates.append(
             {
                 "h3_index": cell,
                 "h3_resolution": resolution,
-                "city": city,
-                "area": area,
+                "city": _shared_label(rows, "city"),
+                "area": _shared_label(rows, "area"),
                 "period_start": period_start,
                 "period_end": period_end,
                 "boundary": boundary,
@@ -92,6 +96,12 @@ def _aggregate_sources(
             }
         )
     return aggregates
+
+
+def _shared_label(rows: list[dict[str, Any]], key: str) -> str | None:
+    """Keep a label only when it applies to the whole H3 cell."""
+    labels = {str(row[key]).strip() for row in rows if row.get(key) not in (None, "")}
+    return next(iter(labels)) if len(labels) == 1 else None
 
 
 def _latlng_to_cell(h3_module: Any, latitude: float, longitude: float, resolution: int) -> str:

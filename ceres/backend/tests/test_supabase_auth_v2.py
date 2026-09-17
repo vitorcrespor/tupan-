@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 import unittest
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 import httpx
@@ -240,6 +241,14 @@ class SupabaseV2HttpContractTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"status": "ready", "checks": {"database": "ok", "supabase_auth": "ok"}})
+
+    def test_v2_ready_does_not_require_a_desktop_version_header(self) -> None:
+        with patch("backend.api.main.MINIMUM_CLIENT_VERSION", "9.0.0"):
+            with TestClient(self.app) as client:
+                response = client.get("/api/v2/ready")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["status"], "ready")
 
 
 if __name__ == "__main__":

@@ -43,7 +43,7 @@ export default function AgentLog() {
     return [...entries.values()];
   }, [events]);
   const errors = events.filter(eventFailed).map((event) => event.summary).concat(recentTrace?.warnings || []);
-  const totalMs = events.reduce((total, event) => total + (Number(event.duration_ms) || 0), 0);
+  const totalMs = events.findLast(event => event.event_type === 'INTERPRETATION')?.duration_ms ?? null;
   const hasTrace = Boolean(recentTrace?.sessionId);
   const status = traceQuery.isError ? 'Indisponível' : errors.length ? 'Com avisos' : hasTrace ? 'Operacional' : 'Sem sessão';
 

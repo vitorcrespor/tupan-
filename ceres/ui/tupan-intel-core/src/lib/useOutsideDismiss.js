@@ -5,7 +5,14 @@ import { useEffect, useRef } from 'react';
  * Capture-phase pointer handling keeps the dismissal reliable even when
  * interactive dashboard content stops bubbling events.
  */
-export default function useOutsideDismiss(containerRef, open, onDismiss, { ignoreSelector } = {}) {
+/**
+ * @param {React.RefObject<HTMLElement | null>} containerRef
+ * @param {boolean} open
+ * @param {() => void} onDismiss
+ * @param {{ignoreSelector?: string}} [options]
+ */
+export default function useOutsideDismiss(containerRef, open, onDismiss, options = {}) {
+  const { ignoreSelector } = options;
   const dismissRef = useRef(onDismiss);
 
   useEffect(() => {

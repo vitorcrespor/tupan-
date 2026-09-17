@@ -2,10 +2,17 @@ from __future__ import annotations
 
 import unittest
 from datetime import datetime, timedelta, timezone
+import json
+import os
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 
 from train.valuation_data import ValuationDataError, feature_values, parse_records
 from train.valuation_uncertainty import assess_data_quality, conformal_interval, fit_conformal, local_residual_correction
 from train.valuation_validation import regression_metrics, spatial_holdout, temporal_partitions
+from train.transaction_avm import predict_transaction_price
+from backend.services.avm_runtime import AvmRuntime
 
 
 UTC = timezone.utc
@@ -92,6 +99,85 @@ class ValuationContractTests(unittest.TestCase):
         self.assertGreaterEqual(high, 12)
         result = local_residual_correction({"property_id": "subject", "latitude": -23.5, "longitude": -46.6, "area_m2": 70, "property_type": "apartment", "city": "Sao Paulo"}, [], valuation_time=datetime(2026, 1, 1, tzinfo=UTC))
         self.assertEqual(result["lambda"], 0.0)
+
+    def test_promoted_transaction_avm_returns_calibrated_interval(self):
+        features = {
+            "usable_area_m2": 70,
+            "property_type": "apartment",
+            "city": "Sao Paulo",
+        }
+        categories = {name: ["__MISSING__"] for name in (
+            "property_type", "subtype", "city", "state", "condition", "h3_r7", "h3_r8", "h3_r9"
+        )}
+        categories["property_type"].append("apartment")
+        categories["city"].append("Sao Paulo")
+        metadata = {
+            "schema_version": 2,
+            "model_type": "xgboost.XGBRegressor",
+            "target": "sale_price_brl",
+            "feature_columns": [
+                "usable_area_m2", "built_area_m2", "lot_area_m2", "latitude", "longitude",
+                "property_type", "subtype", "city", "state", "rooms", "suites", "bathrooms",
+                "parking_spaces", "floor", "building_floors", "year_built", "renovation_year",
+                "condition", "elevator", "condo_fee_brl", "h3_r7", "h3_r8", "h3_r9",
+            ],
+            "categories": categories,
+            "uncertainty": {
+                "method": "split_conformal_point_residual",
+                "calibration": {"level": 0.8, "sample_count": 10, "nonconformity_quantile": 0.1},
+                "out_of_time_coverage": 0.75,
+            },
+            "promotion_status": "production",
+            "model_version": "transaction-avm-v2",
+        }
+
+        class FakeRegressor:
+            def __init__(self, **kwargs):
+                self.kwargs = kwargs
+
+            def load_model(self, path):
+                self.path = path
+
+            def predict(self, frame):
+                return [12.0]
+
+        with tempfile.TemporaryDirectory() as directory:
+            model_path = Path(directory) / "model.json"
+            metadata_path = Path(directory) / "model.metadata.json"
+            model_path.write_text("model", encoding="utf-8")
+            metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+            with patch("train.transaction_avm.XGBRegressor", FakeRegressor):
+                result = predict_transaction_price(features, model_path=model_path, metadata_path=metadata_path)
+                with patch.dict(os.environ, {
+                    "AVM_TRANSACTION_MODEL_PATH": str(model_path),
+                    "AVM_TRANSACTION_METADATA_PATH": str(metadata_path),
+                }, clear=False):
+                    runtime_result = AvmRuntime._predict_sync({
+                        "area_m2": 70,
+                        "property_type": "apartment",
+                        "city": "Sao Paulo",
+                        "attributes": {},
+                    })
+
+        self.assertEqual(result["interval_level"], 0.8)
+        self.assertEqual(result["calibration_sample_count"], 10)
+        self.assertEqual(result["out_of_time_coverage"], 0.75)
+        self.assertLess(result["lower_bound"], result["estimated_price"])
+        self.assertLess(result["estimated_price"], result["upper_bound"])
+        self.assertEqual(runtime_result.uncertainty_status, "calibrated")
+        self.assertEqual(runtime_result.calibration_sample_count, 10)
+
+    def test_candidate_transaction_artifact_is_not_served(self):
+        metadata = {"promotion_status": "candidate"}
+        with tempfile.TemporaryDirectory() as directory:
+            model_path = Path(directory) / "model.json"
+            metadata_path = Path(directory) / "model.metadata.json"
+            model_path.write_text("model", encoding="utf-8")
+            metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+            with patch("train.transaction_avm.XGBRegressor") as regressor:
+                with self.assertRaises(RuntimeError):
+                    predict_transaction_price({}, model_path=model_path, metadata_path=metadata_path)
+                regressor.assert_not_called()
 
 
 if __name__ == "__main__":

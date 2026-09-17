@@ -1,5 +1,4 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
 import TopBar from '@/components/tupan/TopBar';
@@ -9,38 +8,37 @@ import AiBrief from '@/components/tupan/AiBrief';
 import ListingCard from '@/components/tupan/ListingCard';
 import { useApp } from '@/lib/AppContext';
 import { useTupanData } from '@/lib/useTupanData';
-import { computeMarketStats } from '@/lib/analytics';
 import { formatBRLCompact, formatBRL, formatM2, formatPct, formatNumber, heatLabel } from '@/lib/format';
 import { AlertTriangle, ChevronDown, TrendingUp, TrendingDown } from 'lucide-react';
-import { ChartAreaInteractive } from '@/components/charts/chart-area-interactive';
 import { CHART, tooltipStyle } from '@/lib/chartTheme';
-import { getMetricHistory, metricHistoryToChartSeries } from '@/api/market';
-import { getPortfolioAnalytics } from '@/api/portfolio';
+import { useMarketAnalytics } from '@/lib/useMarketAnalytics';
+import { usePortfolioAnalytics } from '@/lib/usePortfolioAnalytics';
+import { liquidityHorizonDays as liquidityHorizonForPeriod } from '@/lib/tupanData';
 import { AsyncEmpty, AsyncError, AsyncLoading } from '@/components/tupan/AsyncState';
 import MarketIntelligence from '@/pages/MarketIntelligence';
 import { MarketTrendMetrics } from '@/pages/MarketTrends';
 
 export default function Overview() {
-  const { properties, regions, propertiesStatus, regionsStatus, propertiesError, regionsError } = useTupanData();
+  const { addAgentContext, filters, timePeriod } = useApp();
+  const { properties, regions, propertiesStatus, regionsStatus, propertiesError, regionsError } = useTupanData({
+    city: filters.city || undefined,
+    h3Resolution: filters.h3Resolution || 9,
+  });
   const navigate = useNavigate();
-  const { addAgentContext } = useApp();
   const [activeSection, setActiveSection] = useState('overview-command');
   const overviewScrollRef = useRef(null);
   const featured = useMemo(
-    () => [...(properties || [])].sort((a, b) => (b.market_heat || 0) - (a.market_heat || 0)).slice(0, 3),
+    () => (properties || []).slice(0, 3),
     [properties]
   );
-  const ms = useMemo(
-    () => regionsStatus === 'success'
-      ? computeMarketStats(regions)
-      : { medianM2: null, avgHeat: null, avgDom: null, totalInventory: null, avgGrowth: null, avgVelocity: null },
-    [regions, regionsStatus],
-  );
-  const portfolioQuery = useQuery({
-    queryKey: ['overview-portfolio-analytics'],
-    queryFn: ({ signal }) => getPortfolioAnalytics({ signal }),
-    retry: false,
+  const liquidityHorizonDays = liquidityHorizonForPeriod(timePeriod);
+  const marketQuery = useMarketAnalytics({
+    city: filters.city || undefined,
+    area: filters.neighborhood || undefined,
+    liquidityHorizonDays: liquidityHorizonDays || undefined,
   });
+  const ms = {medianM2: marketQuery.value('price_m2'), avgHeat: marketQuery.value('market_heat'), avgDom: marketQuery.value('dom'), totalInventory: marketQuery.value('active_listings'), avgGrowth: marketQuery.value('price_growth'), avgVelocity: marketQuery.value('sales_velocity')};
+  const portfolioQuery = usePortfolioAnalytics();
   const ps = useMemo(() => {
     const analytics = portfolioQuery.data;
     if (!analytics) {
@@ -48,6 +46,7 @@ export default function Overview() {
     }
     const valuationItem = (item) => ({
       title: item.title,
+      difference: item.difference,
       price: item.asking_price,
       suggested_price: item.estimated_price,
       price_deviation: item.price_gap == null ? null : item.price_gap * 100,
@@ -63,57 +62,51 @@ export default function Overview() {
       avgDeviation: analytics.average_price_gap == null ? null : analytics.average_price_gap * 100,
       avgLiquidity: null,
       concentration,
-      topConcentration: concentration.slice(0, 2).reduce((total, item) => total + item.pct, 0),
+      topConcentration: analytics.top_region_share == null ? null : analytics.top_region_share * 100,
       overpriced: (analytics.above_estimate || []).map(valuationItem),
       underpriced: (analytics.below_estimate || []).map(valuationItem),
       fair: [],
+      aboveCount: analytics.above_count, belowCount: analytics.below_count, equalCount: analytics.equal_count,
     };
   }, [portfolioQuery.data]);
 
-  const priceHistoryQuery = useQuery({
-    queryKey: ['overview-price-m2', 'São Paulo'],
-    queryFn: ({ signal }) => getMetricHistory('price_m2', { city: 'São Paulo', signal }),
-    retry: false,
-  });
-  const priceSeries = useMemo(() => metricHistoryToChartSeries(priceHistoryQuery.data), [priceHistoryQuery.data]);
-  const latestPricePerM2 = priceSeries.at(-1)?.value ?? ms.medianM2;
-  const domSeries = [];
-  const invSeries = [];
-  const kpiSeries = useMemo(() => ({
+  const priceSeries = marketQuery.series('price_m2');
+  const latestPricePerM2 = ms.medianM2;
+  const kpiSeries = {
     portfolioValue: [],
     activeListings: [],
     medianM2: priceSeries,
-    avgDom: domSeries,
-    marketHeat: [],
+    avgDom: [], // Tenant portfolio DOM must not use global market history.
+    marketHeat: marketQuery.series('market_heat'),
     avgDeviation: [],
-    liquidity: [],
-  }), [priceSeries]);
+    liquidity: marketQuery.series('liquidity'),
+  };
   const kpiMetricOptions = [
     { id: 'portfolio-value', label: 'Valor do portfólio', value: formatBRLCompact(ps.totalValue), tag: 'DATA', series: kpiSeries.portfolioValue, seriesValueFormatter: formatBRLCompact },
     { id: 'active-listings', label: 'Anúncios ativos', value: ps.activeCount ?? '—', tag: 'DATA', series: kpiSeries.activeListings, seriesValueFormatter: formatNumber },
     { id: 'median-m2', label: 'Último preço/m²', value: formatM2(latestPricePerM2), tag: 'DATA', series: kpiSeries.medianM2, seriesValueFormatter: formatM2 },
     { id: 'avg-dom', label: 'DOM médio', value: ps.avgDom == null ? '—' : `${Math.round(ps.avgDom)}d`, tag: 'DATA', sub: 'dias', series: kpiSeries.avgDom, seriesValueFormatter: (value) => `${Math.round(value)}d` },
     { id: 'market-heat', label: 'Aquecimento de mercado', value: ms.avgHeat == null ? '—' : `${Math.round(ms.avgHeat)}/100`, tag: 'MODEL', sub: ms.avgHeat == null ? 'Indisponível' : heatLabel(ms.avgHeat), series: kpiSeries.marketHeat, seriesValueFormatter: (value) => `${Math.round(value)}/100` },
+    { id: 'liquidity', label: 'Liquidez do mercado', value: marketQuery.value('liquidity') == null ? '—' : `${Math.round(marketQuery.value('liquidity'))}/100`, tag: 'MODEL', sub: liquidityHorizonDays ? `${liquidityHorizonDays} dias` : 'Horizonte não definido', series: kpiSeries.liquidity, seriesValueFormatter: (value) => `${Math.round(value)}/100` },
     { id: 'avm-deviation', label: 'Desvio médio de preço', value: formatPct(ps.avgDeviation), tag: 'MODEL', series: kpiSeries.avgDeviation, seriesValueFormatter: formatPct },
   ];
 
   const concData = ps.concentration.slice(0, 6).map((c) => ({ name: c.name, value: Math.round(c.pct) }));
   const distData = [
-    { name: 'Sobreavaliado', value: ps.overpriced.length, color: CHART.negative },
-    { name: 'Preço justo', value: ps.fair.length, color: CHART.aqua },
-    { name: 'Subavaliado', value: ps.underpriced.length, color: CHART.positive },
+    { name: 'Acima da estimativa', value: ps.aboveCount, color: CHART.negative },
+    { name: 'Igual à estimativa', value: ps.equalCount, color: CHART.aqua },
+    { name: 'Abaixo da estimativa', value: ps.belowCount, color: CHART.positive },
   ];
 
   const alerts = useMemo(() => {
     const out = [];
     if (ps.topConcentration > 50) out.push({ tone: 'warn', icon: AlertTriangle, text: `${ps.topConcentration.toFixed(0)}% do valor do portfólio concentrado em ${ps.concentration.slice(0, 2).map((c) => c.name).join(' e ')}.` });
-    ps.overpriced.slice(0, 2).forEach((p) => out.push({ tone: 'neg', icon: TrendingUp, text: `${p.title} sobreavaliado em ${formatPct(p.price_deviation)} (R$ ${Math.round((p.price - p.suggested_price) / 1000)}K acima do AVM).` }));
-    ps.underpriced.slice(0, 1).forEach((p) => out.push({ tone: 'pos', icon: TrendingDown, text: `${p.title} subavaliado em ${formatPct(p.price_deviation)} — oportunidade de reprecificação.` }));
-    if (ms.avgHeat > 70) out.push({ tone: 'pos', icon: TrendingUp, text: `Aquecimento de mercado em ${Math.round(ms.avgHeat)}/100 — ambiente de demanda forte.` });
+    ps.overpriced.slice(0, 2).forEach((p) => out.push({ tone: 'neg', icon: TrendingUp, text: `${p.title} acima da estimativa registrada em ${formatPct(p.price_deviation)} (R$ ${Math.round(p.difference / 1000)}K acima do AVM).` }));
+    ps.underpriced.slice(0, 1).forEach((p) => out.push({ tone: 'pos', icon: TrendingDown, text: `${p.title} abaixo da estimativa registrada em ${formatPct(p.price_deviation)} — oportunidade de reprecificação.` }));
     return out;
   }, [ps, ms]);
 
-  const briefPrompt = `Portfólio: ${formatNumber(ps.activeCount)} anúncios ativos, valor total ${formatBRL(ps.totalValue)}, preço médio ${formatBRL(ps.avgPrice)}, mediana ${formatBRL(ps.median)}, preço/m² médio ${formatM2(ps.avgM2)}, DOM médio ${ps.avgDom == null ? '—' : Math.round(ps.avgDom)} dias, desvio médio do AVM ${formatPct(ps.avgDeviation)}, liquidez prevista ${ps.avgLiquidity == null ? '—' : `${Math.round(ps.avgLiquidity)}/100`}. Concentração geográfica: as 2 principais regiões concentram ${ps.topConcentration == null ? '—' : `${ps.topConcentration.toFixed(0)}%`} (${ps.concentration.slice(0, 2).map((c) => c.name).join(', ') || '—'}). ${ps.overpriced.length} anúncios acima da estimativa, ${ps.underpriced.length} abaixo da estimativa. Mercado: mediana de preço/m² ${formatM2(ms.medianM2)}, aquecimento médio ${ms.avgHeat == null ? '—' : `${Math.round(ms.avgHeat)}/100`}, DOM médio ${ms.avgDom == null ? '—' : Math.round(ms.avgDom)}, inventário total ${formatNumber(ms.totalInventory)}, crescimento médio ${formatPct(ms.avgGrowth)}.`;
+  const briefPrompt = `Portfólio: ${formatNumber(ps.activeCount)} anúncios ativos, valor total ${formatBRL(ps.totalValue)}, preço médio ${formatBRL(ps.avgPrice)}, mediana ${formatBRL(ps.median)}, preço/m² médio ${formatM2(ps.avgM2)}, DOM médio ${ps.avgDom == null ? '—' : Math.round(ps.avgDom)} dias, desvio médio do AVM ${formatPct(ps.avgDeviation)}, liquidez prevista ${ps.avgLiquidity == null ? '—' : `${Math.round(ps.avgLiquidity)}/100`}. Concentração geográfica: as 2 principais regiões concentram ${ps.topConcentration == null ? '—' : `${ps.topConcentration.toFixed(0)}%`} (${ps.concentration.slice(0, 2).map((c) => c.name).join(', ') || '—'}). ${ps.aboveCount ?? '—'} anúncios acima da estimativa, ${ps.belowCount ?? '—'} abaixo da estimativa. Mercado: mediana de preço/m² ${formatM2(ms.medianM2)}, aquecimento médio ${ms.avgHeat == null ? '—' : `${Math.round(ms.avgHeat)}/100`}, DOM médio ${ms.avgDom == null ? '—' : Math.round(ms.avgDom)}, inventário total ${formatNumber(ms.totalInventory)}, crescimento médio ${formatPct(ms.avgGrowth)}.`;
   const overviewSections = [
     { id: 'overview-command', label: 'Centro de comando', detail: 'Prioridades e indicadores' },
     { id: 'overview-market', label: 'Mercado e demanda', detail: 'Tendências e interação' },
@@ -123,7 +116,7 @@ export default function Overview() {
 
   return (
     <div className="overview-executive flex h-full min-h-0 flex-col bg-background text-foreground">
-      <TopBar title="Visão Geral" subtitle="Centro de Comando · São Paulo" />
+      <TopBar title="Visão Geral" subtitle={portfolioQuery.data?.portfolio.name || "Centro de Comando"} />
       <div ref={overviewScrollRef} className="overview-page-scroll workspace-content flex-1 overflow-y-auto space-y-6">
         {portfolioQuery.isError && <AsyncError error={portfolioQuery.error} />}
         {portfolioQuery.isLoading && <AsyncLoading className="h-6" label="Carregando indicadores do portfólio…" />}
@@ -148,7 +141,7 @@ export default function Overview() {
               </div>
             </div>
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(280px,1fr)]">
-              <AiBrief prompt={briefPrompt} title="Comentário de mercado" className="min-w-0" />
+              <AiBrief prompt="Explique os indicadores do portfólio autorizado sem recalcular valores." portfolioId={portfolioQuery.data?.portfolio.id} title="Comentário do portfólio" className="min-w-0" />
               <div className="min-w-0 border-t border-border/60 pt-4 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <h3 className="text-sm font-semibold text-foreground">Insights dos dados</h3>
@@ -171,6 +164,8 @@ export default function Overview() {
 
         {activeSection === 'overview-command' && (
         <section id="overview-pulse" aria-label="Pulso do mercado e do portfólio" className="w-full scroll-mt-6 space-y-5">
+          {marketQuery.isError && <AsyncError error={marketQuery.error} onRetry={() => marketQuery.refetch()} />}
+          {marketQuery.isLoading && <p role="status" className="text-xs text-text-muted">Carregando indicadores publicados…</p>}
           <div className="analysis-section-heading"><h2 className="text-base font-semibold tracking-tight text-foreground">Pulso do mercado e do portfólio</h2><ContextTag type="DATA">Agora</ContextTag></div>
           <div className="overview-metrics">
             {[kpiMetricOptions[0], kpiMetricOptions[2], ...kpiMetricOptions.filter((_, index) => index !== 0 && index !== 2)].map((option) => <KpiCard key={option.id} {...option} metricOptions={kpiMetricOptions} />)}
@@ -193,7 +188,7 @@ export default function Overview() {
             <span className="text-base font-semibold tracking-tight text-foreground">Interesse e interação</span>
             <span className="flex items-center gap-2"><ContextTag type="DATA">90 dias</ContextTag><ChevronDown className="h-4 w-4 text-text-muted transition-transform group-open:rotate-180" /></span>
           </summary>
-          <div className="pt-4"><Panel className="overflow-visible rounded-[22px] p-0" contextItem={{ id: 'overview-visitors-interaction', type: 'Chart', label: 'Visitantes — Interação', data: { period: '90 dias', metrics: ['visitantes desktop', 'visitantes mobile'] } }}><ChartAreaInteractive /></Panel></div>
+          <AsyncEmpty className="py-8">Métricas de interesse e interação ainda não possuem um provedor de dados.</AsyncEmpty>
         </details>
 
                 )}

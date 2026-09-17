@@ -17,7 +17,7 @@ from backend.api.schemas.market import MarketIntelligenceRequest
 from backend.repositories.tenant_data import TenantContext
 from backend.services.ai.client import InterpretationClient, OpenAiInterpretationClient
 from backend.services.ai.schemas import AiChatResult, InterpretationOutput, ToolResult
-from backend.services.ai.tools.analysis_tools import AuthorizedAiTools, EstateToolInput, HeatmapToolInput, PortfolioToolInput
+from backend.services.ai.tools.analysis_tools import AuthorizedAiTools, EstateToolInput, HeatmapToolInput, PortfolioToolInput, ReportToolInput
 from backend.services.ai.trace_store import AiTraceStore
 from backend.services.analysis_orchestrator import AnalysisOrchestrator
 from backend.services.market import MarketService
@@ -128,19 +128,25 @@ class AiOrchestrator:
             )
         if context.portfolio_id:
             operations.append(tools.get_portfolio_metrics(PortfolioToolInput(portfolio_id=context.portfolio_id)))
+        report_scope = context.resolved_report_scope()
+        if report_scope:
+            operations.append(
+                tools.get_report_summary(ReportToolInput(city=report_scope.city, area=report_scope.area))
+            )
         market_metric = context.resolved_market_metric()
-        if market_metric and self._market is not None:
+        if market_metric:
             operations.append(
                 tools.get_market_metric(
                     MarketIntelligenceRequest(
                         metric=market_metric,
-                        region=context.region or 'All neighborhoods',
+                        city=context.market_filters.get('city'),
+                        region=context.market_filters.get('area') or context.region or 'All neighborhoods',
                         period=context.resolved_market_period(),
                     )
                 )
             )
         heatmap = context.resolved_heatmap()
-        if heatmap:
+        if heatmap and not market_metric:
             try:
                 heatmap_input = HeatmapToolInput(**heatmap)
             except ValidationError as exc:

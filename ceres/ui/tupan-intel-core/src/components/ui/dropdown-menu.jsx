@@ -92,9 +92,10 @@ const DropdownMenuCheckboxItem = forwardRef(({ className, children, checked, ...
 DropdownMenuCheckboxItem.displayName =
   DropdownMenuPrimitive.CheckboxItem.displayName
 
-const DropdownMenuRadioItem = forwardRef(({ className, children, ...props }, ref) => (
+const DropdownMenuRadioItem = forwardRef(({ className, children, value, ...props }, ref) => (
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
+    value={value}
     className={cn(
       "relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className

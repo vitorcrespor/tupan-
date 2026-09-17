@@ -24,15 +24,17 @@ import {
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 
-const sortingAtom = atom([]);
+const sortingAtom = atom(/** @type {import('@tanstack/react-table').SortingState} */ ([]));
 
+/** @type {React.Context<{data: any[], columns: any[], table: import('@tanstack/react-table').Table<any> | null}>} */
 export const TableContext = createContext({
   data: [],
   columns: [],
   table: null,
 });
 
-export function TableProvider({ columns, data, children, className }) {
+/** @param {{columns: any[], data: any[], children: React.ReactNode, className?: string}} props */
+export function TableProvider({ columns, data, children, className = '' }) {
   const [sorting, setSorting] = useAtom(sortingAtom);
   const table = useReactTable({
     data,
@@ -40,8 +42,7 @@ export function TableProvider({ columns, data, children, className }) {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: (updater) => {
-      const newSorting = updater(sorting);
-      setSorting(newSorting);
+      setSorting((current) => typeof updater === 'function' ? updater(current) : updater);
     },
     state: { sorting },
   });
@@ -53,15 +54,18 @@ export function TableProvider({ columns, data, children, className }) {
   );
 }
 
-export const TableHead = memo(({ header, className }) => (
+/** @param {{header: any, className?: string}} props */
+const TableHeadView = ({ header, className = '' }) => (
   <TableHeadRaw className={className} key={header.id}>
     {header.isPlaceholder
       ? null
       : flexRender(header.column.columnDef.header, header.getContext())}
   </TableHeadRaw>
-));
+);
+export const TableHead = memo(TableHeadView);
 TableHead.displayName = 'TableHead';
 
+/** @param {{headerGroup: any, children: (value: {header: any}) => React.ReactNode}} props */
 export function TableHeaderGroup({ headerGroup, children }) {
   return (
     <TableRowRaw key={headerGroup.id}>
@@ -70,7 +74,8 @@ export function TableHeaderGroup({ headerGroup, children }) {
   );
 }
 
-export function TableHeader({ className, children }) {
+/** @param {{className?: string, children: (value: {headerGroup: any}) => React.ReactNode}} props */
+export function TableHeader({ className = '', children }) {
   const { table } = useContext(TableContext);
   return (
     <TableHeaderRaw className={className}>
@@ -79,7 +84,8 @@ export function TableHeader({ className, children }) {
   );
 }
 
-export function TableColumnHeader({ column, title, className }) {
+/** @param {{column: any, title: React.ReactNode, className?: string}} props */
+export function TableColumnHeader({ column, title, className = '' }) {
   const handleSortAsc = useCallback(() => column.toggleSorting(false), [column]);
   const handleSortDesc = useCallback(() => column.toggleSorting(true), [column]);
 
@@ -117,7 +123,8 @@ export function TableColumnHeader({ column, title, className }) {
   );
 }
 
-export function TableCell({ cell, className }) {
+/** @param {{cell: any, className?: string}} props */
+export function TableCell({ cell, className = '' }) {
   return (
     <TableCellRaw className={className}>
       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -125,7 +132,8 @@ export function TableCell({ cell, className }) {
   );
 }
 
-export function TableRow({ row, children, className, ...props }) {
+/** @param {{row: any, children: (value: {cell: any}) => React.ReactNode, className?: string, [key: string]: any}} props */
+export function TableRow({ row, children, className = '', ...props }) {
   return (
     <TableRowRaw className={className} data-state={row.getIsSelected() && 'selected'} key={row.id} {...props}>
       {row.getVisibleCells().map((cell) => children({ cell }))}
@@ -133,7 +141,8 @@ export function TableRow({ row, children, className, ...props }) {
   );
 }
 
-export function TableBody({ children, className }) {
+/** @param {{children: (value: {row: any}) => React.ReactNode, className?: string}} props */
+export function TableBody({ children, className = '' }) {
   const { columns, table } = useContext(TableContext);
   const rows = table?.getRowModel().rows;
   return (

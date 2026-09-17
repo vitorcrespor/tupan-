@@ -150,7 +150,6 @@ class MarketService:
             center=cell.center,
             boundary=cell.boundary,
             market_heat=cell.market_heat,
-            demand_score=cell.demand_score,
             average_price_m2=cell.average_price_m2,
             price_growth=cell.price_growth,
             inventory=cell.inventory,

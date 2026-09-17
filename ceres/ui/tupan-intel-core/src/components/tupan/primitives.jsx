@@ -187,7 +187,7 @@ export function Delta({ value, suffix = "", className = "" }) {
   );
 }
 
-function KpiThreeMonthSeries({ series = [], glow }) {
+function KpiThreeMonthSeries({ series = [], glow, label = "Últimos 3 meses" }) {
   const recentSeries = series
     .filter((point) => Number.isFinite(point?.value))
     .slice(-3);
@@ -196,7 +196,7 @@ function KpiThreeMonthSeries({ series = [], glow }) {
   return (
     <div className="relative mt-auto h-11 w-[calc(100%-2.75rem)] min-w-0" aria-label="Série dos últimos três meses">
       <span className="absolute left-0 top-0 text-[8px] font-semibold uppercase tracking-[0.12em] text-text-muted">
-        Últimos 3 meses
+        {label}
       </span>
       {hasHistory ? (
         <div className="absolute inset-x-0 bottom-0 h-6">
@@ -225,20 +225,21 @@ export function KpiCard({
   id: metricId,
   label,
   value,
-  delta,
+  delta = null,
   deltaSuffix = "",
   tag = "DATA",
-  sub,
+  sub = null,
   series = [],
+  seriesLabel = "Últimos 3 meses",
   seriesValueFormatter = (v) => v,
   metricOptions = [],
-  contextItem,
-  className,
+  contextItem = null,
+  className = "",
 }) {
 
   const [selectedMetric, setSelectedMetric] = useState(null);
   const configuredMetric = metricOptions.find((option) => option.id === selectedMetric);
-  const display = configuredMetric || { id: metricId, label, value, delta, deltaSuffix, tag, sub, series, seriesValueFormatter };
+  const display = configuredMetric || { id: metricId, label, value, delta, deltaSuffix, tag, sub, series, seriesLabel, seriesValueFormatter };
   const displayLabel = display.label;
   const displayValue = display.value;
   const displayDelta = display.delta;
@@ -246,6 +247,7 @@ export function KpiCard({
   const displayTag = display.tag ?? tag;
   const displaySub = display.sub;
   const displaySeries = display.series ?? series;
+  const displaySeriesLabel = display.seriesLabel ?? seriesLabel;
   const displaySeriesFormatter = display.seriesValueFormatter ?? seriesValueFormatter;
   const tints = {
     DATA: {
@@ -331,7 +333,7 @@ export function KpiCard({
         {displayDelta != null && <Delta value={displayDelta} suffix={displayDeltaSuffix} />}
         {displaySub && <span className="text-[11px] text-text-muted">{displaySub}</span>}
       </div>
-      <KpiThreeMonthSeries series={displaySeries} glow={tint.glow} />
+      <KpiThreeMonthSeries series={displaySeries} glow={tint.glow} label={displaySeriesLabel} />
       <InsightButton className="pointer-events-auto absolute bottom-3 right-3 z-10" item={contextItem || {
         id: `kpi-${displayLabel.toLowerCase().replace(/[^a-z0-9]+/gi, "-")}`,
         type: "KPI",
@@ -404,7 +406,7 @@ export function KpiCard({
                       <h2 className="font-semibold">{displayLabel}</h2>
                     </div>
                     <p className="text-sm text-text-muted">
-                      Histórico dos últimos 12 meses
+                      Histórico: {displaySeriesLabel.toLowerCase()}
                     </p>
                   </div>
                   <div className="p-4">
@@ -460,7 +462,7 @@ export function StatPill({ label, value, tone = "default" }) {
   );
 }
 
-export function ScoreBar({ label, value, tone }) {
+export function ScoreBar({ label, value, tone = undefined }) {
   const color =
     tone ||
     (value >= 75

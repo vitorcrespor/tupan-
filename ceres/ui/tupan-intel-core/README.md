@@ -39,9 +39,17 @@ that requested it, so the rest of the dashboard remains usable.
 ## Production build
 
 ```powershell
+npm run typecheck
+npm run lint
+npm run test:ui
 npm run build
 npm run preview
 ```
+
+`test:ui` uses the installed Playwright package and the system browser selected
+by `PLAYWRIGHT_CHANNEL` when set (for example, `msedge` on Windows). The demo
+snapshot test is skipped unless `DEMO_SNAPSHOT_PATH` points to an explicit test
+fixture; it never reads production data implicitly.
 
 The preview server is `http://127.0.0.1:4173`. Deploy the generated `dist/`
 directory to a static host with SPA routing enabled, and configure its origin

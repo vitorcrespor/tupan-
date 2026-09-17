@@ -17,6 +17,25 @@ export const TIME_PERIODS = [
   { id: 'custom', label: 'Personalizado' },
 ];
 
+// The top-bar selector is the one authoritative UI control for a listing
+// liquidity horizon. "custom" deliberately remains unscored until the UI
+// supports an explicit number of days; it must never silently become 90 days.
+export const LIQUIDITY_HORIZON_DAYS = Object.freeze({
+  '30d': 30,
+  '60d': 60,
+  '90d': 90,
+  '6m': 180,
+  '12m': 365,
+});
+
+export function liquidityHorizonDays(period) {
+  return LIQUIDITY_HORIZON_DAYS[period] ?? null;
+}
+
+export function timePeriodLabel(period) {
+  return TIME_PERIODS.find((item) => item.id === period)?.label || 'Horizonte não definido';
+}
+
 export const SAMPLE_QUESTIONS = [
   'Quais imóveis estão sobreavaliados?',
   'Onde meu portfólio está geograficamente superexposto?',

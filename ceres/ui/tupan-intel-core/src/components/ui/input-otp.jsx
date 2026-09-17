@@ -5,12 +5,15 @@ import { Minus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { forwardRef } from "@/lib/forwardRef"
 
-const InputOTP = forwardRef(({ className, containerClassName, ...props }, ref) => (
+const InputOTP = forwardRef(({ className, containerClassName, maxLength, children, ...props }, ref) => (
   <OTPInput
     ref={ref}
+    maxLength={maxLength}
     containerClassName={cn("flex items-center gap-2 has-[:disabled]:opacity-50", containerClassName)}
     className={cn("disabled:cursor-not-allowed", className)}
-    {...props} />
+    {...props}>
+    {children}
+  </OTPInput>
 ))
 InputOTP.displayName = "InputOTP"
 

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getProperties } from '@/api/properties';
 import { getMarketCells } from '@/api/market';
+import { useApp } from '@/lib/AppContext';
+import { liquidityHorizonDays as liquidityHorizonForPeriod } from '@/lib/tupanData';
 
 function marketCellToRegion(cell) {
   const [latitude, longitude] = Array.isArray(cell?.center) ? cell.center : [];
@@ -13,7 +15,8 @@ function marketCellToRegion(cell) {
     avg_price_per_m2: cell.average_price_m2,
     average_price_per_m2: cell.average_price_m2,
     market_heat: cell.market_heat,
-    demand_score: cell.demand_score,
+    liquidity: cell.liquidity,
+    liquidity_details: cell.liquidity_details,
     inventory: cell.inventory,
     avg_dom: cell.average_dom_days,
     price_growth: cell.price_growth_pct,
@@ -21,7 +24,17 @@ function marketCellToRegion(cell) {
   };
 }
 
-export function useTupanData() {
+/**
+ * Read tenant estates and published market cells in one explicit geography.
+ * The two sources remain separate: estates are tenant-owned, while cells are
+ * platform aggregates.  Passing no city deliberately means the published
+ * global scope; it must not silently become Sao Paulo.
+ *
+ * @param {{city?: string, h3Resolution?: number}} [scope]
+ */
+export function useTupanData({ city, h3Resolution = 9 } = {}) {
+  const { timePeriod } = useApp();
+  const liquidityHorizonDays = liquidityHorizonForPeriod(timePeriod);
   const [properties, setProperties] = useState([]);
   const [regions, setRegions] = useState([]);
   const [propertiesStatus, setPropertiesStatus] = useState('idle');
@@ -36,8 +49,8 @@ export function useTupanData() {
         setPropertiesStatus('loading');
         setRegionsStatus('loading');
         const [propertyResult, regionResult] = await Promise.allSettled([
-          getProperties(),
-          getMarketCells({ city: 'São Paulo' }),
+          getProperties({ city, liquidity_horizon_days: liquidityHorizonDays }),
+          getMarketCells({ city, h3Resolution, liquidityHorizonDays }),
         ]);
         if (!alive) return;
         if (propertyResult.status === 'fulfilled') {
@@ -68,7 +81,7 @@ export function useTupanData() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [city, h3Resolution, liquidityHorizonDays]);
 
   return {
     properties,

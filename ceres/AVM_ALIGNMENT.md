@@ -7,8 +7,7 @@ described in `CERES_AVM_State_of_the_Art_2026(1).md`.
 
 The existing `train/avm.py` artifact remains the serving-compatible legacy
 path. It is not silently replaced because its historical target is an asking /
-estimate field and there is no verified transaction history in the current
-environment. The new path is an isolated candidate trainer:
+estimate field. The new path is an isolated candidate trainer:
 
 ```powershell
 python -m backend.platform_intelligence train-transaction-avm --n-estimators 1800
@@ -17,6 +16,33 @@ python -m backend.platform_intelligence train-transaction-avm --n-estimators 180
 It writes `train/artifacts/avm_transaction_v2.json` and matching metadata only
 after a valid dataset is available. With no eligible observations it returns a
 `not_ready` scorecard and does not create an artifact.
+
+### First local ITBI candidate
+
+The first offline candidate was trained from the curated
+`data/ITBI_Campinas_2021_2026_LIMPO (1).xlsx` workbook with:
+
+```powershell
+cd ceres
+python -m train.train_itbi_transaction_avm --enrich-google --n-estimators 600
+```
+
+The trainer retained 59,017 residential, onerous, non-outlier observations
+with positive constructed area and transaction value (including the source's
+partial 2026 period). The optional Google
+enrichment geocodes each normalized Campinas neighborhood once and derives
+latitude/longitude plus H3 cells for the neighborhood centroid. The workbook
+does not contain property addresses or exact coordinates, so this is a
+neighborhood-level location feature; Google Places/neighbour-distance
+features were not fabricated or applied.
+
+The resulting pair is still a `candidate` artifact (35,410 train / 11,803
+calibration / 11,804 out-of-time test rows). Its out-of-time scorecard is
+MAE R$204,596, MdAPE 33.41%, and conformal coverage 79.45% at the 80% target
+level (median interval width 156.21%). These values are evidence for review,
+not a promotion decision. The cache at
+`data/enrichment/itbi_campinas_google_geocodes.json` contains only provider
+responses and no API key.
 
 ## Training contract
 
@@ -87,3 +113,22 @@ Promotion is intentionally manual and requires a reviewed scorecard with:
 Until those gates pass, `promotion_status` remains `candidate` and serving
 continues to use the existing artifact. This is deliberate: a new AVM should
 not become authoritative merely because it can fit a table.
+
+## Serving integration
+
+`backend.services.avm_runtime.AvmRuntime` checks the transaction artifact pair
+before invoking the legacy model. A candidate artifact is ignored. When the
+metadata has an explicit `promotion_status` of `production` or `promoted`, the
+runtime maps the authorized estate projection to the versioned transaction
+feature contract and returns the point estimate plus the split-conformal
+`lower_bound`, `upper_bound`, interval level, calibration sample count and
+out-of-time coverage. The analysis API and `PropertyDetail` present that range
+only when `uncertainty_status=calibrated`.
+
+This output is an evidence interval, not a calibrated probability that the
+estimate is correct. With no promoted transaction artifact, the legacy AVM
+continues to serve its point estimate and reports `not_calibrated`; no bounds
+or confidence percentage are fabricated.
+
+The promoted model and metadata are cached per API worker. Publish the pair
+atomically and restart API workers to load a replacement model version.

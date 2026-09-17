@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import time
 import unittest
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from backend.api.schemas.analysis import EstateComparisonQuery
 from backend.repositories.tenant_data import TenantContext
@@ -62,6 +63,52 @@ class FakeRepository:
         return {"h3_index": "8928308280fffff", "h3_resolution": 9, "period_start": "2026-07-01",
                 "period_end": "2026-08-01", "metrics": {"market_heat": 0.7}, "calculated_at": "2026-08-01T00:00:00Z"}
 
+    async def report_summary(self, context, *, city, area, featured_limit):
+        self.contexts.append(context)
+        await asyncio.sleep(0.04)
+        return {
+            "active_estate_count": 3,
+            "asking_price_count": 3,
+            "price_per_m2_count": 2,
+            "days_on_market_count": 2,
+            "average_asking_price": 900_000.0,
+            "average_price_per_m2": 9_000.0,
+            "average_days_on_market": 41.0,
+            "featured_estates": [{
+                "id": "estate-a", "title": "Estate A", "city": city,
+                "area": area, "asking_price": 1_000_000.0,
+                "price_per_m2": 10_000.0, "days_on_market": 42.0,
+                "updated_at": "2026-09-14T00:00:00+00:00",
+            }],
+        }
+
+    async def published_market_observations(self, context, *, city=None, area=None, h3_index=None, liquidity_horizon_days=None):
+        self.contexts.append(context)
+        await asyncio.sleep(0.04)
+        return [{
+            "metric": "sales_velocity", "value": 1.25, "unit": "sales/day",
+            "observed_on": "2026-09-01", "source_name": "platform-test",
+        }]
+
+
+class SnapshotRepository(FakeRepository):
+    async def published_market_observations(self, context, *, city=None, area=None, h3_index=None, liquidity_horizon_days=None):
+        self.contexts.append(context)
+        return []
+
+    async def published_heatmap_snapshot(self, context, *, city=None, area=None, h3_index=None, default_h3_resolution=9):
+        self.contexts.append(context)
+        return [{
+            "h3_index": "8928308280fffff", "h3_resolution": default_h3_resolution,
+            "city": "São Paulo", "area": "Pinheiros", "period_start": date(2026, 9, 14),
+            "period_end": date(2026, 9, 14), "input_version": "platform-global-market-heat-v1",
+            "metrics": json.dumps({
+                "inventory": 4, "average_price_m2": 10_000, "average_asking_price": 1_000_000,
+                "average_dom_days": 30, "market_heat": 60, "price_growth": 2.5,
+                "sales_velocity": 0.05, "heat_recent_sales": 3,
+            }),
+        }]
+
 
 class AnalysisOrchestratorTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
@@ -78,7 +125,10 @@ class AnalysisOrchestratorTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertLess(elapsed, 0.13, "five 40ms branches should fan out rather than run serially")
         self.assertEqual(response.valuation.estimated_price, 900_000.0)
+        self.assertEqual(response.valuation.valuation_class, "INSUFFICIENT_CONFIDENCE")
         self.assertEqual(len(response.comparables), 1)
+        self.assertEqual(response.comparables[0].similarity_score, 1.0)
+        self.assertEqual(response.comparable_metadata.scored_count, 1)
         self.assertTrue(all(context == self.context for context in repository.contexts))
         self.assertTrue(all(component.state == "success" for component in response.timing.components))
 
@@ -102,3 +152,36 @@ class AnalysisOrchestratorTests(unittest.IsolatedAsyncioTestCase):
         task.cancel()
         with self.assertRaises(asyncio.CancelledError):
             await task
+
+    async def test_report_summary_fans_out_authorized_tenant_and_platform_reads(self) -> None:
+        repository = FakeRepository()
+        service = AnalysisOrchestrator(repository, settings=self.settings)
+
+        started = time.perf_counter()
+        response = await service.report_summary(
+            self.context, city="São Paulo", area="Pinheiros", featured_limit=6
+        )
+        elapsed = time.perf_counter() - started
+
+        self.assertLess(elapsed, 0.09, "independent summary branches should fan out")
+        self.assertEqual(response.summary.active_estate_count, 3)
+        self.assertEqual(response.summary.average_price_per_m2, 9_000.0)
+        self.assertEqual(response.featured_estates[0].id, "estate-a")
+        self.assertEqual(response.market_metrics[0].value, 1.25)
+        self.assertEqual(response.market_metrics[0].unit, "sales/day")
+        self.assertTrue(all(context == self.context for context in repository.contexts))
+
+    async def test_published_metrics_fall_back_to_the_precomputed_h3_snapshot(self) -> None:
+        repository = SnapshotRepository()
+        service = AnalysisOrchestrator(repository, settings=self.settings)
+
+        response = await service.published_market_metrics(
+            self.context, city="São Paulo", area="Pinheiros",
+        )
+        values = {metric.metric: metric for metric in response.metrics}
+
+        self.assertEqual(values["market_heat"].value, 60)
+        self.assertEqual(values["market_heat"].unit, "score_0_100")
+        self.assertEqual(values["sales_velocity"].value, 0.05)
+        self.assertEqual(values["price_m2"].observed_on, date(2026, 9, 14))
+        self.assertTrue(all(context == self.context for context in repository.contexts))

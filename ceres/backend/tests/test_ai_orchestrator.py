@@ -5,8 +5,8 @@ import time
 import unittest
 from datetime import datetime, timezone
 
-from backend.api.schemas.agent import AgentContextRequest, AgentMessageRequest
-from backend.api.schemas.analysis import AnalysisComponentStatus, AnalysisTiming, EstateAnalysisResponse, EstateValuation, LocalStatistics
+from backend.api.schemas.agent import AgentContextRequest, AgentMessageRequest, ReportScopeHint
+from backend.api.schemas.analysis import AnalysisComponentStatus, AnalysisTiming, EstateAnalysisResponse, EstateValuation, LocalStatistics, ReportScope, ReportSummaryMetrics, ReportSummaryResponse
 from backend.api.schemas.estate import EstateResponse
 from backend.repositories.tenant_data import TenantContext
 from backend.services.ai.orchestrator import AiOrchestrationSettings, AiOrchestrator
@@ -40,20 +40,34 @@ class FakeAnalysis:
             ]),
         )
 
+    async def report_summary(self, context, *, city, area, featured_limit) -> ReportSummaryResponse:
+        self.contexts.append(context)
+        await asyncio.sleep(0.04)
+        return ReportSummaryResponse(
+            scope=ReportScope(city=city, area=area),
+            summary=ReportSummaryMetrics(
+                active_estate_count=1, asking_price_count=1, price_per_m2_count=1,
+                days_on_market_count=1, average_asking_price=1_000_000,
+                average_price_per_m2=10_000, average_days_on_market=42,
+            ),
+            timing=AnalysisTiming(total_ms=40, components=[]),
+        )
+
 
 class FakeClient:
-    def __init__(self, *, unknown_reference: bool = False) -> None:
+    def __init__(self, *, unknown_reference: bool = False, evidence_key: str = "estimate_estate_value") -> None:
         self.evidence: dict = {}
         self.unknown_reference = unknown_reference
+        self.evidence_key = evidence_key
 
     async def interpret(self, *, message: str, evidence: dict) -> InterpretationOutput:
         self.evidence = evidence
         return InterpretationOutput(
             answer="A interpretação usa somente evidência autorizada.",
-            answer_evidence_keys=["estimate_estate_value"],
+            answer_evidence_keys=[self.evidence_key],
             insights=[InterpretationInsight(
                 statement="A avaliação foi disponibilizada pelo AVM.",
-                evidence_keys=["not-authorized" if self.unknown_reference else "estimate_estate_value"],
+                evidence_keys=["not-authorized" if self.unknown_reference else self.evidence_key],
             )],
         )
 
@@ -78,7 +92,9 @@ class AiOrchestratorTests(unittest.IsolatedAsyncioTestCase):
         )
         elapsed = time.perf_counter() - started
 
-        self.assertLess(elapsed, 0.12, "independent estate tool views should fan out")
+        # Five 40ms branches remain materially below the 200ms sequential
+        # baseline while leaving room for Windows timer scheduling in CI.
+        self.assertLess(elapsed, 0.16, "independent estate tool views should fan out")
         self.assertEqual(analysis.analysis_calls, 1, "tool views must share one estate analysis")
         self.assertTrue(all(context == self.tenant_a for context in analysis.contexts))
         self.assertEqual({tool.name for tool in result.tools}, {
@@ -112,6 +128,31 @@ class AiOrchestratorTests(unittest.IsolatedAsyncioTestCase):
                 AgentMessageRequest(message="Mapa", context=AgentContextRequest(market_filters={"h3_resolution": "invalid"})),
                 self.tenant_a,
             )
+
+    async def test_report_ai_uses_server_owned_summary_evidence(self) -> None:
+        analysis, client = FakeAnalysis(), FakeClient(evidence_key="get_report_summary")
+        service = AiOrchestrator(
+            analysis,
+            client=client,
+            settings=AiOrchestrationSettings(request_timeout_seconds=1, max_evidence_bytes=10_000),
+        )
+
+        result = await service.chat(
+            AgentMessageRequest(
+                message="Explique o relatório.",
+                context=AgentContextRequest(report_scope=ReportScopeHint(city="São Paulo", area="Pinheiros")),
+            ),
+            self.tenant_a,
+        )
+
+        self.assertEqual([tool.name for tool in result.tools], ["get_report_summary"])
+        self.assertIn("get_report_summary", client.evidence)
+        self.assertNotIn("São Paulo", str(client.evidence["get_report_summary"]["summary"]))
+        self.assertTrue(all(context == self.tenant_a for context in analysis.contexts))
+
+    def test_report_scope_requires_city_for_area(self) -> None:
+        with self.assertRaises(ValueError):
+            ReportScopeHint(area="Pinheiros")
     def test_context_only_forwards_whitelisted_heatmap_filters(self) -> None:
         context = AgentContextRequest(region="São Paulo", market_filters={"h3_resolution": 9, "max_cells": 10, "sql": "DROP"})
         self.assertEqual(context.resolved_heatmap(), {"h3_resolution": 9, "max_cells": 10, "city": "São Paulo"})

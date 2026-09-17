@@ -11,7 +11,7 @@ from backend.api.schemas.common import ApiSchema, SourceInfo
 MarketMetric = Literal[
     "price_m2", "asking_price", "avm_price", "avm_deviation", "market_heat",
     "dom", "active_listings", "regional_exposure", "pricing_distribution",
-    "kind_distribution", "listing_age", "liquidity",
+    "kind_distribution", "listing_age", "liquidity", "price_growth", "sales_velocity",
 ]
 
 
@@ -51,7 +51,6 @@ class H3CellResponse(ApiSchema):
     center: tuple[float, float] | None = None
     boundary: list[tuple[float, float]] = Field(default_factory=list)
     market_heat: float | None = None
-    demand_score: float | None = None
     average_price_m2: float | None = None
     price_growth: float | None = None
     inventory: int
@@ -83,6 +82,7 @@ class MarketOverviewResponse(ApiSchema):
 
 class MarketIntelligenceRequest(ApiSchema):
     metric: MarketMetric
+    city: str | None = Field(default=None, max_length=160)
     region: str = "All neighborhoods"
     comparison_region: str = "No comparison"
     period: Literal["All available", "90 days", "180 days", "12 months"] = "All available"

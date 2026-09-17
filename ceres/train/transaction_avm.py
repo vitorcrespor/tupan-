@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import math
 import os
+from functools import lru_cache
 from statistics import median
 import uuid
 from pathlib import Path
@@ -19,6 +20,7 @@ import pandas as pd
 from xgboost import XGBRegressor
 
 from .valuation_data import CATEGORICAL_FEATURES, FEATURE_COLUMNS, ValuationRecord, feature_values
+from .valuation_data import _derived_h3
 from .valuation_uncertainty import conformal_interval, fit_conformal
 from .valuation_validation import regression_metrics, temporal_partitions
 
@@ -44,7 +46,11 @@ def candidate_artifact_paths(
 
 
 def _frame(records: Sequence[ValuationRecord], categories: dict[str, list[str]]) -> pd.DataFrame:
-    frame = pd.DataFrame([feature_values(record) for record in records], columns=FEATURE_COLUMNS)
+    return _feature_frame([feature_values(record) for record in records], categories)
+
+
+def _feature_frame(rows: Sequence[dict[str, Any]], categories: dict[str, list[str]]) -> pd.DataFrame:
+    frame = pd.DataFrame(rows, columns=FEATURE_COLUMNS)
     for name in CATEGORICAL_FEATURES:
         frame[name] = pd.Categorical(
             frame[name].fillna("__MISSING__").astype(str),
@@ -58,6 +64,74 @@ def _frame(records: Sequence[ValuationRecord], categories: dict[str, list[str]])
         # path instead of receiving an ``object`` column from pandas.
         frame[name] = pd.to_numeric(frame[name], errors="coerce").astype("float64")
     return frame
+
+
+def predict_transaction_price(
+    features: dict[str, Any],
+    *,
+    model_path: str | Path | None = None,
+    metadata_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Score a promoted transaction AVM and return its calibrated interval.
+
+    Candidate artifacts are deliberately refused until an explicit promotion
+    review changes ``promotion_status`` to ``production`` or ``promoted``.
+    """
+    model_file, metadata_file = candidate_artifact_paths(model_path, metadata_path)
+    if not model_file.is_file() or not metadata_file.is_file():
+        raise FileNotFoundError("A promoted transaction AVM artifact is not available.")
+    metadata = json.loads(metadata_file.read_text(encoding="utf-8"))
+    if not isinstance(metadata, dict):
+        raise RuntimeError("The transaction AVM metadata is not an object.")
+    if metadata.get("promotion_status") not in {"production", "promoted"}:
+        raise RuntimeError("The transaction AVM artifact is still a candidate.")
+    if tuple(metadata.get("feature_columns", ())) != FEATURE_COLUMNS:
+        raise RuntimeError("The transaction AVM feature schema is incompatible.")
+    categories = metadata.get("categories") or {}
+    normalized = {name: features.get(name) for name in FEATURE_COLUMNS}
+    _derived_h3(normalized)
+    for name in CATEGORICAL_FEATURES:
+        value = str(normalized.get(name) or "__MISSING__")
+        if value not in categories.get(name, []):
+            raise RuntimeError(f"The transaction AVM does not support {name}={value!r}.")
+        normalized[name] = value
+    frame = _feature_frame([normalized], categories)
+    model, cached_metadata = _load_transaction_model(str(model_file), str(metadata_file))
+    # Keep the request contract tied to the same metadata used to load the
+    # cached model. A replacement requires a worker restart, just like the
+    # legacy artifact cache.
+    metadata = cached_metadata
+    log_prediction = float(model.predict(frame)[0])
+    if not math.isfinite(log_prediction):
+        raise RuntimeError("The transaction AVM returned a non-finite estimate.")
+    estimate = math.exp(log_prediction)
+    uncertainty = metadata.get("uncertainty") or {}
+    calibration = uncertainty.get("calibration") or {}
+    lower_log, upper_log = conformal_interval(log_prediction, log_prediction, calibration)
+    return {
+        "estimated_price": estimate,
+        "lower_bound": math.exp(lower_log),
+        "upper_bound": math.exp(upper_log),
+        "interval_level": float(calibration["level"]),
+        "calibration_sample_count": int(calibration["sample_count"]),
+        "out_of_time_coverage": float(uncertainty["out_of_time_coverage"]),
+        "model_version": str(metadata.get("model_version") or f"transaction-avm-v{metadata['schema_version']}"),
+        "metadata": metadata,
+    }
+
+
+@lru_cache(maxsize=4)
+def _load_transaction_model(model_path: str, metadata_path: str) -> tuple[XGBRegressor, dict[str, Any]]:
+    """Load a promoted transaction model once per worker process."""
+    try:
+        metadata = json.loads(Path(metadata_path).read_text(encoding="utf-8"))
+        if not isinstance(metadata, dict):
+            raise ValueError("metadata must be an object")
+        model = XGBRegressor(enable_categorical=True)
+        model.load_model(model_path)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise RuntimeError("The transaction AVM artifact could not be loaded.") from exc
+    return model, metadata
 
 
 def _categories(records: Sequence[ValuationRecord]) -> dict[str, list[str]]:
@@ -181,6 +255,7 @@ def train_transaction_avm(
             "out_of_time_coverage": interval_coverage,
             "out_of_time_median_width_pct": interval_width_pct,
         },
+        "model_version": f"transaction-avm-v{MODEL_SCHEMA_VERSION}",
         "promotion_status": "candidate",
     }
     _save(model, metadata, model_path, metadata_path)

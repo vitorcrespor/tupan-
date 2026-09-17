@@ -82,9 +82,10 @@ const SelectLabel = forwardRef(({ className, ...props }, ref) => (
 ))
 SelectLabel.displayName = SelectPrimitive.Label.displayName
 
-const SelectItem = forwardRef(({ className, children, ...props }, ref) => (
+const SelectItem = forwardRef(({ className, children, value, ...props }, ref) => (
   <SelectPrimitive.Item
     ref={ref}
+    value={value}
     className={cn(
       "relative flex w-full cursor-default select-none items-center rounded-xl px-3 py-2 pr-8 text-xs outline-none transition-colors hover:bg-accent/70 focus:bg-brand/10 focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className

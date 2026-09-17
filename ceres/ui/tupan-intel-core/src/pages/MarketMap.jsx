@@ -1,18 +1,17 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import TopBar from '@/components/tupan/TopBar';
 import FiltersPanel from '@/components/tupan/FiltersPanel';
 import RegionPanel from '@/components/tupan/RegionPanel';
 import Map3D from '@/components/tupan/Map3D';
-import MapHeatLegend from '@/components/tupan/MapHeatLegend';
 import MapControls from '@/components/tupan/MapControls';
 import { useApp } from '@/lib/AppContext';
-import { formatM2, formatNumber, heatColor, heatLabel } from '@/lib/format';
+import { formatM2, formatNumber, formatBRL, heatColor, heatLabel } from '@/lib/format';
 import { apiErrorMessage } from '@/api/client';
 import { getMarketCells, periodToDays } from '@/api/market';
 
 export default function MarketMap() {
-  const { selectedRegion, setSelectedRegion, filters } = useApp();
+  const { selectedRegion, setSelectedRegion, filters, timePeriod } = useApp();
   const [tilt, setTilt] = useState(55);
   const [elevation, setElevation] = useState(1800);
   const [hovered, setHovered] = useState(null);
@@ -20,13 +19,15 @@ export default function MarketMap() {
   const marketFilters = useMemo(() => ({
     city: filters.city || undefined,
     neighborhood: filters.neighborhood || undefined,
-    propertyKind: filters.propertyType || undefined,
-    periodDays: periodToDays(filters.period),
-    priceMin: filters.priceMin || undefined,
-    priceMax: filters.priceMax || undefined,
-    heatMin: filters.heatMin || undefined,
-    h3Resolution: 9,
-  }), [filters]);
+    h3Resolution: filters.h3Resolution || 9,
+    liquidityHorizonDays: periodToDays(timePeriod),
+  }), [filters.city, filters.h3Resolution, filters.neighborhood, timePeriod]);
+
+  // H3 indexes identify a cell only within a chosen resolution. Do not retain
+  // an incompatible side-panel selection when the published grid changes.
+  useEffect(() => {
+    setSelectedRegion(null);
+  }, [marketFilters.h3Resolution, setSelectedRegion]);
 
   const {
     data: marketData,
@@ -46,7 +47,7 @@ export default function MarketMap() {
   return (
     <>
       <TopBar title="Mapa de mercado" subtitle="Inteligência geográfica · Células H3">
-        <FiltersPanel />
+        <FiltersPanel publishedOnly />
       </TopBar>
       <div className="flex-1 flex min-h-0">
         <div className="flex-1 relative isolate bg-background">
@@ -81,25 +82,31 @@ export default function MarketMap() {
           {!isLoading && !isError && cells.length > 0 && (
             <>
               <div className="absolute bottom-4 left-4 z-[1100]">
-                <MapHeatLegend />
+                <span className="text-xs text-text-secondary">{cells.some(cell => cell.dataset_kind === 'transactions') ? 'Transações ITBI · cobertura parcial geocodificada' : 'Células publicadas · aquecimento indisponível'}</span>
               </div>
               <div className="absolute bottom-4 right-4 z-[1100]">
                 <MapControls tilt={tilt} setTilt={setTilt} elevation={elevation} setElevation={setElevation} />
               </div>
               <div className="absolute top-4 right-4 z-[1100] aero-glass rounded-full px-4 py-2 text-[11px] text-text-secondary pointer-events-none">
-                {cells.length} células H3 · {cells.reduce((sum, cell) => sum + (cell.inventory || 0), 0)} anúncios
+                {cells.length} células H3 {marketFilters.h3Resolution} · publicação {cells[0]?.calculated_at?.slice(0, 10) || '—'}
               </div>
               {hovered && (
                 <div className="absolute top-4 left-4 z-[1100] aero-glass aero-gloss rounded-2xl px-4 py-3 pointer-events-none min-w-[180px]">
                   <div className="text-sm font-semibold text-foreground">{hovered.label}</div>
                   <div className="text-[10px] text-text-muted mb-1.5">H3 {hovered.h3_index}</div>
-                  <div className="text-xs" style={{ color: heatColor(hovered.market_heat ?? 0) }}>
+                  {hovered.dataset_kind === 'transactions' ? <>
+                    <div className="text-xs text-text-secondary">{formatNumber(hovered.transaction_count)} transações históricas</div>
+                    <div className="text-xs text-text-secondary">Valor médio {formatBRL(hovered.average_transaction_price)}</div>
+                    <div className="text-[11px] text-text-muted">{hovered.period_start} a {hovered.period_end} · amostra</div>
+                  </> : <><div className="text-xs" style={{ color: heatColor(hovered.market_heat ?? 0) }}>
                     Aquecimento {hovered.market_heat == null ? '—' : `${hovered.market_heat.toFixed(0)}/100`} · {hovered.market_heat == null ? 'Indisponível' : heatLabel(hovered.market_heat)}
                   </div>
                   <div className="text-[11px] text-text-secondary">{formatM2(hovered.average_price_m2)}/m²</div>
                   <div className="text-[11px] text-text-muted">
                     {formatNumber(hovered.inventory)} anúncios · DOM {hovered.average_dom_days == null ? '—' : `${Math.round(hovered.average_dom_days)}d`}
                   </div>
+                  <div className="text-[11px] text-text-secondary">Liquidez {hovered.liquidity == null ? '—' : `${Math.round(hovered.liquidity)}/100`} · {hovered.liquidity_details?.horizon_days || '—'}d</div>
+                  </>}
                 </div>
               )}
             </>

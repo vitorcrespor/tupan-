@@ -13,7 +13,8 @@ import { sendAgentMessage } from '@/api/agent';
 
 export default function VoiceAgent() {
   const persona = loadPersona();
-  const { setNavOpen, agentContextItems, agentPrefill, setAgentPrefill, agentContextArrival } = useApp();
+  const { setNavOpen, agentContextItems, agentPrefill, setAgentPrefill, agentContextArrival, setRecentTrace } = useApp();
+  const [sessionId, setSessionId] = useState(null);
   const [turns, setTurns] = useState([]);
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
@@ -35,9 +36,11 @@ export default function VoiceAgent() {
     setTurns((turns) => [...turns, { role: 'user', text: q }]);
     setThinking(true);
     try {
-      const reply = await sendAgentMessage({ message: buildVoicePrompt(persona, q), contextItems });
+      const reply = await sendAgentMessage({ message: buildVoicePrompt(persona, q), sessionId, contextItems });
       const text = reply.message.content;
-      setTurns((turns) => [...turns, { role: 'agent', text }]);
+      setSessionId(reply.session_id);
+      setRecentTrace({sessionId: reply.session_id, query: q, createdAt: new Date().toISOString(), sources: reply.sources || [], warnings: reply.warnings || []});
+      setTurns((turns) => [...turns, { role: 'agent', text, response: reply }]);
       setChatCollapsed(false);
       setResponsePulse(true);
       window.clearTimeout(responsePulseTimerRef.current);

@@ -21,7 +21,7 @@ const emptyForm = {
   title: '', address: '', city: 'São Paulo', neighborhood: 'Pinheiros', latitude: '', longitude: '',
   property_type: 'Apartment', bedrooms: '', bathrooms: '', parking_spaces: '', area_m2: '', price: '',
   last_sale_price: '', last_sale_date: '', suggested_price: '', valuation_confidence: '',
-  valuation_class: '', comparable_count: '', days_on_market: '', market_heat: '', liquidity_score: '',
+  comparable_count: '', days_on_market: '', market_heat: '', liquidity_score: '',
   luxury_score: '', leisure_score: '', location_score: '', leverage_score: '', property_age: '', status: 'Active',
 };
 

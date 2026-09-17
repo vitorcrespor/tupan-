@@ -6,7 +6,7 @@ const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 
 export default function StatCard({
   title = 'Valor do portfólio',
-  value = 0,
+  value = null,
   prefix = 'R$',
   decimals = 0,
   change = null,
@@ -53,7 +53,7 @@ export default function StatCard({
     return () => observer.disconnect();
   }, [targetVal]);
 
-  const numberText = loading ? '···' : `${prefix} ${display.toLocaleString('pt-BR')}`;
+  const numberText = loading ? '···' : value == null ? '—' : `${prefix} ${display.toLocaleString('pt-BR')}`;
   const hasChange = Number.isFinite(change);
   const changeUp = hasChange ? change >= 0 : true;
   const insightId = `stat-${title.toLowerCase().replace(/[^a-z0-9]+/gi, '-')}`;

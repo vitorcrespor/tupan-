@@ -1,11 +1,16 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getEstatePair } from '@/api/analysis';
+import { estateToView } from '@/api/properties';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend } from 'recharts';
-import { ArrowLeftRight, Sparkles, MapPin } from 'lucide-react';
+import { ArrowLeftRight, MapPin } from 'lucide-react';
 import TopBar from '@/components/tupan/TopBar';
+import EstimateProvenance from '@/components/tupan/EstimateProvenance';
 import { Panel, SectionTitle, ContextTag } from '@/components/tupan/primitives';
 import { useTupanData } from '@/lib/useTupanData';
 import { useApp } from '@/lib/AppContext';
+import { liquidityHorizonDays as liquidityHorizonForPeriod, timePeriodLabel } from '@/lib/tupanData';
 import { formatBRL, formatBRLCompact, formatM2, formatPct } from '@/lib/format';
 import { valuationLabel } from '@/lib/labels';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
@@ -16,8 +21,8 @@ import { AsyncEmpty, AsyncError, AsyncLoading } from '@/components/tupan/AsyncSt
 const SPEC = [
   { key: 'price', label: 'Preço de pedido', fmt: formatBRL, dir: 'low' },
   { key: 'price_per_m2', label: 'Preço/m²', fmt: formatM2, dir: 'low' },
-  { key: 'suggested_price', label: 'AVM sugerido', fmt: formatBRL, dir: 'neutral' },
-  { key: 'price_deviation', label: 'Desvio do AVM', fmt: (v) => formatPct(v), dir: 'fair' },
+  { key: 'suggested_price', label: 'Estimativa registrada', fmt: formatBRL, dir: 'neutral' },
+  { key: 'price_deviation', label: 'Desvio da estimativa (%)', fmt: (v) => formatPct(v), dir: 'fair' },
   { key: 'area_m2', label: 'Área', fmt: (v) => `${v} m²`, dir: 'high' },
   { key: 'bedrooms', label: 'Quartos', fmt: (v) => v, dir: 'high' },
   { key: 'bathrooms', label: 'Banheiros', fmt: (v) => v, dir: 'high' },
@@ -30,19 +35,7 @@ const SPEC = [
   { key: 'leisure_score', label: 'Lazer', fmt: (v) => v, dir: 'high' },
   { key: 'location_score', label: 'Localização', fmt: (v) => v, dir: 'high' },
   { key: 'leverage_score', label: 'Alavancagem', fmt: (v) => v, dir: 'high' },
-  { key: 'valuation_confidence', label: 'Confiança AVM', fmt: (v) => `${v}%`, dir: 'high' },
 ];
-
-function compareRow(a, b, field, dir) {
-  const av = a?.[field];
-  const bv = b?.[field];
-  if (av == null || bv == null || av === bv) return { aWins: null, diff: null };
-  let aWins = null;
-  if (dir === 'high') aWins = av > bv;
-  else if (dir === 'low') aWins = av < bv;
-  else if (dir === 'fair') aWins = Math.abs(av) < Math.abs(bv);
-  return { aWins, diff: bv - av };
-}
 
 function PropertyPicker({ label, value, onChange, properties, emptyHint }) {
   return (
@@ -66,8 +59,9 @@ function PropertyPicker({ label, value, onChange, properties, emptyHint }) {
 }
 
 export default function Compare() {
+  const { timePeriod } = useApp();
+  const liquidityHorizonDays = liquidityHorizonForPeriod(timePeriod);
   const { properties, propertiesStatus, propertiesError } = useTupanData();
-  const { sendToAgent } = useApp();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const [aId, setAId] = useState(params.get('a') || null);
@@ -80,8 +74,14 @@ export default function Compare() {
     setParams(next, { replace: true });
   }, [aId, bId]);
 
-  const a = useMemo(() => properties.find((p) => p.id === aId) || null, [properties, aId]);
-  const b = useMemo(() => properties.find((p) => p.id === bId) || null, [properties, bId]);
+  const pairQuery = useQuery({
+    queryKey: ['estate-pair', aId, bId, liquidityHorizonDays],
+    queryFn: ({signal}) => getEstatePair(aId, bId, {signal, liquidity_horizon_days: liquidityHorizonDays}),
+    enabled: Boolean(aId && bId),
+  });
+  const a = pairQuery.data ? estateToView(pairQuery.data.a) : properties.find(p => p.id === aId);
+  const b = pairQuery.data ? estateToView(pairQuery.data.b) : properties.find(p => p.id === bId);
+  const metrics = pairQuery.data?.metrics || [];
 
   const radarData = useMemo(() => {
     if (!a || !b) return [];
@@ -95,20 +95,10 @@ export default function Compare() {
     ];
   }, [a, b]);
 
-  const topDiffs = useMemo(() => {
-    if (!a || !b) return [];
-    return SPEC.filter((s) => s.dir !== 'neutral' && s.dir !== 'fair')
-      .map((s) => {
-        const av = a[s.key], bv = b[s.key];
-        const base = Math.abs(av) || 1;
-        return { ...s, av, bv, rel: Math.abs(bv - av) / base, abs: Math.abs(bv - av) };
-      })
-      .filter((s) => s.av != null && s.bv != null && s.rel > 0.001)
-      .sort((x, y) => y.rel - x.rel)
-      .slice(0, 5);
-  }, [a, b]);
+  const topDiffs = metrics.filter(row => row.difference != null && row.difference !== 0).slice(0, 5)
+    .map(row => ({...SPEC.find(spec => spec.key === row.key), ...row}));
 
-  const both = a && b;
+  const both = a && b && pairQuery.isSuccess;
 
   return (
     <>
@@ -122,12 +112,14 @@ export default function Compare() {
         {propertiesStatus === 'error' && <AsyncError error={propertiesError} />}
         {propertiesStatus === 'success' && properties.length === 0 && <AsyncEmpty className="h-24">Não há imóveis disponíveis para comparar.</AsyncEmpty>}
         {propertiesStatus === 'success' && properties.length > 0 && <>
+        {pairQuery.isFetching && <AsyncLoading className="h-16" label="Comparando dados autorizados…" />}
+        {pairQuery.isError && <AsyncError error={pairQuery.error} />}
         <section aria-label="Comparação de atributos">
           <div className="overflow-x-auto">
             <table className="ceres-table comparison-matrix w-full">
               <thead className="border-b border-border">
                 <tr>
-                  <th scope="col" className="text-left"><h2 className="text-sm font-semibold">Comparação de atributos</h2><span className="mt-1 block text-xs font-normal text-text-secondary">{SPEC.length} critérios</span></th>
+                  <th scope="col" className="text-left"><h2 className="text-sm font-semibold">Comparação de atributos</h2><span className="mt-1 block text-xs font-normal text-text-secondary">{SPEC.length} critérios · liquidez em {timePeriodLabel(timePeriod)}</span></th>
                   {[{ property: a, id: aId, setId: setAId, tag: 'A' }, { property: b, id: bId, setId: setBId, tag: 'B' }].map(({ property, id, setId, tag }) => (
                     <th key={tag} scope="col">
                       <PropertyPicker label={`Imóvel ${tag}`} value={id} onChange={setId} properties={properties} emptyHint={`Selecione o imóvel ${tag}`} />
@@ -143,13 +135,14 @@ export default function Compare() {
               </thead>
               {both && <tbody>
                 {SPEC.map((spec) => {
-                  const { aWins, diff } = compareRow(a, b, spec.key, spec.dir);
+                  const row = metrics.find(item => item.key === spec.key);
+                  const diff = row?.difference;
                   return <tr key={spec.key} className="border-b border-border/60">
                     <th scope="row" className="text-left font-normal text-text-secondary">{spec.label}</th>
-                    <td className={aWins === true ? 'font-medium text-positive' : 'text-foreground'}>{a[spec.key] == null ? '—' : spec.fmt(a[spec.key])}</td>
-                    <td className={aWins === false ? 'font-medium text-positive' : 'text-foreground'}>{b[spec.key] == null ? '—' : spec.fmt(b[spec.key])}</td>
-                    <td className="text-text-secondary">{diff != null && spec.dir !== 'neutral'
-                      ? <>{diff > 0 ? '+' : ''}{spec.key === 'price' || spec.key === 'suggested_price' ? formatBRLCompact(diff) : spec.key === 'price_per_m2' ? formatM2(diff) : Number.isInteger(diff) ? diff : diff.toFixed(1)}</>
+                    <td className="text-foreground">{row?.a_value == null ? '—' : spec.fmt(row.a_value)}{spec.key === 'suggested_price' && row?.a_value != null && <EstimateProvenance provenance={a.estimate_provenance} />}</td>
+                    <td className="text-foreground">{row?.b_value == null ? '—' : spec.fmt(row.b_value)}{spec.key === 'suggested_price' && row?.b_value != null && <EstimateProvenance provenance={b.estimate_provenance} />}</td>
+                    <td className="text-text-secondary">{diff != null
+                      ? <>{diff > 0 ? '+' : ''}{spec.key === 'price' || spec.key === 'suggested_price' ? formatBRLCompact(diff) : spec.key === 'price_per_m2' ? formatM2(diff) : Number.isInteger(diff) ? diff : diff.toFixed(1)}{row?.unit === 'percentage_points' ? ' p.p.' : ''}</>
                       : '—'}</td>
                   </tr>;
                 })}
@@ -161,6 +154,13 @@ export default function Compare() {
             <div><p className="text-sm">Selecione dois imóveis para visualizar a comparação lado a lado.</p><p className="mt-1 text-xs">As principais diferenças nos dados serão destacadas automaticamente.</p></div>
           </div>}
         </section>
+
+        {both && <p className="text-xs text-text-secondary">
+          Semelhança estrutural por cosseno: {pairQuery.data.similarity_score == null
+            ? 'indisponível por dados estruturais incompletos'
+            : pairQuery.data.similarity_score.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}.
+          {' '}Usa área, quartos, banheiros e vagas; não representa confiança da avaliação.
+        </p>}
 
         {both && (
           <>
@@ -180,40 +180,17 @@ export default function Compare() {
               </Panel>
 
               <Panel className="p-4">
-                <SectionTitle right={<ContextTag type="AI">Destaques</ContextTag>}>Principais diferenças</SectionTitle>
+                <SectionTitle right={<ContextTag type="DATA">B − A</ContextTag>}>Diferenças disponíveis</SectionTitle>
                 <div className="space-y-2.5">
-                  {topDiffs.map((d) => {
-                    const winner = d.bv > d.av ? (d.dir === 'high' ? b : a) : (d.dir === 'high' ? a : b);
-                    const accent = winner === a ? CHART.aqua : CHART.lagoon;
-                    const verb = d.dir === 'low' ? 'vantagem em' : 'destaque em';
-                    return (
-                      <div key={d.key} className="flex items-center gap-2.5 py-1.5 border-b border-border/50 last:border-0">
-                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: accent }} />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs text-foreground">{d.label}</div>
-                          <div className="text-[10px] text-text-muted truncate">
-                            {winner.title} tem {verb} {d.label.toLowerCase()} ({d.fmt(winner[d.key])} vs {d.fmt(winner === a ? b[d.key] : a[d.key])})
-                          </div>
-                        </div>
-                        <span className="text-[10px] tnum text-text-secondary shrink-0">
-                          {(d.bv - d.av) > 0 ? '+' : ''}{d.key === 'price' ? formatBRLCompact((d.bv - d.av)) : Number.isInteger((d.bv - d.av)) ? (d.bv - d.av) : (d.bv - d.av).toFixed(1)}
-                        </span>
-                      </div>
-                    );
-                  })}
+                  {topDiffs.map(d => <div key={d.key} className="flex items-center justify-between gap-3 py-1.5 border-b border-border/50">
+                    <div><div className="text-xs text-foreground">{d.label}</div>
+                    <div className="text-[10px] text-text-secondary">{d.fmt(d.a_value)} · {d.fmt(d.b_value)}</div></div>
+                    <span className="text-xs tnum">{d.difference > 0 ? '+' : ''}{d.key === 'price_deviation' ? d.difference.toFixed(1) + ' p.p.' : d.fmt(d.difference)}</span>
+                  </div>)}
+                  {topDiffs.length === 0 && <p className="text-xs text-text-secondary">Não há diferenças entre os atributos disponíveis.</p>}
                 </div>
-                <button
-                  onClick={() => sendToAgent(
-                    [
-                      { id: `prop-${a.id}`, type: 'Property', label: a.title, data: a },
-                      { id: `prop-${b.id}`, type: 'Property', label: b.title, data: b },
-                    ],
-                    `Compare os imóveis ${a.title} (${a.neighborhood}) e ${b.title} (${b.neighborhood}) lado a lado e recomende o melhor investimento.`
-                  )}
-                  className="mt-4 h-9 px-4 rounded-lg bg-brand text-brand-foreground text-xs font-medium hover:bg-brand/90 flex items-center justify-center gap-1.5"
-                >
-                  <Sparkles className="w-3.5 h-3.5" /> Analisar comparação com Ceres
-                </button>
+                <p className="mt-4 text-xs text-text-secondary">Até cinco diferenças, na ordem dos atributos. Estimativas registradas, não uma nova inferência AVM. Mais ou menos em um atributo não determina o melhor investimento.</p>
+                <p className="mt-2 text-xs text-text-muted">A interpretação por IA de dois imóveis simultâneos ainda não está conectada.</p>
               </Panel>
             </div>
           </>

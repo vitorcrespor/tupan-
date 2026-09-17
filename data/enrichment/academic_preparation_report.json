@@ -1,0 +1,30 @@
+{
+  "source_rows": 64163,
+  "eligible_rows": 24437,
+  "exclusions": {
+    "non_standard_sale": 9225,
+    "outside_declared_price_segment": 9218,
+    "incomplete_address": 19361,
+    "duplicate_transaction": 1069,
+    "partial_transfer": 853
+  },
+  "price_segment_brl": [
+    100000,
+    3000000
+  ],
+  "requests": 0,
+  "address_budget": 128,
+  "accepted_addresses": 81,
+  "geocoded_transactions": 4790,
+  "city": "Indaiatuba",
+  "sampling": "most_frequent_complete_addresses; partial_city_coverage",
+  "prepared_cells": 62,
+  "database": {
+    "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+    "portfolio_name": "Demonstração Ceres · Indaiatuba",
+    "inserted_estates": 0,
+    "demo_estate_count": 12,
+    "published_cells": 62,
+    "tenant_verified": true
+  }
+}

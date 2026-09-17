@@ -26,7 +26,10 @@
 
 ## Migration sequence
 
-1. Apply `001_cloud_control_plane.sql`, then `002_production_data_platform.sql` and `003_background_jobs.sql`, then `004_observability.sql`, to a Postgres instance that has PostGIS and pgvector installed.
+1. On a PostgreSQL instance with PostGIS and pgvector installed, preview and
+   apply every pending migration through `python -m backend.migrate` followed
+   by `python -m backend.migrate --apply`. The migration ledger enforces order
+   and checksums; do not maintain a second hard-coded filename list here.
 2. Deploy FastAPI/worker using an application role without `BYPASSRLS`.
 3. Backfill organizations only through an explicit ownership mapping; do not auto-assign legacy Chroma records.
 4. Backfill `estates`, validate count/checksum/geographic coordinate parity, then shadow-read from PostgreSQL.

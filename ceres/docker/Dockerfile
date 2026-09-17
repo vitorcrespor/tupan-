@@ -51,4 +51,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
 
 # `exec` forwards Railway SIGTERM to Uvicorn. No reload mode and no local
 # filesystem persistence are used. Railway provides PORT at runtime.
-CMD ["/bin/sh", "-c", "exec python -m uvicorn backend.api.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*' --timeout-graceful-shutdown 30"]
+CMD ["/bin/sh", "-c", "exec python -m uvicorn backend.api.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips=${FORWARDED_ALLOW_IPS:-127.0.0.1} --timeout-graceful-shutdown 30"]

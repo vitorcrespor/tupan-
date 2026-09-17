@@ -8,10 +8,11 @@ import { useApp } from '@/lib/AppContext';
 import { formatM2, formatNumber, formatPct } from '@/lib/format';
 import { apiErrorMessage } from '@/api/client';
 import { CHART, tooltipStyle } from '@/lib/chartTheme';
-import { formatMetricDate, getMarketCells, getMarketRegion, getMetricHistory } from '@/api/market';
+import { formatMetricDate, getMarketCells, H3_RESOLUTION_OPTIONS, periodToDays, publishedMetricHistory } from '@/api/market';
+import { useMarketAnalytics } from '@/lib/useMarketAnalytics';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const formatVelocity = (value) => Number.isFinite(Number(value)) ? Number(value).toFixed(2) : '—';
+const formatVelocity = (value) => value != null && Number.isFinite(Number(value)) ? `${Number(value).toFixed(2)} vendas/dia` : '—';
 
 const METRICS = {
   Price: [
@@ -20,7 +21,7 @@ const METRICS = {
   ],
   Demand: [
     { id: 'market_heat', label: 'Aquecimento de mercado', value: (cell) => cell.market_heat, format: (value) => value == null ? '—' : `${Math.round(value)}/100` },
-    { id: 'demand_score', label: 'Demanda espacial', value: (cell) => cell.demand_score, format: (value) => value == null ? '—' : `${Math.round(value)}/100` },
+    { id: 'liquidity', label: 'Liquidez', value: (cell) => cell.liquidity, format: (value) => value == null ? '—' : `${Math.round(value)}/100` },
     { id: 'average_dom_days', label: 'Dias no mercado', value: (cell) => cell.average_dom_days, format: (value) => value == null ? '—' : `${Math.round(value)}d` },
   ],
   Inventory: [
@@ -44,14 +45,14 @@ function historyChartData(primary, comparison) {
 }
 
 export default function MarketIntelligence({ embedded = false }) {
-  const { sendToAgent } = useApp();
+  const { sendToAgent, filters, setFilters, setSelectedRegion, timePeriod } = useApp();
   const [category, setCategory] = useState('Price');
   const [metricId, setMetricId] = useState('average_price_m2');
   const [geo, setGeo] = useState('all');
   const [compare, setCompare] = useState('none');
 
   const metric = METRICS[category].find((item) => item.id === metricId) || METRICS[category][0];
-  const cellFilters = useMemo(() => ({ city: 'São Paulo', h3Resolution: 9 }), []);
+  const cellFilters = useMemo(() => ({ city: filters.city || undefined, h3Resolution: filters.h3Resolution || 9, liquidityHorizonDays: periodToDays(timePeriod) }), [filters.city, filters.h3Resolution, timePeriod]);
 
   const allCellsQuery = useQuery({
     queryKey: ['market-intelligence-cells', cellFilters],
@@ -59,34 +60,16 @@ export default function MarketIntelligence({ embedded = false }) {
   });
   const cells = allCellsQuery.data?.cells || [];
 
-  const primaryCellQuery = useQuery({
-    queryKey: ['market-intelligence-cell', geo, cellFilters],
-    queryFn: ({ signal }) => getMarketRegion(geo, { ...cellFilters, signal }),
-    enabled: geo !== 'all',
-  });
-  const comparisonCellQuery = useQuery({
-    queryKey: ['market-intelligence-cell', compare, cellFilters],
-    queryFn: ({ signal }) => getMarketRegion(compare, { ...cellFilters, signal }),
-    enabled: compare !== 'none',
-  });
-
-  const primaryCell = geo === 'all' ? null : primaryCellQuery.data?.cell;
-  const comparisonCell = compare === 'none' ? null : comparisonCellQuery.data?.cell;
-  const historyArea = primaryCell?.neighborhood;
-  const comparisonHistoryArea = comparisonCell?.neighborhood;
-
-  const primaryHistoryQuery = useQuery({
-    queryKey: ['market-history', metric.id, historyArea],
-    queryFn: ({ signal }) => getMetricHistory('price_m2', { city: 'São Paulo', area: historyArea, signal }),
-    enabled: Boolean(metric.history),
-    retry: false,
-  });
-  const comparisonHistoryQuery = useQuery({
-    queryKey: ['market-history', metric.id, comparisonHistoryArea],
-    queryFn: ({ signal }) => getMetricHistory('price_m2', { city: 'São Paulo', area: comparisonHistoryArea, signal }),
-    enabled: Boolean(metric.history && comparisonCell),
-    retry: false,
-  });
+  const primaryCell = cells.find(cell => cell.h3_index === geo);
+  const comparisonCell = cells.find(cell => cell.h3_index === compare);
+  const metricKey = ({average_price_m2:'price_m2',price_growth_pct:'price_growth',average_dom_days:'dom',inventory:'active_listings'})[metric.id] || metric.id;
+  const historyScope = geo === 'all'
+    ? { city: cellFilters.city, liquidityHorizonDays: cellFilters.liquidityHorizonDays }
+    : { h3Index: geo, liquidityHorizonDays: cellFilters.liquidityHorizonDays };
+  const marketQuery = useMarketAnalytics(historyScope);
+  const hasHistory = true;
+  const primaryHistoryQuery = {...marketQuery, data:publishedMetricHistory(marketQuery.data,metricKey)};
+  const comparisonHistoryQuery = {data:undefined,isError:false,error:null};
 
   const chartCells = geo === 'all' ? cells : primaryCell ? [primaryCell] : [];
   const barData = chartCells
@@ -96,8 +79,9 @@ export default function MarketIntelligence({ embedded = false }) {
     .filter((cell) => cell.market_heat != null && cell.average_price_m2 != null)
     .map((cell) => ({ x: cell.market_heat, y: cell.average_price_m2, z: cell.inventory, name: cell.label }));
   const historyData = historyChartData(primaryHistoryQuery.data, comparisonHistoryQuery.data);
+  const historyReason = primaryHistoryQuery.data?.values.find((point) => point.value == null && point.reason)?.reason || primaryHistoryQuery.data?.source.reason || null;
   const cellOptions = [...cells].sort((a, b) => a.label.localeCompare(b.label));
-  const promptData = { metric: metric.label, primary: primaryCell || 'all_cells', comparison: comparisonCell || null };
+  const promptData = { metric: metricKey, city: cellFilters.city, h3_resolution: cellFilters.h3Resolution };
 
   return (
     <>
@@ -138,12 +122,19 @@ export default function MarketIntelligence({ embedded = false }) {
             </div>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] uppercase text-text-muted">Agregação</span>
-              <Select value="h3" disabled>
-                <SelectTrigger className="h-8 w-auto min-w-[130px]"><SelectValue /></SelectTrigger>
-                <SelectContent><SelectItem value="h3">Célula H3</SelectItem></SelectContent>
+              <Select value={String(cellFilters.h3Resolution)} onValueChange={(value) => {
+                setSelectedRegion(null);
+                setGeo('all');
+                setCompare('none');
+                // Keep map and intelligence views on the same published H3 snapshot.
+                // This is a presentation preference, never a backend calculation.
+                setFilters((current) => ({ ...current, h3Resolution: Number(value) }));
+              }}>
+                <SelectTrigger aria-label="Resolução H3" className="h-8 w-auto min-w-[132px]"><SelectValue /></SelectTrigger>
+                <SelectContent>{H3_RESOLUTION_OPTIONS.map((resolution) => <SelectItem key={resolution.value} value={String(resolution.value)}>{resolution.label}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            <button onClick={() => sendToAgent([{ id: `mi-${metric.id}-${geo}`, type: 'Metric', label: metric.label, data: promptData }], `Explique ${metric.label} para ${geo === 'all' ? 'as células H3 consultadas' : cellName(primaryCell)}.`)} className="ml-auto h-8 px-3.5 rounded-lg bg-brand text-brand-foreground text-xs font-medium hover:bg-brand/90 flex items-center gap-1.5">
+            <button disabled={geo !== 'all' || compare !== 'none'} title={geo !== 'all' || compare !== 'none' ? 'Interpretação de células específicas ainda não conectada' : undefined} onClick={() => sendToAgent([{ id: `mi-${metric.id}-${geo}`, type: 'Metric', label: metric.label, data: promptData }], `Explique ${metric.label} para ${geo === 'all' ? 'as células H3 consultadas' : cellName(primaryCell)}.`)} className="ml-auto h-8 px-3.5 rounded-lg bg-brand text-brand-foreground text-xs font-medium hover:bg-brand/90 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> Explicar esta análise
             </button>
           </div>
@@ -153,32 +144,33 @@ export default function MarketIntelligence({ embedded = false }) {
         {allCellsQuery.isLoading && <div className="flex items-center justify-center py-16"><div className="w-8 h-8 border-4 border-border border-t-brand rounded-full animate-spin" /></div>}
         {!allCellsQuery.isLoading && !allCellsQuery.isError && cells.length === 0 && <div className="py-12 text-center text-xs text-text-muted">Nenhuma célula H3 retornada para este mercado.</div>}
 
-        {!allCellsQuery.isLoading && !allCellsQuery.isError && cells.length > 0 && <>
+        {!allCellsQuery.isLoading && <>
           <div className="analysis-split">
             <Panel className="p-4">
               <SectionTitle right={<ContextTag type="DATA">Histórico</ContextTag>}>{metric.label} — Tendência</SectionTitle>
-              {metric.history && primaryHistoryQuery.isLoading && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Carregando histórico…</div>}
-              {metric.history && primaryHistoryQuery.isError && <div role="alert" className="h-[240px] flex items-center justify-center text-xs text-negative text-center px-6">{apiErrorMessage(primaryHistoryQuery.error)}</div>}
-              {metric.history && !primaryHistoryQuery.isLoading && !primaryHistoryQuery.isError && comparisonHistoryQuery.isError && <div role="alert" className="mb-2 rounded border border-negative/30 bg-negative/10 p-2 text-xs text-negative">O histórico da célula de comparação não pôde ser carregado: {apiErrorMessage(comparisonHistoryQuery.error)}</div>}
-              {!metric.history && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted text-center px-6">Histórico ainda indisponível para esta métrica.</div>}
-              {metric.history && !primaryHistoryQuery.isLoading && !primaryHistoryQuery.isError && historyData.length === 0 && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Sem pontos históricos para este recorte.</div>}
-              {metric.history && !primaryHistoryQuery.isLoading && !primaryHistoryQuery.isError && historyData.length > 0 && <ResponsiveContainer width="100%" height={240}>
+              {hasHistory && <p className="mb-2 text-xs text-text-muted">{geo === 'all' ? cellFilters.city : cellName(primaryCell)} · {primaryHistoryQuery.data.unit} · {primaryHistoryQuery.data.source.label}</p>}
+              {hasHistory && primaryHistoryQuery.isLoading && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Carregando histórico…</div>}
+              {hasHistory && primaryHistoryQuery.isError && <div role="alert" className="h-[240px] flex items-center justify-center text-xs text-negative text-center px-6">{apiErrorMessage(primaryHistoryQuery.error)}</div>}
+              {hasHistory && !primaryHistoryQuery.isLoading && !primaryHistoryQuery.isError && comparisonHistoryQuery.isError && <div role="alert" className="mb-2 rounded border border-negative/30 bg-negative/10 p-2 text-xs text-negative">O histórico da célula de comparação não pôde ser carregado: {apiErrorMessage(comparisonHistoryQuery.error)}</div>}
+              {hasHistory && !primaryHistoryQuery.isLoading && !primaryHistoryQuery.isError && historyData.length === 0 && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Sem pontos históricos para este recorte.</div>}
+              {hasHistory && !primaryHistoryQuery.isLoading && !primaryHistoryQuery.isError && historyData.length > 0 && <ResponsiveContainer width="100%" height={240}>
                 <LineChart data={historyData} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
                   <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="label" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
                   <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(0)}K` : value} />
                   <Tooltip contentStyle={tooltipStyle} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
-                  <Line type="monotone" dataKey="a" name={geo === 'all' ? 'São Paulo' : cellName(primaryCell)} stroke={CHART.aqua} strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="a" name={geo === 'all' ? cellFilters.city : cellName(primaryCell)} stroke={CHART.aqua} strokeWidth={2} dot={false} />
                   {comparisonCell && <Line type="monotone" dataKey="b" name={cellName(comparisonCell)} stroke={CHART.positive} strokeWidth={2} dot={false} />}
                 </LineChart>
               </ResponsiveContainer>}
+              {hasHistory && !primaryHistoryQuery.isLoading && !primaryHistoryQuery.isError && historyReason && <p className="mt-2 text-xs text-text-muted">Lacunas na série: {historyReason}</p>}
             </Panel>
             <Panel className="p-4">
               <SectionTitle right={<ContextTag type="DATA">H3</ContextTag>}>{metric.label} por célula H3</SectionTitle>
-              {primaryCellQuery.isLoading && geo !== 'all' && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Carregando célula H3…</div>}
-              {primaryCellQuery.isError && geo !== 'all' && <div role="alert" className="mb-2 rounded border border-negative/30 bg-negative/10 p-2 text-xs text-negative">{apiErrorMessage(primaryCellQuery.error)}</div>}
-              {!primaryCellQuery.isLoading && (barData.length === 0 ? <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Sem valores para esta métrica.</div> : <ResponsiveContainer width="100%" height={240}>
+              {allCellsQuery.isLoading && geo !== 'all' && <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Carregando célula H3…</div>}
+              {allCellsQuery.isError && geo !== 'all' && <div role="alert" className="mb-2 rounded border border-negative/30 bg-negative/10 p-2 text-xs text-negative">{apiErrorMessage(allCellsQuery.error)}</div>}
+              {!allCellsQuery.isLoading && (barData.length === 0 ? <div className="h-[240px] flex items-center justify-center text-xs text-text-muted">Sem valores para esta métrica.</div> : <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={barData} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
                   <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="name" stroke={CHART.axis} fontSize={9} tickLine={false} axisLine={false} angle={-30} textAnchor="end" height={60} />
@@ -206,9 +198,9 @@ export default function MarketIntelligence({ embedded = false }) {
             </Panel>
             <Panel className="p-4">
               <SectionTitle right={<ContextTag type="DATA">Comparar</ContextTag>}>Comparação de células</SectionTitle>
-              {comparisonCellQuery.isLoading && <div className="py-12 text-center text-xs text-text-muted">Carregando célula de comparação…</div>}
-              {comparisonCellQuery.isError && <div role="alert" className="mb-2 rounded border border-negative/30 bg-negative/10 p-2 text-xs text-negative">{apiErrorMessage(comparisonCellQuery.error)}</div>}
-              {!comparisonCellQuery.isLoading && (!primaryCell || !comparisonCell ? <div className="py-12 text-center text-xs text-text-muted">Selecione duas células H3 para comparar valores calculados.</div> : <>
+              {allCellsQuery.isLoading && <div className="py-12 text-center text-xs text-text-muted">Carregando célula de comparação…</div>}
+              {allCellsQuery.isError && <div role="alert" className="mb-2 rounded border border-negative/30 bg-negative/10 p-2 text-xs text-negative">{apiErrorMessage(allCellsQuery.error)}</div>}
+              {!allCellsQuery.isLoading && (!primaryCell || !comparisonCell ? <div className="py-12 text-center text-xs text-text-muted">Selecione duas células H3 para comparar valores calculados.</div> : <>
                 <div className="grid grid-cols-3 gap-1 text-[10px] uppercase text-text-muted mb-2"><span>Métrica</span><span className="text-right truncate">{cellName(primaryCell)}</span><span className="text-right truncate">{cellName(comparisonCell)}</span></div>
                 {[
                   { label: 'Preço/m²', primary: formatM2(primaryCell.average_price_m2), comparison: formatM2(comparisonCell.average_price_m2) },
@@ -217,6 +209,7 @@ export default function MarketIntelligence({ embedded = false }) {
                   { label: 'Inventário', primary: formatNumber(primaryCell.inventory), comparison: formatNumber(comparisonCell.inventory) },
                   { label: 'Velocidade', primary: formatVelocity(primaryCell.sales_velocity), comparison: formatVelocity(comparisonCell.sales_velocity) },
                   { label: 'Aquecimento', primary: scoreText(primaryCell.market_heat), comparison: scoreText(comparisonCell.market_heat) },
+                  { label: `Liquidez · ${cellFilters.liquidityHorizonDays || '—'}d`, primary: scoreText(primaryCell.liquidity), comparison: scoreText(comparisonCell.liquidity) },
                 ].map((row) => <div key={row.label} className="grid grid-cols-3 gap-1 py-1.5 border-b border-border/60 last:border-0 text-xs"><span className="text-text-secondary">{row.label}</span><span className="text-right tnum text-foreground">{row.primary}</span><span className="text-right tnum text-foreground">{row.comparison}</span></div>)}
               </>)}
             </Panel>

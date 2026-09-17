@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import AiEvidence from './AiEvidence';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { ScrollShadow } from '@/components/ui/heroui-scroll-shadow';
 import { apiErrorMessage } from '@/api/client';
 
@@ -7,7 +8,7 @@ import { apiErrorMessage } from '@/api/client';
  * its inner content so overflowing messages remain reachable by native scroll.
  *
  * @param {{
- *   turns: Array<{role: string, text: string}>,
+ *   turns: Array<{role: string, text: string, response?: object}>,
  *   thinking: boolean,
  *   error: unknown,
  *   visible: boolean,
@@ -17,6 +18,7 @@ export default function VoiceChatHistory({ turns, thinking, error, visible }) {
   const viewportRef = useRef(null);
   const contentRef = useRef(null);
   const followingLatest = useRef(true);
+  const readingPosition = useRef(0);
 
   useEffect(() => {
     if (!visible) return;
@@ -34,14 +36,14 @@ export default function VoiceChatHistory({ turns, thinking, error, visible }) {
     return () => resizeObserver.disconnect();
   }, [visible]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!visible) return;
     // A question sent by this user intentionally returns to the conversation end.
     if (turns.at(-1)?.role === 'user') followingLatest.current = true;
-    if (followingLatest.current) {
-      const viewport = viewportRef.current;
-      viewport?.scrollTo({ top: viewport.scrollHeight });
-    }
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    if (followingLatest.current) viewport.scrollTo({ top: viewport.scrollHeight });
+    else viewport.scrollTop = readingPosition.current;
   }, [turns, error, visible]);
 
   return (
@@ -59,6 +61,7 @@ export default function VoiceChatHistory({ turns, thinking, error, visible }) {
         className="voice-chat-stage"
         onScroll={(event) => {
           const viewport = event.currentTarget;
+          readingPosition.current = viewport.scrollTop;
           followingLatest.current = viewport.scrollHeight - viewport.clientHeight - viewport.scrollTop < 32;
         }}
       >
@@ -69,6 +72,7 @@ export default function VoiceChatHistory({ turns, thinking, error, visible }) {
                 {turn.role === 'agent' && <span className="mr-1.5 text-[10px] uppercase tracking-widest text-brand align-middle">Ceres ·</span>}
                 {turn.text}
               </p>
+              {turn.response && <AiEvidence response={turn.response} />}
             </div>
           ))}
           {error && <div role="alert" className="voice-chat-message text-xs text-negative">{apiErrorMessage(error)}</div>}

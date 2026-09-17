@@ -5,7 +5,15 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from backend.api.schemas.common import ApiSchema
+from backend.api.schemas.common import ApiSchema, PageMeta
+
+
+ValuationClass = Literal[
+    "BELOW_ESTIMATED_RANGE",
+    "WITHIN_ESTIMATED_RANGE",
+    "ABOVE_ESTIMATED_RANGE",
+    "INSUFFICIENT_CONFIDENCE",
+]
 
 
 class EstateBase(ApiSchema):
@@ -61,10 +69,43 @@ class EstateUpdateRequest(ApiSchema):
     attributes: dict[str, Any] | None = None
 
 
+class EstimateProvenance(ApiSchema):
+    """Server-recorded lineage; recorded_at is not a model valuation date."""
+
+    source: str
+    recorded_at: datetime
+    model_version: str | None = None
+    input_version: str
+    status: Literal['recorded', 'inputs_changed']
+
+
 class EstateResponse(EstateBase):
+    estimate_provenance: EstimateProvenance | None = None
     id: str
     created_at: datetime
     updated_at: datetime
+    liquidity_score: float | None = Field(default=None, ge=0, le=100)
+    liquidity_horizon_days: int | None = Field(default=None, ge=1, le=3650)
+    liquidity_status: Literal[
+        "available", "horizon_not_selected", "model_unavailable", "insufficient_evidence",
+        "missing_listing_duration", "not_active",
+    ] | None = None
+    liquidity_model_version: str | None = None
+    market_heat: float | None = Field(default=None, ge=0, le=100)
+
+
+class EstateAnalyticsItem(EstateResponse):
+    stored_price_deviation_pct: float | None = None
+    comparable_count: int = Field(default=0, ge=0)
+    valuation_class: ValuationClass | None = None
+    estimated_lower_bound: float | None = Field(default=None, gt=0)
+    estimated_upper_bound: float | None = Field(default=None, gt=0)
+    valuation_interval_level: float | None = Field(default=None, gt=0, lt=1)
+
+
+class EstateAnalyticsPage(ApiSchema):
+    items: list[EstateAnalyticsItem]
+    page: PageMeta
 
 
 class EstateMoveRequest(ApiSchema):

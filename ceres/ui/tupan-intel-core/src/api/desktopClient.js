@@ -7,8 +7,10 @@
  */
 import { api, ApiError } from '@/api/client';
 
-const noRealtimeSubscription = () => () => {};
+/** @param {(event: {data?: Record<string, any>}) => void} [_callback] */
+const noRealtimeSubscription = (_callback) => () => {};
 
+/** @returns {never} */
 function unsupported(feature) {
   throw new ApiError(`${feature} ainda não está disponível no backend cloud.`, { code: 'FEATURE_NOT_AVAILABLE' });
 }
@@ -19,47 +21,50 @@ function authUser(response) {
 
 const entityAdapters = {
   User: {
-    list: async () => api.get('workspace/members'),
+    list: async (_sort, _limit) => api.get('workspace/members'),
     update: async (id, payload) => api.patch(`workspace/members/${encodeURIComponent(id)}`, payload),
     delete: async (id) => api.delete(`workspace/members/${encodeURIComponent(id)}`),
   },
   SavedSearch: {
-    list: async () => api.get('workspace/saved-searches'),
+    list: async (_sort, _limit) => api.get('workspace/saved-searches'),
     create: async (payload) => api.post('workspace/saved-searches', { name: payload.name, filters: payload.filters ?? {} }),
     delete: async (id) => api.delete(`workspace/saved-searches/${encodeURIComponent(id)}`),
   },
   PropertyNote: {
-    list: async () => unsupported('A listagem de notas sem imóvel'),
-    filter: async (query) => {
+    list: async (_sort, _limit) => unsupported('A listagem de notas sem imóvel'),
+    filter: async (query, _sort, _limit) => {
       if (!query?.property_id) return [];
       return api.get(`workspace/properties/${encodeURIComponent(query.property_id)}/notes`);
     },
     create: async (payload) => api.post(`workspace/properties/${encodeURIComponent(payload.property_id)}/notes`, { note: payload.note }),
   },
   DistrictBoundary: {
-    list: async () => api.get('workspace/district-boundaries'),
+    list: async (_sort, _limit) => api.get('workspace/district-boundaries'),
   },
   // Property records already have a separate typed domain API. Data-management
   // migration is intentionally explicit rather than recreating a browser DB.
   Property: {
-    list: async () => unsupported('A gestão de registros de imóveis'),
-    create: async () => unsupported('O cadastro de imóveis'),
-    bulkCreate: async () => unsupported('A importação de imóveis'),
-    delete: async () => unsupported('A remoção de imóveis'),
+    list: async (_sort, _limit) => unsupported('A gestão de registros de imóveis'),
+    create: async (_payload) => unsupported('O cadastro de imóveis'),
+    bulkCreate: async (_payloads) => unsupported('A importação de imóveis'),
+    delete: async (_id) => unsupported('A remoção de imóveis'),
   },
   MarketRegion: {
-    list: async () => unsupported('A gestão de regiões de mercado'),
+    list: async (_sort, _limit) => unsupported('A gestão de regiões de mercado'),
   },
 };
 
-function entity(name) {
-  const adapter = entityAdapters[name];
-  if (!adapter) return { list: async () => unsupported(`A entidade ${name}`), subscribe: noRealtimeSubscription };
-  return { ...adapter, subscribe: noRealtimeSubscription };
-}
+const entities = {
+  User: { ...entityAdapters.User, subscribe: noRealtimeSubscription },
+  SavedSearch: { ...entityAdapters.SavedSearch, subscribe: noRealtimeSubscription },
+  PropertyNote: { ...entityAdapters.PropertyNote, subscribe: noRealtimeSubscription },
+  DistrictBoundary: { ...entityAdapters.DistrictBoundary, subscribe: noRealtimeSubscription },
+  Property: { ...entityAdapters.Property, subscribe: noRealtimeSubscription },
+  MarketRegion: { ...entityAdapters.MarketRegion, subscribe: noRealtimeSubscription },
+};
 
 export const appClient = {
-  entities: new Proxy({}, { get: (_target, name) => entity(String(name)) }),
+  entities,
   auth: {
     async me() { return authUser(await api.get('auth/session')); },
     async loginViaEmailPassword(email, password) { return authUser(await api.post('auth/login', { email, password })); },
@@ -67,19 +72,20 @@ export const appClient = {
     async logout() { await api.post('auth/logout', {}); },
     // Browser credentials are an HttpOnly cookie. There is deliberately no
     // token setter/getter in desktop JavaScript.
-    setToken() {},
-    async verifyOtp() { return unsupported('A verificação de e-mail'); },
-    async resendOtp() { return unsupported('O reenvio de verificação'); },
-    async resetPasswordRequest() { return unsupported('A recuperação de senha'); },
-    async resetPassword() { return unsupported('A recuperação de senha'); },
-    loginWithProvider() { return unsupported('O login social'); },
+    setToken(_token) {},
+    /** @returns {Promise<{access_token?: string}>} */
+    async verifyOtp(_payload) { return unsupported('A verificação de e-mail'); },
+    async resendOtp(_email) { return unsupported('O reenvio de verificação'); },
+    async resetPasswordRequest(_email) { return unsupported('A recuperação de senha'); },
+    async resetPassword(_payload) { return unsupported('A recuperação de senha'); },
+    loginWithProvider(_provider, _returnTo) { return unsupported('O login social'); },
     redirectToLogin() { window.location.assign('/login'); },
   },
   users: {
-    inviteUser: async () => unsupported('Os convites de equipe'),
+    inviteUser: async (_email, _role) => unsupported('Os convites de equipe'),
   },
   functions: {
-    async invoke(name) {
+    async invoke(name, _payload) {
       if (name === 'mapsKey' || name === 'getMapsConfig') {
         // Restricted browser map keys are presentation configuration, not
         // privileged cloud credentials. They remain optional.
@@ -91,8 +97,10 @@ export const appClient = {
   },
   integrations: {
     Core: {
-      async UploadFile() { return unsupported('O upload de arquivos'); },
-      async ExtractDataFromUploadedFile() { return unsupported('A importação de planilhas'); },
+      /** @returns {Promise<{file_url: string}>} */
+      async UploadFile(_payload) { return unsupported('O upload de arquivos'); },
+      /** @returns {Promise<{output: Array<Record<string, any>>}>} */
+      async ExtractDataFromUploadedFile(_payload) { return unsupported('A importação de planilhas'); },
     },
   },
 };

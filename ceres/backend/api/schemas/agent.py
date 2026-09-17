@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any, Literal, get_args
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from backend.api.schemas.common import ApiSchema
+from backend.api.schemas.market import MarketMetric
 
-
-AUTHORIZED_MARKET_METRICS = frozenset({
-    'price_m2', 'asking_price', 'avm_price', 'avm_deviation', 'market_heat',
-    'dom', 'active_listings', 'regional_exposure', 'pricing_distribution',
-    'kind_distribution', 'listing_age', 'liquidity',
-})
+AUTHORIZED_MARKET_METRICS = frozenset(get_args(MarketMetric))
 
 MARKET_PERIODS = {
     '90d': '90 days', '90 dias': '90 days', '90 days': '90 days',
@@ -21,18 +17,17 @@ MARKET_PERIODS = {
 }
 
 
-AUTHORIZED_MARKET_METRICS = frozenset({
-    'price_m2', 'asking_price', 'avm_price', 'avm_deviation', 'market_heat',
-    'dom', 'active_listings', 'regional_exposure', 'pricing_distribution',
-    'kind_distribution', 'listing_age', 'liquidity',
-})
+class ReportScopeHint(ApiSchema):
+    """Untrusted geography hint for the server-owned report tool only."""
 
-MARKET_PERIODS = {
-    '90d': '90 days', '90 dias': '90 days', '90 days': '90 days',
-    '180d': '180 days', '180 dias': '180 days', '180 days': '180 days',
-    '12m': '12 months', '12 meses': '12 months', '12 months': '12 months',
-    'all': 'All available', 'all available': 'All available',
-}
+    city: str | None = Field(default=None, max_length=160)
+    area: str | None = Field(default=None, max_length=160)
+
+    @model_validator(mode="after")
+    def area_has_city(self) -> "ReportScopeHint":
+        if self.area is not None and self.city is None:
+            raise ValueError("A report area requires an explicit city.")
+        return self
 
 
 class AgentContextRequest(ApiSchema):
@@ -54,6 +49,7 @@ class AgentContextRequest(ApiSchema):
     selected_region: dict[str, Any] | str | None = None
     selected_property: dict[str, Any] | None = None
     market_filters: dict[str, Any] = Field(default_factory=dict)
+    report_scope: ReportScopeHint | None = None
 
     def resolved_market_metric(self) -> str | None:
         """Return only a catalogued metric key supplied as a UI hint."""
@@ -68,6 +64,9 @@ class AgentContextRequest(ApiSchema):
             return self.estate_id
         candidate = (self.selected_property or {}).get("id")
         return candidate if isinstance(candidate, str) and 0 < len(candidate) <= 128 else None
+
+    def resolved_report_scope(self) -> ReportScopeHint | None:
+        return self.report_scope
 
     def resolved_heatmap(self) -> dict[str, Any] | None:
         """Whitelist UI map filters; arbitrary client fields never reach a tool."""

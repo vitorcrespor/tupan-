@@ -174,16 +174,18 @@ function Row({ item, isOpen, onToggle, uid }) {
 
 export default function Accordion08({ className = '' }) {
   const [open, setOpen] = useState(0);
+  /** @type {React.CSSProperties & {'--ink': string, '--acc': string}} */
+  const palette = {
+    background: '#F2EDE3',
+    '--ink': '#1A1A1A',
+    '--acc': '#FF5C28',
+  };
 
   return (
     <section className={`flex justify-center px-4 sm:px-8 py-8 sm:py-12 ${className}`}>
       <div
         className="w-full max-w-[720px] rounded-2xl overflow-hidden shadow-[0_12px_30px_-10px_rgba(20,90,105,0.22)]"
-        style={{
-          background: '#F2EDE3',
-          ['--ink']: '#1A1A1A',
-          ['--acc']: '#FF5C28',
-        }}
+        style={palette}
       >
         {ITEMS.map((item, i) => (
           <Row

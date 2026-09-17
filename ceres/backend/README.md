@@ -60,6 +60,16 @@ verified `valuation_observations` contract after migration `010`:
 python -m backend.platform_intelligence train-transaction-avm --n-estimators 1800
 ```
 
+The curated Campinas ITBI workbook can be validated without network access or
+database writes, then ingested idempotently into the training-only observation
+store. It uses its pre-existing neighborhood-geocode cache and never promotes
+the candidate model:
+
+```powershell
+python -m backend.platform_intelligence import-itbi-campinas-observations
+python -m backend.platform_intelligence import-itbi-campinas-observations --apply
+```
+
 This path uses arm's-length `sale_price_brl`, point-in-time feature lineage,
 temporal/entity-isolated partitions, log-price XGBoost, and a held-out
 split-conformal interval scorecard. It writes `avm_transaction_v2.json` and
@@ -67,6 +77,15 @@ matching metadata with `promotion_status = candidate`; it never overwrites the
 legacy serving artifact or promotes a model automatically. Promote only after
 reviewing the untouched out-of-time metrics, interval coverage/width, spatial
 holdout results, and data-quality exclusions.
+
+The request-time runtime checks this transaction artifact before the legacy
+artifact. It ignores candidates and only serves an artifact whose metadata is
+explicitly promoted (`production` or `promoted`). A promoted artifact returns
+the point estimate and exponentiated split-conformal bounds through
+`GET /api/v1/estates/{id}/analysis`, including interval level, calibration
+support and out-of-time coverage. The legacy artifact remains a point-only,
+`not_calibrated` fallback; no confidence probability is inferred from a
+completeness score.
 
 ## Property forecasting
 

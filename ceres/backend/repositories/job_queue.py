@@ -6,12 +6,13 @@ import json
 import os
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import datetime
 from uuid import uuid4
 from typing import Any, AsyncIterator
 
 from backend.repositories.tenant_data import TenantContext
 from backend.services.errors import UnavailableError
+from backend.services.serialization import json_safe
 
 
 @dataclass(frozen=True)
@@ -24,6 +25,7 @@ class ClaimedJob:
     input_version: str | None
     attempt_count: int
     max_attempts: int
+    execution_token: str
     created_at: datetime | None = None
 
 
@@ -93,14 +95,28 @@ class JobQueueRepository:
                 await connection.execute("SELECT set_config('app.organization_id', $1, true)", context.organization_id)
                 yield connection
 
-    async def set_progress(self, context: TenantContext, job_id: str, progress: int) -> None:
+    async def set_progress(self, context: TenantContext, job: ClaimedJob, progress: int) -> bool:
         bounded = min(100, max(0, int(progress)))
         async with self.tenant_transaction(context) as connection:
-            await connection.execute(
-                """UPDATE jobs SET progress = $3, updated_at = now()
-                   WHERE id = $1 AND organization_id = $2 AND status = 'RUNNING'""",
-                job_id, context.organization_id, bounded,
+            updated = await connection.fetchval(
+                """UPDATE jobs SET progress = $4, heartbeat_at = now(), updated_at = now()
+                   WHERE id = $1 AND organization_id = $2 AND status = 'RUNNING'
+                     AND execution_token = $3::uuid
+                   RETURNING TRUE""",
+                job.job_id, context.organization_id, job.execution_token, bounded,
             )
+        return bool(updated)
+
+    async def heartbeat(self, context: TenantContext, job: ClaimedJob) -> bool:
+        async with self.tenant_transaction(context) as connection:
+            updated = await connection.fetchval(
+                """UPDATE jobs SET heartbeat_at = now(), updated_at = now()
+                   WHERE id = $1 AND organization_id = $2 AND status = 'RUNNING'
+                     AND execution_token = $3::uuid
+                   RETURNING TRUE""",
+                job.job_id, context.organization_id, job.execution_token,
+            )
+        return bool(updated)
 
     async def heatmap_source_estates(
         self,
@@ -145,14 +161,91 @@ class JobQueueRepository:
                     json.dumps(row["metrics"]), row["input_version"],
                 )
 
-    async def mark_succeeded(self, context: TenantContext, job: ClaimedJob, result: JobResult) -> None:
+    async def capture_portfolio_snapshot(
+        self,
+        context: TenantContext,
+        *,
+        portfolio_id: str,
+    ) -> dict[str, Any]:
+        """Persist one current, tenant-authorized portfolio observation.
+
+        This is a worker-only write. The SQL reads the current authorized
+        portfolio state once; it does not derive historical values or access
+        another organization.
+        """
         async with self.tenant_transaction(context) as connection:
-            await connection.execute(
-                """UPDATE jobs SET status = 'SUCCEEDED', progress = 100, result = $3::jsonb,
-                          result_reference = $4, completed_at = now(), updated_at = now()
-                   WHERE id = $1 AND organization_id = $2 AND status = 'RUNNING'""",
-                job.job_id, context.organization_id, json.dumps(result.result), result.result_reference,
+            exists = await connection.fetchval(
+                "SELECT 1 FROM portfolios WHERE id = $1 AND organization_id = $2",
+                portfolio_id, context.organization_id,
             )
+            if not exists:
+                raise ValueError("Portfolio not found in the job tenant.")
+            snapshot = await connection.fetchrow(
+                """SELECT CURRENT_DATE AS observed_on,
+                          COUNT(*)::integer AS active_estate_count,
+                          COUNT(asking_price)::integer AS asking_price_count,
+                          COUNT(estimated_price)::integer AS estimated_count,
+                          COUNT(days_on_market)::integer AS days_on_market_count,
+                          COUNT(*) FILTER (WHERE listed_since IS NOT NULL AND listed_since <= CURRENT_DATE)::integer AS listing_age_count,
+                          SUM(asking_price) AS portfolio_value,
+                          AVG(days_on_market) AS average_days_on_market,
+                          AVG(CASE WHEN listed_since IS NOT NULL AND listed_since <= CURRENT_DATE
+                                   THEN (CURRENT_DATE - listed_since)::double precision END) AS average_listing_age_days,
+                          AVG(CASE WHEN estimated_price > 0 AND asking_price IS NOT NULL
+                                   THEN (asking_price - estimated_price) / estimated_price END) AS average_price_gap
+                   FROM estates
+                   WHERE organization_id = $1 AND portfolio_id = $2 AND status = 'active'""",
+                context.organization_id, portfolio_id,
+            )
+            values = dict(snapshot or {})
+            observed_on = values.pop("observed_on")
+            await connection.execute(
+                """INSERT INTO portfolio_metric_snapshots (
+                       id, organization_id, portfolio_id, observed_on, active_estate_count,
+                       asking_price_count, estimated_count, days_on_market_count, listing_age_count,
+                       portfolio_value, average_days_on_market, average_listing_age_days, average_price_gap
+                   ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+                   ON CONFLICT (organization_id, portfolio_id, observed_on)
+                   DO UPDATE SET active_estate_count = EXCLUDED.active_estate_count,
+                                 asking_price_count = EXCLUDED.asking_price_count,
+                                 estimated_count = EXCLUDED.estimated_count,
+                                 days_on_market_count = EXCLUDED.days_on_market_count,
+                                 listing_age_count = EXCLUDED.listing_age_count,
+                                 portfolio_value = EXCLUDED.portfolio_value,
+                                 average_days_on_market = EXCLUDED.average_days_on_market,
+                                 average_listing_age_days = EXCLUDED.average_listing_age_days,
+                                 average_price_gap = EXCLUDED.average_price_gap,
+                                 updated_at = now()""",
+                str(uuid4()), context.organization_id, portfolio_id, observed_on,
+                int(values.get("active_estate_count") or 0), int(values.get("asking_price_count") or 0),
+                int(values.get("estimated_count") or 0), int(values.get("days_on_market_count") or 0),
+                int(values.get("listing_age_count") or 0), values.get("portfolio_value"),
+                values.get("average_days_on_market"), values.get("average_listing_age_days"),
+                values.get("average_price_gap"),
+            )
+        return {"portfolio_id": portfolio_id, "observed_on": observed_on.isoformat(), **values}
+
+    async def mark_succeeded(self, context: TenantContext, job: ClaimedJob, result: JobResult) -> str:
+        async with self.tenant_transaction(context) as connection:
+            row = await connection.fetchrow(
+                """UPDATE jobs
+                   SET status = CASE WHEN rerun_requested THEN 'PENDING' ELSE 'SUCCEEDED' END,
+                       progress = CASE WHEN rerun_requested THEN 0 ELSE 100 END,
+                       result = CASE WHEN rerun_requested THEN NULL ELSE $4::jsonb END,
+                       result_reference = CASE WHEN rerun_requested THEN NULL ELSE $5 END,
+                       available_at = CASE WHEN rerun_requested THEN now() ELSE available_at END,
+                       completed_at = CASE WHEN rerun_requested THEN NULL ELSE now() END,
+                       attempt_count = CASE WHEN rerun_requested THEN 0 ELSE attempt_count END,
+                       started_at = CASE WHEN rerun_requested THEN NULL ELSE started_at END,
+                       heartbeat_at = NULL, execution_token = NULL,
+                       rerun_requested = FALSE, updated_at = now()
+                   WHERE id = $1 AND organization_id = $2 AND status = 'RUNNING'
+                     AND execution_token = $3::uuid
+                   RETURNING status::text AS status""",
+                job.job_id, context.organization_id, job.execution_token,
+                json.dumps(json_safe(result.result)), result.result_reference,
+            )
+        return row["status"] if row is not None else "LEASE_LOST"
 
     async def retry_or_fail(
         self,
@@ -167,13 +260,21 @@ class JobQueueRepository:
         async with self.tenant_transaction(context) as connection:
             await connection.execute(
                 """UPDATE jobs
-                   SET status = CASE WHEN $4 THEN 'PENDING' ELSE 'FAILED' END,
-                       available_at = CASE WHEN $4 THEN now() + ($5 * interval '1 second') ELSE available_at END,
+                   SET status = CASE WHEN $4 OR rerun_requested THEN 'PENDING' ELSE 'FAILED' END,
+                       available_at = CASE WHEN rerun_requested THEN now()
+                                           WHEN $4 THEN now() + ($5 * interval '1 second')
+                                           ELSE available_at END,
                        error = $3::jsonb,
-                       completed_at = CASE WHEN $4 THEN NULL ELSE now() END,
+                       attempt_count = CASE WHEN rerun_requested THEN 0 ELSE attempt_count END,
+                       completed_at = CASE WHEN $4 OR rerun_requested THEN NULL ELSE now() END,
+                       started_at = CASE WHEN $4 OR rerun_requested THEN NULL ELSE started_at END,
+                       heartbeat_at = NULL, execution_token = NULL,
+                       rerun_requested = FALSE,
                        updated_at = now()
-                   WHERE id = $1 AND organization_id = $2 AND status = 'RUNNING'""",
-                job.job_id, context.organization_id, json.dumps(error), should_retry, delay_seconds,
+                   WHERE id = $1 AND organization_id = $2 AND status = 'RUNNING'
+                     AND execution_token = $6::uuid""",
+                job.job_id, context.organization_id, json.dumps(json_safe(error)), should_retry, delay_seconds,
+                job.execution_token,
             )
 
     def _require_pool(self) -> Any:
@@ -184,14 +285,19 @@ class JobQueueRepository:
     @staticmethod
     def _claimed_job(row: Any) -> ClaimedJob:
         payload = row["payload"] or {}
+        if isinstance(payload, str):
+            payload = json.loads(payload)
+        if not isinstance(payload, dict):
+            raise ValueError("Claimed job payload must be a JSON object.")
         return ClaimedJob(
             job_id=str(row["job_id"]),
             organization_id=str(row["organization_id"]),
             user_id=str(row["user_id"]) if row["user_id"] is not None else None,
             job_type=str(row["job_type"]),
-            payload=dict(payload),
+            payload=payload,
             input_version=row["input_version"],
             attempt_count=int(row["attempt_count"]),
             max_attempts=int(row["max_attempts"]),
+            execution_token=str(row["execution_token"]),
             created_at=row.get("created_at") if hasattr(row, "get") else None,
         )

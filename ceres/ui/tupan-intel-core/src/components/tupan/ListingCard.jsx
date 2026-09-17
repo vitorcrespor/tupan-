@@ -11,7 +11,7 @@ const PHOTOS = [
   'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80',
 ];
 
-export default function ListingCard({ property, onAdd, onClick, photos = PHOTOS }) {
+export default function ListingCard({ property, onAdd, onClick = undefined, photos = PHOTOS }) {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const [state, setState] = useState('idle'); // idle | loading | added
@@ -56,8 +56,8 @@ export default function ListingCard({ property, onAdd, onClick, photos = PHOTOS 
     >
       <div className="relative w-full overflow-hidden aspect-[3/2]">
         <div
-          className="flex h-full w-full transition-transform duration-[850ms] ease-out"
-          style={{ transform: `translateX(-${index * 100}%)` }}
+          className="flex h-full w-full transition-transform ease-out"
+          style={{ transitionDuration: '850ms', transform: `translateX(-${index * 100}%)` }}
         >
           {photos.map((src, i) => (
             <div key={i} className="h-full w-full shrink-0 basis-full">

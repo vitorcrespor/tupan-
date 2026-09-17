@@ -39,20 +39,21 @@ Status reflects the current repository, not an unperformed Railway deployment.
 
 ## Validation performed in this workspace
 
-- `python -m unittest backend.tests.test_production_runtime
-  backend.tests.test_ai_orchestrator backend.tests.test_analysis_orchestrator
-  backend.tests.test_tenant_repository backend.tests.test_background_jobs` passed:
-  **19 tests**.
+- `python -m unittest discover -s backend/tests -p "test*.py"` passed:
+  **110 tests**, with 3 environment/integration-dependent skips.
 - `GET /health` returned `200 {"status":"ok"}` and `/ready` correctly
   returned `503` without a configured database. Both emitted structured request
   logs with request IDs.
-- Frontend `npm run lint` and `npm run build` passed. The production build reports two minified chunks above 500 kB; treat code-splitting as a P1 performance follow-up.
-- Frontend `npm run typecheck` currently
-  fails on pre-existing broad JSDoc/React component type errors, including API
-  modules; do not release until that baseline is repaired and typecheck passes.
-- `npm audit --omit=dev --audit-level=high` found **3 high**, 3 moderate, and
-  3 low production dependency vulnerabilities, including `react-quill-new` /
-  Quill XSS exposure. Remediate or formally accept each finding before release.
+- Frontend `npm run typecheck`, `npm run lint`, and `npm run build` passed.
+  PDF dependencies are loaded on demand and the production build no longer
+  reports chunks above 500 kB.
+- Frontend `npm run test:ui` passed **13 tests**, with 1 intentionally skipped
+  demo-data snapshot that requires an external fixture.
+- `npm audit --omit=dev` reports **2 moderate** React Router 6 advisories.
+  The client-only application does not use Router SSR hydration, routes are
+  application-owned, and a direct Router 7 upgrade regressed tested browser
+  interactions. Keep this as a tracked dependency migration rather than
+  accepting an unvalidated major upgrade.
 - A local Docker image build could not be completed because the local Docker
   Desktop Linux daemon was unavailable. Build and smoke-test the image in
   Railway staging or Linux CI before production promotion.
@@ -83,12 +84,18 @@ these integration/failure tests.
 
 ## Production blockers still requiring external state
 
-1. Provision a PostGIS + pgvector capable Railway PostgreSQL service and apply
-   migrations `001` through `004`.
+1. Provision a PostGIS + pgvector capable Railway PostgreSQL service, preview
+   the migration plan, and apply every pending migration in checksum order.
 2. Configure production secrets and exact CORS/cookie origins in Railway.
-3. Publish an immutable AVM artifact plus metadata; none exists in this repo.
-4. Repair the frontend typecheck baseline and resolve or formally accept the
-   **3 high, 3 moderate, and 3 low** production JavaScript audit findings.
+3. Review and explicitly promote an immutable AVM artifact plus metadata. The
+   tracked transaction artifact is candidate-only and is intentionally not
+   used by request-time inference.
+4. Keep the passing frontend typecheck/build gates in release CI. The remaining
+   two moderate `react-router` 6 advisories are recorded exceptions: this is a
+   client-only SPA (the SSR hydration advisory is not reachable), and navigation
+   targets are application-owned routes. A Router 7 upgrade was tested and
+   reverted after browser interaction regressions; migrate it as a dedicated,
+   fully validated change rather than forcing it into a security patch.
 5. Generate a hash-locked Python dependency set, scan it in a clean Linux
    environment, and build/smoke-test the Docker image in staging.
 6. Execute the staging matrix above, including real OpenAI and PostgreSQL outage

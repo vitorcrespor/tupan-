@@ -1,0 +1,6162 @@
+{
+  "/auth/session": {
+    "user": {
+      "id": "b7f45c42-4d97-47b5-b2df-e96962ca300e",
+      "organization_id": "e457757e-d858-4c40-b216-1179d8da70cf",
+      "role": "admin",
+      "full_name": "Demonstração Ceres",
+      "email": "demo@example.test"
+    }
+  },
+  "/portfolios": [
+    {
+      "id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+      "name": "Demonstração Ceres · Indaiatuba",
+      "description": "Carteira mock para testar Ceres. Características e anúncios simulados; sem uso para treinamento.",
+      "target_commission": null,
+      "created_by_user_id": "b7f45c42-4d97-47b5-b2df-e96962ca300e",
+      "created_at": "2026-09-13T16:02:27.292529Z",
+      "updated_at": "2026-09-13T16:02:27.292529Z"
+    }
+  ],
+  "/analytics/estates": {
+    "items": [
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-3ef2c5d03f8df487632413deab796b6c56e064df9646323e9e8b4cb3c0fa7aa8",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 06 · Av. Ary Barnabe, 50",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "apartment",
+        "exclusive": null,
+        "asking_price": 584250.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 220.0,
+        "price_per_m2": 2655.68,
+        "rooms": 4,
+        "bathrooms": 3,
+        "parking_spaces": 2,
+        "age_years": null,
+        "days_on_market": 63.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "Av. Ary Barnabe, 50",
+        "city": "Indaiatuba",
+        "area": "BR. BELA VISTA",
+        "state": "SP",
+        "postal_code": "13331-710",
+        "latitude": -23.0650005,
+        "longitude": -47.23201299999999,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 1539,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-22",
+          "reference_transaction_price_brl": 615000.0
+        },
+        "id": "0f00123c-4664-5d58-958c-7fbf76bb6b57",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-83dc2b40dd7905cc02807c5838526c00f2a4bb713d771f56370a4bf8cbcc4126",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 09 · R. Sergio Dos Santos Pereira, 55",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "apartment",
+        "exclusive": null,
+        "asking_price": 338250.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 110.0,
+        "price_per_m2": 3075.0,
+        "rooms": 4,
+        "bathrooms": 3,
+        "parking_spaces": 1,
+        "age_years": null,
+        "days_on_market": 90.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "R. Sergio Dos Santos Pereira, 55",
+        "city": "Indaiatuba",
+        "area": "JD. ALICE",
+        "state": "SP",
+        "postal_code": "13346-240",
+        "latitude": -23.1100561,
+        "longitude": -47.2266534,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 1268,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-20",
+          "reference_transaction_price_brl": 330000.0
+        },
+        "id": "15a7186a-09f7-56ac-a39e-18558eadb4a4",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-3fe51c57d1f5cc8c9cd6afbf1150bf66c535a95df413f79c72c5f3b8513f48c2",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 05 · R. Araguaia, 208",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "apartment",
+        "exclusive": null,
+        "asking_price": 1349607.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 185.0,
+        "price_per_m2": 7295.17,
+        "rooms": 3,
+        "bathrooms": 2,
+        "parking_spaces": 1,
+        "age_years": null,
+        "days_on_market": 54.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "R. Araguaia, 208",
+        "city": "Indaiatuba",
+        "area": "BR. AREAL",
+        "state": "SP",
+        "postal_code": "13330-660",
+        "latitude": -23.0812753,
+        "longitude": -47.220481,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 4433,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-22",
+          "reference_transaction_price_brl": 1285340.0
+        },
+        "id": "3b1b781a-2795-591a-a3c8-64d8d2e4b94c",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-193b488c0c7ecd82d4fc78250aaf1e571c7c4e6da9a4ec1499e130b45615592e",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 12 · R. Joao Da Fonseca Bicudo, 533",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "apartment",
+        "exclusive": null,
+        "asking_price": 966076.46,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 220.0,
+        "price_per_m2": 4391.26,
+        "rooms": 4,
+        "bathrooms": 3,
+        "parking_spaces": 2,
+        "age_years": null,
+        "days_on_market": 117.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "R. Joao Da Fonseca Bicudo, 533",
+        "city": "Indaiatuba",
+        "area": "JD. PAU PRETO",
+        "state": "SP",
+        "postal_code": "13330-370",
+        "latitude": -23.0904826,
+        "longitude": -47.2198284,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 1090,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-16",
+          "reference_transaction_price_brl": 990847.65
+        },
+        "id": "3c971890-b2ca-5791-926e-8f79e0fe75f0",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-f3158645b2e9fe70d43c7aa71bbbf7d07704696ac71da64c8f0c24ab5c29b03a",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 07 · R. Murta Do Campo, 138",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "house",
+        "exclusive": null,
+        "asking_price": 204750.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 62.0,
+        "price_per_m2": 3302.42,
+        "rooms": 2,
+        "bathrooms": 1,
+        "parking_spaces": 1,
+        "age_years": null,
+        "days_on_market": 72.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "R. Murta Do Campo, 138",
+        "city": "Indaiatuba",
+        "area": "PQ. CAMPO BONITO",
+        "state": "SP",
+        "postal_code": "13349-054",
+        "latitude": -23.0990945,
+        "longitude": -47.27032699999999,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 1522,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-21",
+          "reference_transaction_price_brl": 210000.0
+        },
+        "id": "4a241d1c-183f-5ced-aeb4-a0b6ce1ac715",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-7c726f1a1118f7245cdac8190c9b8417287278ee38fd11fdad50fa5f4946a30e",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 04 · Av. Horst Frederico Joao Heer, 3875",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "house",
+        "exclusive": null,
+        "asking_price": 389500.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 140.0,
+        "price_per_m2": 2782.14,
+        "rooms": 2,
+        "bathrooms": 1,
+        "parking_spaces": 2,
+        "age_years": null,
+        "days_on_market": 45.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "Av. Horst Frederico Joao Heer, 3875",
+        "city": "Indaiatuba",
+        "area": "BR. BURU",
+        "state": "SP",
+        "postal_code": "13349-059",
+        "latitude": -23.1041157,
+        "longitude": -47.27737450000001,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 1622,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-22",
+          "reference_transaction_price_brl": 380000.0
+        },
+        "id": "57ecc28d-fbd0-5b27-bea8-cf1ed6541c63",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-fba6d20e0b2343d82bc3c02e42505a1645452697cc8ff904fd1875d4da85fcad",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 08 · R. Benedita Carvalho, 25",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "apartment",
+        "exclusive": null,
+        "asking_price": 220000.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 85.0,
+        "price_per_m2": 2588.24,
+        "rooms": 3,
+        "bathrooms": 2,
+        "parking_spaces": 2,
+        "age_years": null,
+        "days_on_market": 81.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "R. Benedita Carvalho, 25",
+        "city": "Indaiatuba",
+        "area": "PQ. CAMPO BONITO",
+        "state": "SP",
+        "postal_code": "13349-052",
+        "latitude": -23.0939527,
+        "longitude": -47.2749964,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 4468,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-20",
+          "reference_transaction_price_brl": 220000.0
+        },
+        "id": "6477010b-1c86-5ac2-85fb-f076c0961b3b",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-deb5aebc1fcf0da732836bb2fe9f17eb3117ceb1f0fbee32d82fa09c3377849b",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 11 · Av. Horst Frederico Joao Heer, 4801",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "apartment",
+        "exclusive": null,
+        "asking_price": 147250.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 185.0,
+        "price_per_m2": 795.95,
+        "rooms": 3,
+        "bathrooms": 2,
+        "parking_spaces": 1,
+        "age_years": null,
+        "days_on_market": 108.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "Av. Horst Frederico Joao Heer, 4801",
+        "city": "Indaiatuba",
+        "area": "PQ. CAMPO BONITO",
+        "state": "SP",
+        "postal_code": "13348-758",
+        "latitude": -23.0958073,
+        "longitude": -47.2734679,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 1513,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-17",
+          "reference_transaction_price_brl": 155000.0
+        },
+        "id": "88283557-09ac-5f68-8e9f-ebee9cd62eef",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-e7a95eac779643889c5746323acc5b8bf9116e85b0cb2854f85d992b615ac683",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 03 · R. Angela Bruno Rodrigues, 411",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "apartment",
+        "exclusive": null,
+        "asking_price": 485000.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 110.0,
+        "price_per_m2": 4409.09,
+        "rooms": 4,
+        "bathrooms": 3,
+        "parking_spaces": 1,
+        "age_years": null,
+        "days_on_market": 36.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "R. Angela Bruno Rodrigues, 411",
+        "city": "Indaiatuba",
+        "area": "BR. ITAICI",
+        "state": "SP",
+        "postal_code": "13339-555",
+        "latitude": -23.0992895,
+        "longitude": -47.1993181,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 1878,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-22",
+          "reference_transaction_price_brl": 485000.0
+        },
+        "id": "948886eb-baba-5326-83a5-e64c69768fac",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-05e5ed637b940b79218926d2b58a920616deb2b7e68a78f910997c09842b5c26",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 10 · R. Joao Manoel Ruz Peres, 490",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "house",
+        "exclusive": null,
+        "asking_price": 372750.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 140.0,
+        "price_per_m2": 2662.5,
+        "rooms": 2,
+        "bathrooms": 1,
+        "parking_spaces": 2,
+        "age_years": null,
+        "days_on_market": 99.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "R. Joao Manoel Ruz Peres, 490",
+        "city": "Indaiatuba",
+        "area": "BR. BURU",
+        "state": "SP",
+        "postal_code": "13348-708",
+        "latitude": -23.0963242,
+        "longitude": -47.259179,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 1663,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-20",
+          "reference_transaction_price_brl": 355000.0
+        },
+        "id": "977ef258-d7ce-552d-b72f-a1f99971ba75",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-a9c9f798ebf226a9fa5eafabe092abd6e67f8574b826c056605ee66069d4ebf4",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 02 · R. Pedro Virillo, 186",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "apartment",
+        "exclusive": null,
+        "asking_price": 433875.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 85.0,
+        "price_per_m2": 5104.41,
+        "rooms": 3,
+        "bathrooms": 2,
+        "parking_spaces": 2,
+        "age_years": null,
+        "days_on_market": 27.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "R. Pedro Virillo, 186",
+        "city": "Indaiatuba",
+        "area": "BR. ITAICI",
+        "state": "SP",
+        "postal_code": "13339-545",
+        "latitude": -23.0976367,
+        "longitude": -47.1985554,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 3361,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-23",
+          "reference_transaction_price_brl": 445000.0
+        },
+        "id": "a5e99801-e4f4-53ff-92ce-b0091938f1cf",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      },
+      {
+        "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+        "external_id": "demo-d633eea1fe069cdf0ba989eec930aa372c5549d84f0ca861e29aebc9c0e78f3d",
+        "source_name": "ceres_demo_academic_v1",
+        "status": "active",
+        "title": "Demo 01 · Al. Jose Amstalden, 202",
+        "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+        "property_type": "house",
+        "exclusive": null,
+        "asking_price": 323000.0,
+        "last_sale_price": null,
+        "estimated_price": null,
+        "area_m2": 62.0,
+        "price_per_m2": 5209.68,
+        "rooms": 2,
+        "bathrooms": 1,
+        "parking_spaces": 1,
+        "age_years": null,
+        "days_on_market": 18.0,
+        "listed_since": null,
+        "last_sale_date": null,
+        "address": "Al. Jose Amstalden, 202",
+        "city": "Indaiatuba",
+        "area": "LT. SEM DENOMINACAO",
+        "state": "SP",
+        "postal_code": "13331-100",
+        "latitude": -23.0768102,
+        "longitude": -47.2254118,
+        "attributes": {
+          "is_demo": true,
+          "source_row": 1951,
+          "source_name": "academic_itbi_address_v1",
+          "synthetic_fields": [
+            "property_type",
+            "asking_price",
+            "area_m2",
+            "rooms",
+            "bathrooms",
+            "parking_spaces",
+            "days_on_market"
+          ],
+          "training_allowed": false,
+          "geocoding_precision": "ROOFTOP",
+          "reference_transaction_date": "2026-07-23",
+          "reference_transaction_price_brl": 340000.0
+        },
+        "id": "e448bb4b-a820-5569-926a-117c54829b82",
+        "created_at": "2026-09-13T16:02:27.292529Z",
+        "updated_at": "2026-09-13T16:02:27.292529Z",
+        "stored_price_deviation_pct": null
+      }
+    ],
+    "page": {
+      "limit": 100,
+      "offset": 0,
+      "total": 12
+    }
+  },
+  "/portfolios/fff638b1-fe62-5775-91c8-ab61b3f7c8eb/overview": {
+    "portfolio": {
+      "id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+      "name": "Demonstração Ceres · Indaiatuba",
+      "description": "Carteira mock para testar Ceres. Características e anúncios simulados; sem uso para treinamento.",
+      "target_commission": null,
+      "created_by_user_id": "b7f45c42-4d97-47b5-b2df-e96962ca300e",
+      "created_at": "2026-09-13T16:02:27.292529Z",
+      "updated_at": "2026-09-13T16:02:27.292529Z"
+    },
+    "valuation_summary": {
+      "active_estate_count": 12,
+      "portfolio_value": 5814308.46,
+      "estimated_value": 0.0,
+      "average_price_gap": null
+    },
+    "geographic_concentration": [
+      {
+        "city": "Indaiatuba",
+        "area": "BR. AREAL",
+        "estate_count": 1,
+        "portfolio_value": 1349607.0,
+        "share": 0.23211823199349144
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "JD. PAU PRETO",
+        "estate_count": 1,
+        "portfolio_value": 966076.46,
+        "share": 0.16615500650613918
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "BR. ITAICI",
+        "estate_count": 2,
+        "portfolio_value": 918875.0,
+        "share": 0.15803685104109527
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "BR. BURU",
+        "estate_count": 2,
+        "portfolio_value": 762250.0,
+        "share": 0.13109899573508352
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "BR. BELA VISTA",
+        "estate_count": 1,
+        "portfolio_value": 584250.0,
+        "share": 0.10048486488451629
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "PQ. CAMPO BONITO",
+        "estate_count": 3,
+        "portfolio_value": 572000.0,
+        "share": 0.09837799351980028
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "JD. ALICE",
+        "estate_count": 1,
+        "portfolio_value": 338250.0,
+        "share": 0.058175448091035746
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "LT. SEM DENOMINACAO",
+        "estate_count": 1,
+        "portfolio_value": 323000.0,
+        "share": 0.05555260822883828
+      }
+    ],
+    "pricing_statistics": {
+      "average_asking_price": 484525.705,
+      "median_asking_price": 381125.0,
+      "average_price_per_m2": 3689.295,
+      "median_price_per_m2": 3188.71,
+      "average_days_on_market": 67.5
+    },
+    "property_distribution": [
+      {
+        "property_type": "apartment",
+        "estate_count": 8,
+        "share": 0.6666666666666666
+      },
+      {
+        "property_type": "house",
+        "estate_count": 4,
+        "share": 0.3333333333333333
+      }
+    ],
+    "market_exposure": [
+      {
+        "city": "Indaiatuba",
+        "area": "PQ. CAMPO BONITO",
+        "estate_count": 3,
+        "average_price_m2": null,
+        "market_heat": null,
+        "latest_observed_on": null
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "BR. ITAICI",
+        "estate_count": 2,
+        "average_price_m2": null,
+        "market_heat": null,
+        "latest_observed_on": null
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "BR. BURU",
+        "estate_count": 2,
+        "average_price_m2": null,
+        "market_heat": null,
+        "latest_observed_on": null
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "JD. PAU PRETO",
+        "estate_count": 1,
+        "average_price_m2": null,
+        "market_heat": null,
+        "latest_observed_on": null
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "LT. SEM DENOMINACAO",
+        "estate_count": 1,
+        "average_price_m2": null,
+        "market_heat": null,
+        "latest_observed_on": null
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "JD. ALICE",
+        "estate_count": 1,
+        "average_price_m2": null,
+        "market_heat": null,
+        "latest_observed_on": null
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "BR. BELA VISTA",
+        "estate_count": 1,
+        "average_price_m2": null,
+        "market_heat": null,
+        "latest_observed_on": null
+      },
+      {
+        "city": "Indaiatuba",
+        "area": "BR. AREAL",
+        "estate_count": 1,
+        "average_price_m2": null,
+        "market_heat": null,
+        "latest_observed_on": null
+      }
+    ],
+    "timing": {
+      "total_ms": 4009.2408999917097,
+      "components": [
+        {
+          "name": "valuation_summary",
+          "state": "success",
+          "duration_ms": 1316.5320999978576,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "geographic_concentration",
+          "state": "success",
+          "duration_ms": 2809.4029999920167,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "pricing_statistics",
+          "state": "success",
+          "duration_ms": 2890.170400001807,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "property_distribution",
+          "state": "success",
+          "duration_ms": 2919.636700011324,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "market_exposure",
+          "state": "success",
+          "duration_ms": 2832.7239000063855,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "positions",
+          "state": "success",
+          "duration_ms": 2970.3716000076383,
+          "code": null,
+          "message": null
+        }
+      ]
+    },
+    "positions": {
+      "above_count": 0,
+      "below_count": 0,
+      "equal_count": 0,
+      "missing_count": 12,
+      "asking_count": 12,
+      "estimated_count": 0,
+      "rows": []
+    },
+    "top_region_share": 0.39827323849963064
+  },
+  "/estates/e448bb4b-a820-5569-926a-117c54829b82": {
+    "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+    "external_id": null,
+    "source_name": null,
+    "status": "active",
+    "title": "Demo 01 · Al. Jose Amstalden, 202",
+    "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+    "property_type": "house",
+    "exclusive": null,
+    "asking_price": 323000.0,
+    "last_sale_price": null,
+    "estimated_price": null,
+    "area_m2": 62.0,
+    "price_per_m2": 5209.68,
+    "rooms": 2,
+    "bathrooms": 1,
+    "parking_spaces": 1,
+    "age_years": null,
+    "days_on_market": 18.0,
+    "listed_since": null,
+    "last_sale_date": null,
+    "address": "Al. Jose Amstalden, 202",
+    "city": "Indaiatuba",
+    "area": "LT. SEM DENOMINACAO",
+    "state": "SP",
+    "postal_code": "13331-100",
+    "latitude": -23.0768102,
+    "longitude": -47.2254118,
+    "attributes": {
+      "is_demo": true,
+      "source_row": 1951,
+      "source_name": "academic_itbi_address_v1",
+      "synthetic_fields": [
+        "property_type",
+        "asking_price",
+        "area_m2",
+        "rooms",
+        "bathrooms",
+        "parking_spaces",
+        "days_on_market"
+      ],
+      "training_allowed": false,
+      "geocoding_precision": "ROOFTOP",
+      "reference_transaction_date": "2026-07-23",
+      "reference_transaction_price_brl": 340000.0
+    },
+    "id": "e448bb4b-a820-5569-926a-117c54829b82",
+    "created_at": "2026-09-13T16:02:27.292529Z",
+    "updated_at": "2026-09-13T16:02:27.292529Z"
+  },
+  "/estates/e448bb4b-a820-5569-926a-117c54829b82/comparison": {
+    "estate": {
+      "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+      "external_id": null,
+      "source_name": null,
+      "status": "active",
+      "title": "Demo 01 · Al. Jose Amstalden, 202",
+      "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+      "property_type": "house",
+      "exclusive": null,
+      "asking_price": 323000.0,
+      "last_sale_price": null,
+      "estimated_price": null,
+      "area_m2": 62.0,
+      "price_per_m2": 5209.68,
+      "rooms": 2,
+      "bathrooms": 1,
+      "parking_spaces": 1,
+      "age_years": null,
+      "days_on_market": 18.0,
+      "listed_since": null,
+      "last_sale_date": null,
+      "address": "Al. Jose Amstalden, 202",
+      "city": "Indaiatuba",
+      "area": "LT. SEM DENOMINACAO",
+      "state": "SP",
+      "postal_code": "13331-100",
+      "latitude": -23.0768102,
+      "longitude": -47.2254118,
+      "attributes": {
+        "is_demo": true,
+        "source_row": 1951,
+        "source_name": "academic_itbi_address_v1",
+        "synthetic_fields": [
+          "property_type",
+          "asking_price",
+          "area_m2",
+          "rooms",
+          "bathrooms",
+          "parking_spaces",
+          "days_on_market"
+        ],
+        "training_allowed": false,
+        "geocoding_precision": "ROOFTOP",
+        "reference_transaction_date": "2026-07-23",
+        "reference_transaction_price_brl": 340000.0
+      },
+      "id": "e448bb4b-a820-5569-926a-117c54829b82",
+      "created_at": "2026-09-13T16:02:27.292529Z",
+      "updated_at": "2026-09-13T16:02:27.292529Z"
+    },
+    "comparables": [],
+    "local_statistics": {
+      "comparable_count": 0,
+      "average_asking_price": null,
+      "median_asking_price": null,
+      "average_price_per_m2": null,
+      "median_price_per_m2": null,
+      "average_days_on_market": null
+    },
+    "market_context": [],
+    "location_metrics": {
+      "h3_index": "89a811400a7ffff",
+      "h3_resolution": 9,
+      "period_start": "2024-07-24",
+      "period_end": "2026-07-23",
+      "metrics": {
+        "units": {
+          "transaction_count": "count",
+          "median_transaction_price": "BRL",
+          "average_transaction_price": "BRL"
+        },
+        "source_name": "academic_itbi_address_v1",
+        "dataset_kind": "transactions",
+        "partial_coverage": true,
+        "source_row_count": 64163,
+        "transaction_count": 95,
+        "geocoded_row_count": 4790,
+        "median_transaction_price": 530000.0,
+        "average_transaction_price": 574674.7572631579
+      },
+      "calculated_at": "2026-09-13T16:02:27.292529+00:00"
+    },
+    "timing": {
+      "total_ms": 3830.6905000063125,
+      "components": [
+        {
+          "name": "comparables",
+          "state": "success",
+          "duration_ms": 1843.4738999931142,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "local_statistics",
+          "state": "success",
+          "duration_ms": 1843.032199976733,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "market_context",
+          "state": "success",
+          "duration_ms": 1843.0305999936536,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "location_metrics",
+          "state": "success",
+          "duration_ms": 1842.642400006298,
+          "code": null,
+          "message": null
+        }
+      ]
+    }
+  },
+  "/estates/e448bb4b-a820-5569-926a-117c54829b82/analysis": {
+    "estate": {
+      "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+      "external_id": null,
+      "source_name": null,
+      "status": "active",
+      "title": "Demo 01 · Al. Jose Amstalden, 202",
+      "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+      "property_type": "house",
+      "exclusive": null,
+      "asking_price": 323000.0,
+      "last_sale_price": null,
+      "estimated_price": null,
+      "area_m2": 62.0,
+      "price_per_m2": 5209.68,
+      "rooms": 2,
+      "bathrooms": 1,
+      "parking_spaces": 1,
+      "age_years": null,
+      "days_on_market": 18.0,
+      "listed_since": null,
+      "last_sale_date": null,
+      "address": "Al. Jose Amstalden, 202",
+      "city": "Indaiatuba",
+      "area": "LT. SEM DENOMINACAO",
+      "state": "SP",
+      "postal_code": "13331-100",
+      "latitude": -23.0768102,
+      "longitude": -47.2254118,
+      "attributes": {
+        "is_demo": true,
+        "source_row": 1951,
+        "source_name": "academic_itbi_address_v1",
+        "synthetic_fields": [
+          "property_type",
+          "asking_price",
+          "area_m2",
+          "rooms",
+          "bathrooms",
+          "parking_spaces",
+          "days_on_market"
+        ],
+        "training_allowed": false,
+        "geocoding_precision": "ROOFTOP",
+        "reference_transaction_date": "2026-07-23",
+        "reference_transaction_price_brl": 340000.0
+      },
+      "id": "e448bb4b-a820-5569-926a-117c54829b82",
+      "created_at": "2026-09-13T16:02:27.292529Z",
+      "updated_at": "2026-09-13T16:02:27.292529Z"
+    },
+    "comparables": [],
+    "local_statistics": {
+      "comparable_count": 0,
+      "average_asking_price": null,
+      "median_asking_price": null,
+      "average_price_per_m2": null,
+      "median_price_per_m2": null,
+      "average_days_on_market": null
+    },
+    "market_context": [],
+    "location_metrics": {
+      "h3_index": "89a811400a7ffff",
+      "h3_resolution": 9,
+      "period_start": "2024-07-24",
+      "period_end": "2026-07-23",
+      "metrics": {
+        "units": {
+          "transaction_count": "count",
+          "median_transaction_price": "BRL",
+          "average_transaction_price": "BRL"
+        },
+        "source_name": "academic_itbi_address_v1",
+        "dataset_kind": "transactions",
+        "partial_coverage": true,
+        "source_row_count": 64163,
+        "transaction_count": 95,
+        "geocoded_row_count": 4790,
+        "median_transaction_price": 530000.0,
+        "average_transaction_price": 574674.7572631579
+      },
+      "calculated_at": "2026-09-13T16:02:27.292529+00:00"
+    },
+    "timing": {
+      "total_ms": 4429.528900014702,
+      "components": [
+        {
+          "name": "avm",
+          "state": "degraded",
+          "duration_ms": 3007.6218000031076,
+          "code": "branch_timeout",
+          "message": "Avm did not finish before its deadline."
+        },
+        {
+          "name": "comparables",
+          "state": "success",
+          "duration_ms": 1536.489000020083,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "local_statistics",
+          "state": "success",
+          "duration_ms": 1847.6275999855716,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "market_context",
+          "state": "success",
+          "duration_ms": 1847.3655999987386,
+          "code": null,
+          "message": null
+        },
+        {
+          "name": "location_metrics",
+          "state": "success",
+          "duration_ms": 1534.740300005069,
+          "code": null,
+          "message": null
+        }
+      ]
+    },
+    "valuation": null,
+    "data_quality": {
+      "policy_version": "quality-v1",
+      "completeness": 96.0,
+      "quality": 48.0,
+      "observed_weight": 96.0,
+      "missing_fields": [
+        "condition"
+      ],
+      "critical_reasons": [],
+      "warnings": [
+        "missing_lineage_bathrooms",
+        "missing_lineage_city",
+        "missing_lineage_latitude",
+        "missing_lineage_longitude",
+        "missing_lineage_parking_spaces",
+        "missing_lineage_property_type",
+        "missing_lineage_rooms",
+        "missing_lineage_usable_area_m2"
+      ]
+    },
+    "avm_diagnostics": null
+  },
+  "/analytics/estate-pair?a_id=e448bb4b-a820-5569-926a-117c54829b82&b_id=a5e99801-e4f4-53ff-92ce-b0091938f1cf": {
+    "a": {
+      "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+      "external_id": null,
+      "source_name": null,
+      "status": "active",
+      "title": "Demo 01 · Al. Jose Amstalden, 202",
+      "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+      "property_type": "house",
+      "exclusive": null,
+      "asking_price": 323000.0,
+      "last_sale_price": null,
+      "estimated_price": null,
+      "area_m2": 62.0,
+      "price_per_m2": 5209.68,
+      "rooms": 2,
+      "bathrooms": 1,
+      "parking_spaces": 1,
+      "age_years": null,
+      "days_on_market": 18.0,
+      "listed_since": null,
+      "last_sale_date": null,
+      "address": "Al. Jose Amstalden, 202",
+      "city": "Indaiatuba",
+      "area": "LT. SEM DENOMINACAO",
+      "state": "SP",
+      "postal_code": "13331-100",
+      "latitude": -23.0768102,
+      "longitude": -47.2254118,
+      "attributes": {
+        "is_demo": true,
+        "source_row": 1951,
+        "source_name": "academic_itbi_address_v1",
+        "synthetic_fields": [
+          "property_type",
+          "asking_price",
+          "area_m2",
+          "rooms",
+          "bathrooms",
+          "parking_spaces",
+          "days_on_market"
+        ],
+        "training_allowed": false,
+        "geocoding_precision": "ROOFTOP",
+        "reference_transaction_date": "2026-07-23",
+        "reference_transaction_price_brl": 340000.0
+      },
+      "id": "e448bb4b-a820-5569-926a-117c54829b82",
+      "created_at": "2026-09-13T16:02:27.292529Z",
+      "updated_at": "2026-09-13T16:02:27.292529Z"
+    },
+    "b": {
+      "portfolio_id": "fff638b1-fe62-5775-91c8-ab61b3f7c8eb",
+      "external_id": null,
+      "source_name": null,
+      "status": "active",
+      "title": "Demo 02 · R. Pedro Virillo, 186",
+      "summary": "Imóvel de demonstração. Endereço e transação de referência vêm da planilha acadêmica; área, quartos, anúncio e DOM são simulados.",
+      "property_type": "apartment",
+      "exclusive": null,
+      "asking_price": 433875.0,
+      "last_sale_price": null,
+      "estimated_price": null,
+      "area_m2": 85.0,
+      "price_per_m2": 5104.41,
+      "rooms": 3,
+      "bathrooms": 2,
+      "parking_spaces": 2,
+      "age_years": null,
+      "days_on_market": 27.0,
+      "listed_since": null,
+      "last_sale_date": null,
+      "address": "R. Pedro Virillo, 186",
+      "city": "Indaiatuba",
+      "area": "BR. ITAICI",
+      "state": "SP",
+      "postal_code": "13339-545",
+      "latitude": -23.0976367,
+      "longitude": -47.1985554,
+      "attributes": {
+        "is_demo": true,
+        "source_row": 3361,
+        "source_name": "academic_itbi_address_v1",
+        "synthetic_fields": [
+          "property_type",
+          "asking_price",
+          "area_m2",
+          "rooms",
+          "bathrooms",
+          "parking_spaces",
+          "days_on_market"
+        ],
+        "training_allowed": false,
+        "geocoding_precision": "ROOFTOP",
+        "reference_transaction_date": "2026-07-23",
+        "reference_transaction_price_brl": 445000.0
+      },
+      "id": "a5e99801-e4f4-53ff-92ce-b0091938f1cf",
+      "created_at": "2026-09-13T16:02:27.292529Z",
+      "updated_at": "2026-09-13T16:02:27.292529Z"
+    },
+    "metrics": [
+      {
+        "key": "price",
+        "a_value": 323000.0,
+        "b_value": 433875.0,
+        "difference": 110875.0,
+        "unit": "BRL"
+      },
+      {
+        "key": "price_per_m2",
+        "a_value": 5209.68,
+        "b_value": 5104.41,
+        "difference": -105.27000000000044,
+        "unit": "BRL/m²"
+      },
+      {
+        "key": "suggested_price",
+        "a_value": null,
+        "b_value": null,
+        "difference": null,
+        "unit": "BRL"
+      },
+      {
+        "key": "price_deviation",
+        "a_value": null,
+        "b_value": null,
+        "difference": null,
+        "unit": "percentage_points"
+      },
+      {
+        "key": "area_m2",
+        "a_value": 62.0,
+        "b_value": 85.0,
+        "difference": 23.0,
+        "unit": "m²"
+      },
+      {
+        "key": "bedrooms",
+        "a_value": 2.0,
+        "b_value": 3.0,
+        "difference": 1.0,
+        "unit": "count"
+      },
+      {
+        "key": "bathrooms",
+        "a_value": 1.0,
+        "b_value": 2.0,
+        "difference": 1.0,
+        "unit": "count"
+      },
+      {
+        "key": "parking_spaces",
+        "a_value": 1.0,
+        "b_value": 2.0,
+        "difference": 1.0,
+        "unit": "count"
+      },
+      {
+        "key": "property_age",
+        "a_value": null,
+        "b_value": null,
+        "difference": null,
+        "unit": "years"
+      },
+      {
+        "key": "days_on_market",
+        "a_value": 18.0,
+        "b_value": 27.0,
+        "difference": 9.0,
+        "unit": "days"
+      }
+    ],
+    "valuation_basis": "stored_estimate"
+  },
+  "/market/regions": [
+    {
+      "city": "Indaiatuba",
+      "areas": [
+        "BR. AREAL",
+        "BR. BELA VISTA",
+        "BR. BURU",
+        "BR. CALDEIRA",
+        "BR. CENTRO",
+        "BR. CIDADE NOVA",
+        "BR. CIDADE NOVA GL 2",
+        "BR. CRUZ, SANTA",
+        "BR. ITAICI",
+        "BR. MATO DENTRO",
+        "BR. SALTINHO",
+        "CH. TREVO, DO",
+        "CR. CARIBE VILLAGE",
+        "CR. CASA BELLA - BOSQUE RESIDENCIAL",
+        "CR. COND RESID MIRIM 1",
+        "CR. COND RESID MIRIM 2",
+        "CR. MORADAS DE ITAICI",
+        "CR. PORTAL DAS FLORES",
+        "CR. RESID MAISON BLANCHE",
+        "CR. RESID VILLAGGIO PORTOFINO",
+        "CR. SOLAR DOS GIRASSOIS",
+        "JD. ALICE",
+        "JD. AMERICA",
+        "JD. BENEDITO, SAO",
+        "JD. GUANABARA",
+        "JD. JEQUITIBA, DO",
+        "JD. MARIA LUIZA",
+        "JD. PARK REAL",
+        "JD. PAU PRETO",
+        "JD. PEDROSO",
+        "JD. SANTHIAGO",
+        "JD. UMUARAMA",
+        "JD. VALENCA",
+        "LT. CJ HAB LUCIO ARTONI",
+        "LT. SEM DENOMINACAO",
+        "LT. SUBDIV FISA",
+        "PQ. BOA ESPERANCA",
+        "PQ. CAMPO BONITO",
+        "PQ. TOMAS DE AQUINO, SAO",
+        "VL. ALMEIDA",
+        "VL. GEORGINA GL 1",
+        "VL. TELLER GL 2"
+      ]
+    }
+  ],
+  "/market/heatmap": {
+    "cells": [
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811428d3ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "PQ. CAMPO BONITO",
+        "period_start": "2023-03-30",
+        "period_end": "2026-07-17",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.271481133,
+                -23.097578013
+              ],
+              [
+                -47.27041834,
+                -23.096088791
+              ],
+              [
+                -47.271387847,
+                -23.094497927
+              ],
+              [
+                -47.273420132,
+                -23.094396297
+              ],
+              [
+                -47.274482919,
+                -23.095885523
+              ],
+              [
+                -47.273513427,
+                -23.097476375
+              ],
+              [
+                -47.271481133,
+                -23.097578013
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.272450636,
+            -23.09598717
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 55,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 180000.0,
+          "average_transaction_price": 180240.4403636364
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140697ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. ITAICI",
+        "period_start": "2024-12-20",
+        "period_end": "2026-07-22",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.198309614,
+                -23.10121998
+              ],
+              [
+                -47.197246748,
+                -23.09973017
+              ],
+              [
+                -47.198216664,
+                -23.098139636
+              ],
+              [
+                -47.20024943,
+                -23.098038924
+              ],
+              [
+                -47.20131229,
+                -23.099528739
+              ],
+              [
+                -47.200342389,
+                -23.10111926
+              ],
+              [
+                -47.198309614,
+                -23.10121998
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.199279526,
+            -23.099629467
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 261,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 465474.92,
+          "average_transaction_price": 462678.8769348659
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140467ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CENTRO",
+        "period_start": "2020-05-21",
+        "period_end": "2026-06-19",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.213322559,
+                -23.092763027
+              ],
+              [
+                -47.212259721,
+                -23.09127319
+              ],
+              [
+                -47.213229541,
+                -23.089682456
+              ],
+              [
+                -47.215262185,
+                -23.08958157
+              ],
+              [
+                -47.216325017,
+                -23.091071412
+              ],
+              [
+                -47.215355212,
+                -23.092662134
+              ],
+              [
+                -47.213322559,
+                -23.092763027
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.214292376,
+            -23.091172314
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 18,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 181500.0,
+          "average_transaction_price": 170389.11111111112
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811400b3ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "VL. ALMEIDA",
+        "period_start": "2019-01-11",
+        "period_end": "2026-06-19",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.222236743,
+                -23.084607252
+              ],
+              [
+                -47.221173927,
+                -23.08311734
+              ],
+              [
+                -47.222143685,
+                -23.081526433
+              ],
+              [
+                -47.224176245,
+                -23.081425451
+              ],
+              [
+                -47.225239056,
+                -23.082915368
+              ],
+              [
+                -47.224269312,
+                -23.084506262
+              ],
+              [
+                -47.222236743,
+                -23.084607252
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.223206498,
+            -23.083016367
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 82,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 624113.48,
+          "average_transaction_price": 613552.8371951219
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114008fffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CENTRO",
+        "period_start": "2019-01-02",
+        "period_end": "2026-06-24",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.216138955,
+                -23.084910068
+              ],
+              [
+                -47.215076133,
+                -23.083420107
+              ],
+              [
+                -47.216045925,
+                -23.081829228
+              ],
+              [
+                -47.218078525,
+                -23.081728322
+              ],
+              [
+                -47.219141342,
+                -23.083218288
+              ],
+              [
+                -47.218171564,
+                -23.084809155
+              ],
+              [
+                -47.216138955,
+                -23.084910068
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.217108744,
+            -23.08331921
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 24,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 276000.0,
+          "average_transaction_price": 307230.5833333333
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114040fffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CRUZ, SANTA",
+        "period_start": "2025-08-04",
+        "period_end": "2026-06-12",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.213508598,
+                -23.098923832
+              ],
+              [
+                -47.212445749,
+                -23.097434115
+              ],
+              [
+                -47.213415578,
+                -23.095843485
+              ],
+              [
+                -47.21544824,
+                -23.095742585
+              ],
+              [
+                -47.216511083,
+                -23.097232308
+              ],
+              [
+                -47.215541269,
+                -23.098822925
+              ],
+              [
+                -47.213508598,
+                -23.098923832
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.214478423,
+            -23.097333224
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 54,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 375500.0,
+          "average_transaction_price": 362967.9207407407
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811400bbffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. AREAL",
+        "period_start": "2019-01-30",
+        "period_end": "2026-07-22",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.219141342,
+                -23.083218288
+              ],
+              [
+                -47.218078525,
+                -23.081728322
+              ],
+              [
+                -47.219048299,
+                -23.080137403
+              ],
+              [
+                -47.221080874,
+                -23.080036462
+              ],
+              [
+                -47.222143685,
+                -23.081526433
+              ],
+              [
+                -47.221173927,
+                -23.08311734
+              ],
+              [
+                -47.219141342,
+                -23.083218288
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.220111112,
+            -23.08162739
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 348,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 620000.0,
+          "average_transaction_price": 659560.0486494253
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81142343ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. ALICE",
+        "period_start": "2019-02-11",
+        "period_end": "2026-07-20",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.226076737,
+                -23.1106381
+              ],
+              [
+                -47.225013881,
+                -23.109148719
+              ],
+              [
+                -47.225983658,
+                -23.107558245
+              ],
+              [
+                -47.228016277,
+                -23.107457163
+              ],
+              [
+                -47.229079129,
+                -23.108946549
+              ],
+              [
+                -47.228109366,
+                -23.110537011
+              ],
+              [
+                -47.226076737,
+                -23.1106381
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.227046511,
+            -23.109047647
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 102,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 232500.0,
+          "average_transaction_price": 238605.146372549
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811406b3ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. JEQUITIBA, DO",
+        "period_start": "2019-02-14",
+        "period_end": "2026-07-13",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.201219327,
+                -23.096448349
+              ],
+              [
+                -47.200156472,
+                -23.094958475
+              ],
+              [
+                -47.201126364,
+                -23.093367848
+              ],
+              [
+                -47.203159096,
+                -23.093267108
+              ],
+              [
+                -47.204221946,
+                -23.094756988
+              ],
+              [
+                -47.203252068,
+                -23.096347602
+              ],
+              [
+                -47.201219327,
+                -23.096448349
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.202189215,
+            -23.094857744
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 45,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 272600.0,
+          "average_transaction_price": 290669.038
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81142153ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CALDEIRA",
+        "period_start": "2019-03-28",
+        "period_end": "2026-06-30",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.24783798,
+                -23.123433017
+              ],
+              [
+                -47.246775122,
+                -23.121944077
+              ],
+              [
+                -47.247744799,
+                -23.120353742
+              ],
+              [
+                -47.24977732,
+                -23.12025236
+              ],
+              [
+                -47.250840173,
+                -23.121741306
+              ],
+              [
+                -47.24987051,
+                -23.123331628
+              ],
+              [
+                -47.24783798,
+                -23.123433017
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.248807654,
+            -23.121842704
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 61,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 165000.0,
+          "average_transaction_price": 167034.63459016394
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811433abffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "CR. MORADAS DE ITAICI",
+        "period_start": "2019-01-17",
+        "period_end": "2026-07-02",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.177011093,
+                -23.103816159
+              ],
+              [
+                -47.175948204,
+                -23.102326208
+              ],
+              [
+                -47.17691824,
+                -23.100735796
+              ],
+              [
+                -47.178951151,
+                -23.100635349
+              ],
+              [
+                -47.180014034,
+                -23.102125305
+              ],
+              [
+                -47.179044012,
+                -23.103715704
+              ],
+              [
+                -47.177011093,
+                -23.103816159
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.177981126,
+            -23.102225769
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 176,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 375000.0,
+          "average_transaction_price": 389765.8192045455
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114060bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "CR. COND RESID MIRIM 2",
+        "period_start": "2019-03-29",
+        "period_end": "2026-06-24",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.188836784,
+                -23.090891095
+              ],
+              [
+                -47.187773927,
+                -23.089401003
+              ],
+              [
+                -47.188743879,
+                -23.087810327
+              ],
+              [
+                -47.190776673,
+                -23.087709754
+              ],
+              [
+                -47.191839524,
+                -23.089199851
+              ],
+              [
+                -47.190869587,
+                -23.090790515
+              ],
+              [
+                -47.188836784,
+                -23.090891095
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.189806732,
+            -23.08930044
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 51,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 175000.0,
+          "average_transaction_price": 173497.0588235294
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114014bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "CR. CASA BELLA - BOSQUE RESIDENCIAL",
+        "period_start": "2019-01-07",
+        "period_end": "2026-06-29",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.22167841,
+                -23.066120661
+              ],
+              [
+                -47.220615624,
+                -23.064630392
+              ],
+              [
+                -47.221585357,
+                -23.06303917
+              ],
+              [
+                -47.223617861,
+                -23.062938231
+              ],
+              [
+                -47.224680641,
+                -23.064428505
+              ],
+              [
+                -47.223710923,
+                -23.066019714
+              ],
+              [
+                -47.22167841,
+                -23.066120661
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.222648139,
+            -23.064529461
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 94,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 680000.0,
+          "average_transaction_price": 696628.3627659575
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140063ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "CR. RESID MAISON BLANCHE",
+        "period_start": "2013-02-07",
+        "period_end": "2026-06-25",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.209669046,
+                -23.072888537
+              ],
+              [
+                -47.208606238,
+                -23.071398289
+              ],
+              [
+                -47.209576048,
+                -23.069807228
+              ],
+              [
+                -47.21160865,
+                -23.069706427
+              ],
+              [
+                -47.212671452,
+                -23.07119668
+              ],
+              [
+                -47.211701658,
+                -23.072787729
+              ],
+              [
+                -47.209669046,
+                -23.072888537
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.210638852,
+            -23.071297497
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 25,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 900000.0,
+          "average_transaction_price": 888684.0
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811428d7ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "PQ. CAMPO BONITO",
+        "period_start": "2023-04-12",
+        "period_end": "2026-07-20",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.274482919,
+                -23.095885523
+              ],
+              [
+                -47.273420132,
+                -23.094396297
+              ],
+              [
+                -47.274389619,
+                -23.092805392
+              ],
+              [
+                -47.276421879,
+                -23.092703727
+              ],
+              [
+                -47.277484661,
+                -23.094192959
+              ],
+              [
+                -47.276515188,
+                -23.095783851
+              ],
+              [
+                -47.274482919,
+                -23.095885523
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.275452403,
+            -23.094294641
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 75,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 190000.0,
+          "average_transaction_price": 179505.04053333332
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81142ea7ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "PQ. CAMPO BONITO",
+        "period_start": "2023-04-28",
+        "period_end": "2026-07-21",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.268479303,
+                -23.099270428
+              ],
+              [
+                -47.267416505,
+                -23.097781211
+              ],
+              [
+                -47.268386031,
+                -23.096190387
+              ],
+              [
+                -47.27041834,
+                -23.096088791
+              ],
+              [
+                -47.271481133,
+                -23.097578013
+              ],
+              [
+                -47.270511622,
+                -23.099168825
+              ],
+              [
+                -47.268479303,
+                -23.099270428
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.269448826,
+            -23.097679625
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 31,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 200000.0,
+          "average_transaction_price": 200390.32258064515
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81142c6fffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "PQ. CAMPO BONITO",
+        "period_start": "2022-10-18",
+        "period_end": "2026-06-19",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.27457622,
+                -23.098965542
+              ],
+              [
+                -47.273513427,
+                -23.097476375
+              ],
+              [
+                -47.274482919,
+                -23.095885523
+              ],
+              [
+                -47.276515188,
+                -23.095783851
+              ],
+              [
+                -47.277577975,
+                -23.097273024
+              ],
+              [
+                -47.276608499,
+                -23.098863863
+              ],
+              [
+                -47.27457622,
+                -23.098965542
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.275545708,
+            -23.097374712
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 16,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 205000.0,
+          "average_transaction_price": 199437.5
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114010bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. BELA VISTA",
+        "period_start": "2019-01-02",
+        "period_end": "2026-07-22",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.230871162,
+                -23.067206887
+              ],
+              [
+                -47.229808382,
+                -23.065716721
+              ],
+              [
+                -47.230778067,
+                -23.064125485
+              ],
+              [
+                -47.232810515,
+                -23.064024427
+              ],
+              [
+                -47.233873289,
+                -23.065514598
+              ],
+              [
+                -47.232903619,
+                -23.067105822
+              ],
+              [
+                -47.230871162,
+                -23.067206887
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.231840842,
+            -23.065615672
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 329,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 310000.0,
+          "average_transaction_price": 324477.62677811546
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140097ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CALDEIRA",
+        "period_start": "2019-01-15",
+        "period_end": "2026-07-15",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.219327431,
+                -23.089379722
+              ],
+              [
+                -47.218264604,
+                -23.087889876
+              ],
+              [
+                -47.219234386,
+                -23.086299061
+              ],
+              [
+                -47.22126698,
+                -23.086198106
+              ],
+              [
+                -47.222329802,
+                -23.087687958
+              ],
+              [
+                -47.221360035,
+                -23.08927876
+              ],
+              [
+                -47.219327431,
+                -23.089379722
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.22029721,
+            -23.08778893
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 118,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 200000.0,
+          "average_transaction_price": 421841.1013559322
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140687ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. ITAICI",
+        "period_start": "2019-01-03",
+        "period_end": "2026-07-23",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.198216664,
+                -23.098139636
+              ],
+              [
+                -47.197153803,
+                -23.096649767
+              ],
+              [
+                -47.198123714,
+                -23.09505918
+              ],
+              [
+                -47.200156472,
+                -23.094958475
+              ],
+              [
+                -47.201219327,
+                -23.096448349
+              ],
+              [
+                -47.20024943,
+                -23.098038924
+              ],
+              [
+                -47.198216664,
+                -23.098139636
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.199186571,
+            -23.096549071
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 572,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 315816.29000000004,
+          "average_transaction_price": 332216.6891083916
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81142c0fffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. BURU",
+        "period_start": "2024-07-18",
+        "period_end": "2026-07-22",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.277857923,
+                -23.106512544
+              ],
+              [
+                -47.276795121,
+                -23.10502355
+              ],
+              [
+                -47.277764607,
+                -23.103432816
+              ],
+              [
+                -47.279796879,
+                -23.103331087
+              ],
+              [
+                -47.280859675,
+                -23.104820086
+              ],
+              [
+                -47.279890205,
+                -23.106410808
+              ],
+              [
+                -47.277857923,
+                -23.106512544
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.278827405,
+            -23.104921831
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 44,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 262000.0,
+          "average_transaction_price": 256610.35568181818
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81142e07ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. BURU",
+        "period_start": "2025-07-18",
+        "period_end": "2026-07-20",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.259287086,
+                -23.098187303
+              ],
+              [
+                -47.25822428,
+                -23.096697983
+              ],
+              [
+                -47.259193855,
+                -23.095107173
+              ],
+              [
+                -47.261226221,
+                -23.095005696
+              ],
+              [
+                -47.262289021,
+                -23.096495021
+              ],
+              [
+                -47.261319461,
+                -23.098085818
+              ],
+              [
+                -47.259287086,
+                -23.098187303
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.260256657,
+            -23.096596515
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 43,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 305563.41,
+          "average_transaction_price": 305192.20744186046
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81142e7bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. SALTINHO",
+        "period_start": "2025-01-08",
+        "period_end": "2026-07-15",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.25000145,
+                -23.094023383
+              ],
+              [
+                -47.248938644,
+                -23.092533901
+              ],
+              [
+                -47.249908263,
+                -23.090943054
+              ],
+              [
+                -47.251940675,
+                -23.090841702
+              ],
+              [
+                -47.253003477,
+                -23.09233119
+              ],
+              [
+                -47.252033872,
+                -23.093922024
+              ],
+              [
+                -47.25000145,
+                -23.094023383
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.250971067,
+            -23.092432558
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 60,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 248148.38,
+          "average_transaction_price": 267599.32266666665
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811400a7ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "LT. SEM DENOMINACAO",
+        "period_start": "2024-07-24",
+        "period_end": "2026-07-23",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.225145985,
+                -23.079834504
+              ],
+              [
+                -47.224083179,
+                -23.078344527
+              ],
+              [
+                -47.225052914,
+                -23.076753528
+              ],
+              [
+                -47.22708544,
+                -23.076652518
+              ],
+              [
+                -47.22814824,
+                -23.0781425
+              ],
+              [
+                -47.22717852,
+                -23.079733487
+              ],
+              [
+                -47.225145985,
+                -23.079834504
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.226115716,
+            -23.078243526
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 95,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 530000.0,
+          "average_transaction_price": 574674.7572631579
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114042bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CENTRO",
+        "period_start": "2019-09-16",
+        "period_end": "2026-06-24",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.21641805,
+                -23.094151916
+              ],
+              [
+                -47.215355212,
+                -23.092662134
+              ],
+              [
+                -47.216325017,
+                -23.091071412
+              ],
+              [
+                -47.218357645,
+                -23.090970484
+              ],
+              [
+                -47.219420477,
+                -23.092460272
+              ],
+              [
+                -47.218450687,
+                -23.094050981
+              ],
+              [
+                -47.21641805,
+                -23.094151916
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.217387851,
+            -23.092561215
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 65,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 180018.93,
+          "average_transaction_price": 221558.67923076922
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140057ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "VL. GEORGINA GL 1",
+        "period_start": "2019-10-04",
+        "period_end": "2026-05-11",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.206852567,
+                -23.080742512
+              ],
+              [
+                -47.205789744,
+                -23.079252388
+              ],
+              [
+                -47.206759581,
+                -23.077661472
+              ],
+              [
+                -47.208792227,
+                -23.077560691
+              ],
+              [
+                -47.209855045,
+                -23.07905082
+              ],
+              [
+                -47.208885222,
+                -23.080641724
+              ],
+              [
+                -47.206852567,
+                -23.080742512
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.207822401,
+            -23.079151617
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 55,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 495951.92,
+          "average_transaction_price": 494839.87254545453
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140493ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "CR. PORTAL DAS FLORES",
+        "period_start": "2019-02-28",
+        "period_end": "2026-07-15",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.216976262,
+                -23.112632585
+              ],
+              [
+                -47.215913394,
+                -23.111143161
+              ],
+              [
+                -47.216883225,
+                -23.109552754
+              ],
+              [
+                -47.218915909,
+                -23.109451784
+              ],
+              [
+                -47.219978771,
+                -23.110941213
+              ],
+              [
+                -47.219008956,
+                -23.112531608
+              ],
+              [
+                -47.216976262,
+                -23.112632585
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.217946089,
+            -23.1110422
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 102,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 275183.5,
+          "average_transaction_price": 290135.22578431375
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140087ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CENTRO",
+        "period_start": "2019-03-15",
+        "period_end": "2026-02-25",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.219234386,
+                -23.086299061
+              ],
+              [
+                -47.218171564,
+                -23.084809155
+              ],
+              [
+                -47.219141342,
+                -23.083218288
+              ],
+              [
+                -47.221173927,
+                -23.08311734
+              ],
+              [
+                -47.222236743,
+                -23.084607252
+              ],
+              [
+                -47.22126698,
+                -23.086198106
+              ],
+              [
+                -47.219234386,
+                -23.086299061
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.22020416,
+            -23.084708216
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 42,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 516700.0,
+          "average_transaction_price": 528810.2571428572
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114042fffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. PAU PRETO",
+        "period_start": "2019-01-04",
+        "period_end": "2026-07-16",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.219420477,
+                -23.092460272
+              ],
+              [
+                -47.218357645,
+                -23.090970484
+              ],
+              [
+                -47.219327431,
+                -23.089379722
+              ],
+              [
+                -47.221360035,
+                -23.08927876
+              ],
+              [
+                -47.222422861,
+                -23.090768553
+              ],
+              [
+                -47.22145309,
+                -23.092359302
+              ],
+              [
+                -47.219420477,
+                -23.092460272
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.22039026,
+            -23.090869531
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 74,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 766000.0,
+          "average_transaction_price": 757082.3314864865
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114001bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "PQ. TOMAS DE AQUINO, SAO",
+        "period_start": "2019-03-22",
+        "period_end": "2026-05-18",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.209948046,
+                -23.082131793
+              ],
+              [
+                -47.208885222,
+                -23.080641724
+              ],
+              [
+                -47.209855045,
+                -23.07905082
+              ],
+              [
+                -47.211887675,
+                -23.078949997
+              ],
+              [
+                -47.212950493,
+                -23.080440072
+              ],
+              [
+                -47.211980685,
+                -23.082030964
+              ],
+              [
+                -47.209948046,
+                -23.082131793
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.210917864,
+            -23.080540911
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 140,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 535337.5,
+          "average_transaction_price": 531885.9920714286
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140013ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. BENEDITO, SAO",
+        "period_start": "2019-01-02",
+        "period_end": "2026-03-30",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.213043508,
+                -23.083520979
+              ],
+              [
+                -47.211980685,
+                -23.082030964
+              ],
+              [
+                -47.212950493,
+                -23.080440072
+              ],
+              [
+                -47.214983108,
+                -23.080339208
+              ],
+              [
+                -47.216045925,
+                -23.081829228
+              ],
+              [
+                -47.215076133,
+                -23.083420107
+              ],
+              [
+                -47.213043508,
+                -23.083520979
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.214013312,
+            -23.081930109
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 44,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 430198.875,
+          "average_transaction_price": 433777.3702272727
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811406afffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "PQ. BOA ESPERANCA",
+        "period_start": "2019-05-14",
+        "period_end": "2026-06-19",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.201033402,
+                -23.090287235
+              ],
+              [
+                -47.199970557,
+                -23.088797241
+              ],
+              [
+                -47.200940441,
+                -23.087206509
+              ],
+              [
+                -47.202973155,
+                -23.087105784
+              ],
+              [
+                -47.204035994,
+                -23.088595783
+              ],
+              [
+                -47.203066125,
+                -23.090186502
+              ],
+              [
+                -47.201033402,
+                -23.090287235
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.202003282,
+            -23.088696525
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 41,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 475000.0,
+          "average_transaction_price": 492696.44951219513
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811406a3ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "PQ. BOA ESPERANCA",
+        "period_start": "2020-07-27",
+        "period_end": "2026-03-05",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.201126364,
+                -23.093367848
+              ],
+              [
+                -47.200063514,
+                -23.091877914
+              ],
+              [
+                -47.201033402,
+                -23.090287235
+              ],
+              [
+                -47.203066125,
+                -23.090186502
+              ],
+              [
+                -47.20412897,
+                -23.091676441
+              ],
+              [
+                -47.203159096,
+                -23.093267108
+              ],
+              [
+                -47.201126364,
+                -23.093367848
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.202096248,
+            -23.09177719
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 59,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 400000.0,
+          "average_transaction_price": 435430.65271186444
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114068fffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. SANTHIAGO",
+        "period_start": "2019-07-17",
+        "period_end": "2026-06-25",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.195121021,
+                -23.096750437
+              ],
+              [
+                -47.19405816,
+                -23.095260513
+              ],
+              [
+                -47.195028087,
+                -23.093669914
+              ],
+              [
+                -47.197060859,
+                -23.093569251
+              ],
+              [
+                -47.198123714,
+                -23.09505918
+              ],
+              [
+                -47.197153803,
+                -23.096649767
+              ],
+              [
+                -47.195121021,
+                -23.096750437
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.196090944,
+            -23.095159859
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 43,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 380000.0,
+          "average_transaction_price": 383738.7804651163
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140477ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. PEDROSO",
+        "period_start": "2019-04-11",
+        "period_end": "2026-04-01",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.213415578,
+                -23.095843485
+              ],
+              [
+                -47.212352735,
+                -23.094353709
+              ],
+              [
+                -47.213322559,
+                -23.092763027
+              ],
+              [
+                -47.215355212,
+                -23.092662134
+              ],
+              [
+                -47.21641805,
+                -23.094151916
+              ],
+              [
+                -47.21544824,
+                -23.095742585
+              ],
+              [
+                -47.213415578,
+                -23.095843485
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.214385399,
+            -23.094252825
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 18,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 240000.0,
+          "average_transaction_price": 263444.44444444444
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811402b3ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. VALENCA",
+        "period_start": "2019-08-12",
+        "period_end": "2026-06-19",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.200568606,
+                -23.074882487
+              ],
+              [
+                -47.199505787,
+                -23.073392196
+              ],
+              [
+                -47.200475649,
+                -23.071801202
+              ],
+              [
+                -47.202508316,
+                -23.071700512
+              ],
+              [
+                -47.20357113,
+                -23.073190809
+              ],
+              [
+                -47.202601282,
+                -23.07478179
+              ],
+              [
+                -47.200568606,
+                -23.074882487
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.201538465,
+            -23.073291515
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 26,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 640000.0,
+          "average_transaction_price": 578984.8323076924
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811404cfffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "LT. CJ HAB LUCIO ARTONI",
+        "period_start": "2019-07-18",
+        "period_end": "2026-05-18",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.20759649,
+                -23.1053868
+              ],
+              [
+                -47.206533625,
+                -23.103897153
+              ],
+              [
+                -47.207503496,
+                -23.102306656
+              ],
+              [
+                -47.209536217,
+                -23.102205818
+              ],
+              [
+                -47.210599076,
+                -23.10369547
+              ],
+              [
+                -47.20962922,
+                -23.105285955
+              ],
+              [
+                -47.20759649,
+                -23.1053868
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.208566357,
+            -23.103796324
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 21,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 130000.0,
+          "average_transaction_price": 130678.32333333333
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140383ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "CR. SOLAR DOS GIRASSOIS",
+        "period_start": "2019-01-28",
+        "period_end": "2026-04-08",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.21558079,
+                -23.066423348
+              ],
+              [
+                -47.214517998,
+                -23.06493303
+              ],
+              [
+                -47.215487766,
+                -23.063341836
+              ],
+              [
+                -47.217520309,
+                -23.063240973
+              ],
+              [
+                -47.218583095,
+                -23.064731297
+              ],
+              [
+                -47.217613343,
+                -23.066322478
+              ],
+              [
+                -47.21558079,
+                -23.066423348
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.216550554,
+            -23.064832176
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 74,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 200000.0,
+          "average_transaction_price": 209187.83783783784
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811405b3ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. PARK REAL",
+        "period_start": "2023-04-03",
+        "period_end": "2026-04-08",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.243904106,
+                -23.094327307
+              ],
+              [
+                -47.242841293,
+                -23.092837776
+              ],
+              [
+                -47.243810947,
+                -23.091246956
+              ],
+              [
+                -47.245843399,
+                -23.091145681
+              ],
+              [
+                -47.246906207,
+                -23.092635218
+              ],
+              [
+                -47.245936568,
+                -23.094226025
+              ],
+              [
+                -47.243904106,
+                -23.094327307
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.244873757,
+            -23.09273651
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 23,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 744000.0,
+          "average_transaction_price": 730276.6717391304
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811433a3ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. ITAICI",
+        "period_start": "2019-05-09",
+        "period_end": "2026-04-15",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.180106901,
+                -23.105205601
+              ],
+              [
+                -47.179044012,
+                -23.103715704
+              ],
+              [
+                -47.180014034,
+                -23.102125305
+              ],
+              [
+                -47.182046929,
+                -23.102024815
+              ],
+              [
+                -47.183109812,
+                -23.103514718
+              ],
+              [
+                -47.182139805,
+                -23.105105104
+              ],
+              [
+                -47.180106901,
+                -23.105205601
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.181076919,
+            -23.103615223
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 29,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 520000.0,
+          "average_transaction_price": 520394.8275862069
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114068bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "LT. SEM DENOMINACAO",
+        "period_start": "2019-01-02",
+        "period_end": "2026-05-05",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.192118284,
+                -23.098441619
+              ],
+              [
+                -47.191055418,
+                -23.096951701
+              ],
+              [
+                -47.192025363,
+                -23.095361142
+              ],
+              [
+                -47.19405816,
+                -23.095260513
+              ],
+              [
+                -47.195121021,
+                -23.096750437
+              ],
+              [
+                -47.194151091,
+                -23.098340984
+              ],
+              [
+                -47.192118284,
+                -23.098441619
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.193088226,
+            -23.096851082
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 146,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 320000.0,
+          "average_transaction_price": 331036.86246575345
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140437ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. PAU PRETO",
+        "period_start": "2019-06-25",
+        "period_end": "2026-06-17",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.222608983,
+                -23.096929406
+              ],
+              [
+                -47.221546146,
+                -23.095439732
+              ],
+              [
+                -47.222515921,
+                -23.093849035
+              ],
+              [
+                -47.224548519,
+                -23.093748024
+              ],
+              [
+                -47.22561135,
+                -23.095237703
+              ],
+              [
+                -47.224641589,
+                -23.096828387
+              ],
+              [
+                -47.222608983,
+                -23.096929406
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.223578755,
+            -23.09533873
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 18,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 445000.0,
+          "average_transaction_price": 448597.97277777776
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140617ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. AMERICA",
+        "period_start": "2019-02-05",
+        "period_end": "2026-06-08",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.195028087,
+                -23.093669914
+              ],
+              [
+                -47.193965231,
+                -23.092179931
+              ],
+              [
+                -47.194935153,
+                -23.090589279
+              ],
+              [
+                -47.196967916,
+                -23.090488623
+              ],
+              [
+                -47.198030766,
+                -23.091978612
+              ],
+              [
+                -47.197060859,
+                -23.093569251
+              ],
+              [
+                -47.195028087,
+                -23.093669914
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.195998005,
+            -23.092079284
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 84,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 367500.0,
+          "average_transaction_price": 394340.57154761907
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811400c7ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "LT. SUBDIV FISA",
+        "period_start": "2019-03-07",
+        "period_end": "2026-05-29",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.210041047,
+                -23.085212655
+              ],
+              [
+                -47.208978219,
+                -23.083722645
+              ],
+              [
+                -47.209948046,
+                -23.082131793
+              ],
+              [
+                -47.211980685,
+                -23.082030964
+              ],
+              [
+                -47.213043508,
+                -23.083520979
+              ],
+              [
+                -47.212073697,
+                -23.085111818
+              ],
+              [
+                -47.210041047,
+                -23.085212655
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.21101087,
+            -23.083621825
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 45,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 140000.0,
+          "average_transaction_price": 177322.87377777777
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811406a7ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "PQ. BOA ESPERANCA",
+        "period_start": "2023-02-06",
+        "period_end": "2026-05-13",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.20412897,
+                -23.091676441
+              ],
+              [
+                -47.203066125,
+                -23.090186502
+              ],
+              [
+                -47.204035994,
+                -23.088595783
+              ],
+              [
+                -47.206068693,
+                -23.088495015
+              ],
+              [
+                -47.207131532,
+                -23.08998496
+              ],
+              [
+                -47.206161677,
+                -23.091575667
+              ],
+              [
+                -47.20412897,
+                -23.091676441
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.205098835,
+            -23.090085744
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 57,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 495000.0,
+          "average_transaction_price": 496900.98228070175
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114054bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. MARIA LUIZA",
+        "period_start": "2019-03-12",
+        "period_end": "2026-01-23",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.222329802,
+                -23.087687958
+              ],
+              [
+                -47.22126698,
+                -23.086198106
+              ],
+              [
+                -47.222236743,
+                -23.084607252
+              ],
+              [
+                -47.224269312,
+                -23.084506262
+              ],
+              [
+                -47.225332128,
+                -23.08599612
+              ],
+              [
+                -47.22436238,
+                -23.087586961
+              ],
+              [
+                -47.222329802,
+                -23.087687958
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.223299561,
+            -23.086097126
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 61,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 577279.21,
+          "average_transaction_price": 537193.238852459
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140297ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. GUANABARA",
+        "period_start": "2019-01-28",
+        "period_end": "2026-03-27",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.197658982,
+                -23.079655219
+              ],
+              [
+                -47.196596152,
+                -23.078164992
+              ],
+              [
+                -47.197566038,
+                -23.076574091
+              ],
+              [
+                -47.199598739,
+                -23.076473429
+              ],
+              [
+                -47.200661563,
+                -23.077963661
+              ],
+              [
+                -47.199691692,
+                -23.07955455
+              ],
+              [
+                -47.197658982,
+                -23.079655219
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.198628864,
+            -23.078064339
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 42,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 270000.0,
+          "average_transaction_price": 270538.4180952381
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114030bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "CR. COND RESID MIRIM 1",
+        "period_start": "2019-02-06",
+        "period_end": "2026-05-20",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.209204064,
+                -23.057480871
+              ],
+              [
+                -47.208141282,
+                -23.055990325
+              ],
+              [
+                -47.20911107,
+                -23.054399002
+              ],
+              [
+                -47.211143626,
+                -23.054298236
+              ],
+              [
+                -47.212206403,
+                -23.055788787
+              ],
+              [
+                -47.211236629,
+                -23.057380098
+              ],
+              [
+                -47.209204064,
+                -23.057480871
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.210173849,
+            -23.055889569
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 42,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 165000.0,
+          "average_transaction_price": 165678.57142857142
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114040bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CRUZ, SANTA",
+        "period_start": "2019-02-07",
+        "period_end": "2026-05-28",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.210506069,
+                -23.100615281
+              ],
+              [
+                -47.209443215,
+                -23.099125569
+              ],
+              [
+                -47.210413063,
+                -23.09753498
+              ],
+              [
+                -47.212445749,
+                -23.097434115
+              ],
+              [
+                -47.213508598,
+                -23.098923832
+              ],
+              [
+                -47.212538765,
+                -23.100514409
+              ],
+              [
+                -47.210506069,
+                -23.100615281
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.211475913,
+            -23.099024713
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 40,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 209500.0,
+          "average_transaction_price": 223887.5
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140e93ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. MATO DENTRO",
+        "period_start": "2023-11-14",
+        "period_end": "2026-06-17",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.236689129,
+                -23.057659138
+              ],
+              [
+                -47.235626371,
+                -23.056168842
+              ],
+              [
+                -47.236596008,
+                -23.054577421
+              ],
+              [
+                -47.238628389,
+                -23.054476309
+              ],
+              [
+                -47.239691141,
+                -23.05596661
+              ],
+              [
+                -47.238721518,
+                -23.057558018
+              ],
+              [
+                -47.236689129,
+                -23.057659138
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.237658763,
+            -23.056067739
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 19,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 212992.19,
+          "average_transaction_price": 232034.08578947367
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140093ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CENTRO",
+        "period_start": "2019-11-26",
+        "period_end": "2026-06-29",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.216325017,
+                -23.091071412
+              ],
+              [
+                -47.215262185,
+                -23.08958157
+              ],
+              [
+                -47.216231986,
+                -23.087990796
+              ],
+              [
+                -47.218264604,
+                -23.087889876
+              ],
+              [
+                -47.219327431,
+                -23.089379722
+              ],
+              [
+                -47.218357645,
+                -23.090970484
+              ],
+              [
+                -47.216325017,
+                -23.091071412
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.217294815,
+            -23.089480659
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 58,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 347918.51,
+          "average_transaction_price": 475580.7898275862
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114215bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CALDEIRA",
+        "period_start": "2019-07-03",
+        "period_end": "2025-11-17",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.244742576,
+                -23.122045424
+              ],
+              [
+                -47.243679717,
+                -23.120556429
+              ],
+              [
+                -47.244649409,
+                -23.118966082
+              ],
+              [
+                -47.246681945,
+                -23.118864742
+              ],
+              [
+                -47.247744799,
+                -23.120353742
+              ],
+              [
+                -47.246775122,
+                -23.121944077
+              ],
+              [
+                -47.244742576,
+                -23.122045424
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.245712265,
+            -23.120455098
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 51,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 170000.0,
+          "average_transaction_price": 171005.1043137255
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811401cbffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "CR. CARIBE VILLAGE",
+        "period_start": "2020-06-10",
+        "period_end": "2025-11-11",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.224959845,
+                -23.07367244
+              ],
+              [
+                -47.223897049,
+                -23.072182345
+              ],
+              [
+                -47.224866776,
+                -23.070591241
+              ],
+              [
+                -47.226899283,
+                -23.070490245
+              ],
+              [
+                -47.227962073,
+                -23.071980346
+              ],
+              [
+                -47.226992361,
+                -23.073571438
+              ],
+              [
+                -47.224959845,
+                -23.07367244
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.225929568,
+            -23.072081358
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 42,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 455460.025,
+          "average_transaction_price": 514922.0169047619
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81140623ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CIDADE NOVA",
+        "period_start": "2019-01-28",
+        "period_end": "2025-11-24",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.197844872,
+                -23.08581714
+              ],
+              [
+                -47.196782032,
+                -23.084327032
+              ],
+              [
+                -47.197751927,
+                -23.082736235
+              ],
+              [
+                -47.199784646,
+                -23.082635559
+              ],
+              [
+                -47.200847481,
+                -23.084125672
+              ],
+              [
+                -47.199877601,
+                -23.085716456
+              ],
+              [
+                -47.197844872,
+                -23.08581714
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.198814763,
+            -23.084226365
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 109,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 420000.0,
+          "average_transaction_price": 491003.5685321101
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114062fffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CIDADE NOVA GL 2",
+        "period_start": "2019-01-02",
+        "period_end": "2025-11-19",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.197751927,
+                -23.082736235
+              ],
+              [
+                -47.196689092,
+                -23.081246068
+              ],
+              [
+                -47.197658982,
+                -23.079655219
+              ],
+              [
+                -47.199691692,
+                -23.07955455
+              ],
+              [
+                -47.200754522,
+                -23.081044722
+              ],
+              [
+                -47.199784646,
+                -23.082635559
+              ],
+              [
+                -47.197751927,
+                -23.082736235
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.198721813,
+            -23.081145408
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 101,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 347652.64,
+          "average_transaction_price": 370231.19920792076
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811406d7ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "CH. TREVO, DO",
+        "period_start": "2019-05-02",
+        "period_end": "2025-05-05",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.189115504,
+                -23.100132727
+              ],
+              [
+                -47.188052632,
+                -23.098642814
+              ],
+              [
+                -47.189022596,
+                -23.097052295
+              ],
+              [
+                -47.191055418,
+                -23.096951701
+              ],
+              [
+                -47.192118284,
+                -23.098441619
+              ],
+              [
+                -47.191148335,
+                -23.100032126
+              ],
+              [
+                -47.189115504,
+                -23.100132727
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.190085465,
+            -23.098542229
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 33,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 360000.0,
+          "average_transaction_price": 382896.9696969697
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a8114055bffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. PAU PRETO",
+        "period_start": "2021-08-26",
+        "period_end": "2025-05-27",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.222422861,
+                -23.090768553
+              ],
+              [
+                -47.221360035,
+                -23.08927876
+              ],
+              [
+                -47.222329802,
+                -23.087687958
+              ],
+              [
+                -47.22436238,
+                -23.087586961
+              ],
+              [
+                -47.225425201,
+                -23.089076759
+              ],
+              [
+                -47.224455449,
+                -23.090667549
+              ],
+              [
+                -47.222422861,
+                -23.090768553
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.223392625,
+            -23.089177773
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 64,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 435112.175,
+          "average_transaction_price": 469883.93828125
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811400cfffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "BR. CIDADE NOVA",
+        "period_start": "2019-03-14",
+        "period_end": "2025-09-05",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.206945554,
+                -23.08382344
+              ],
+              [
+                -47.205882726,
+                -23.082333376
+              ],
+              [
+                -47.206852567,
+                -23.080742512
+              ],
+              [
+                -47.208885222,
+                -23.080641724
+              ],
+              [
+                -47.209948046,
+                -23.082131793
+              ],
+              [
+                -47.208978219,
+                -23.083722645
+              ],
+              [
+                -47.206945554,
+                -23.08382344
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.207915392,
+            -23.082232597
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 63,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 435000.0,
+          "average_transaction_price": 514968.70079365076
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811406b7ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "PQ. BOA ESPERANCA",
+        "period_start": "2019-01-03",
+        "period_end": "2025-03-17",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.204221946,
+                -23.094756988
+              ],
+              [
+                -47.203159096,
+                -23.093267108
+              ],
+              [
+                -47.20412897,
+                -23.091676441
+              ],
+              [
+                -47.206161677,
+                -23.091575667
+              ],
+              [
+                -47.207224521,
+                -23.093065552
+              ],
+              [
+                -47.206254663,
+                -23.094656206
+              ],
+              [
+                -47.204221946,
+                -23.094756988
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.205191816,
+            -23.093166343
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 20,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 250000.0,
+          "average_transaction_price": 267500.0
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811400abffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "VL. TELLER GL 2",
+        "period_start": "2019-06-13",
+        "period_end": "2024-07-26",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.219048299,
+                -23.080137403
+              ],
+              [
+                -47.217985487,
+                -23.078647377
+              ],
+              [
+                -47.218955256,
+                -23.077056405
+              ],
+              [
+                -47.220987822,
+                -23.076955472
+              ],
+              [
+                -47.222050628,
+                -23.078445503
+              ],
+              [
+                -47.221080874,
+                -23.080036462
+              ],
+              [
+                -47.219048299,
+                -23.080137403
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.220018064,
+            -23.078546453
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 19,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 412000.0,
+          "average_transaction_price": 406818.21789473685
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a81143127ffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "JD. UMUARAMA",
+        "period_start": "2019-11-28",
+        "period_end": "2024-10-24",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.20149822,
+                -23.105689181
+              ],
+              [
+                -47.20043535,
+                -23.104199485
+              ],
+              [
+                -47.201405255,
+                -23.102609016
+              ],
+              [
+                -47.203438015,
+                -23.102508255
+              ],
+              [
+                -47.20450088,
+                -23.103997956
+              ],
+              [
+                -47.20353099,
+                -23.105588413
+              ],
+              [
+                -47.20149822,
+                -23.105689181
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.202468122,
+            -23.104098733
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 21,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 180000.0,
+          "average_transaction_price": 187557.14285714287
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      },
+      {
+        "indicators": {
+          "market_heat": null,
+          "demand_score": null,
+          "liquidity": null,
+          "price_growth": null,
+          "sales_velocity": null
+        },
+        "h3_index": "89a811402abffff",
+        "h3_resolution": 9,
+        "city": "Indaiatuba",
+        "area": "CR. RESID VILLAGGIO PORTOFINO",
+        "period_start": "2019-01-10",
+        "period_end": "2024-01-16",
+        "boundary": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -47.197380153,
+                -23.070411499
+              ],
+              [
+                -47.196317338,
+                -23.068921093
+              ],
+              [
+                -47.197287212,
+                -23.067330034
+              ],
+              [
+                -47.199319885,
+                -23.067229393
+              ],
+              [
+                -47.200382694,
+                -23.068719804
+              ],
+              [
+                -47.199412835,
+                -23.070310851
+              ],
+              [
+                -47.197380153,
+                -23.070411499
+              ]
+            ]
+          ]
+        },
+        "center": {
+          "type": "Point",
+          "coordinates": [
+            -47.198350023,
+            -23.068820461
+          ]
+        },
+        "metrics": {
+          "units": {
+            "transaction_count": "count",
+            "median_transaction_price": "BRL",
+            "average_transaction_price": "BRL"
+          },
+          "source_name": "academic_itbi_address_v1",
+          "dataset_kind": "transactions",
+          "partial_coverage": true,
+          "source_row_count": 64163,
+          "transaction_count": 20,
+          "geocoded_row_count": 4790,
+          "median_transaction_price": 699000.0,
+          "average_transaction_price": 751451.96
+        },
+        "input_version": "academic_itbi_address_v1:983da99d8db3:n128",
+        "calculated_at": "2026-09-13T16:02:27.292529+00:00",
+        "scope": "platform"
+      }
+    ],
+    "timing": {
+      "total_ms": 2291.8661999865435,
+      "components": [
+        {
+          "name": "heatmap_read",
+          "state": "success",
+          "duration_ms": 2291.8661999865435,
+          "code": null,
+          "message": null
+        }
+      ]
+    }
+  },
+  "/market/published-metrics": {
+    "scope": "platform",
+    "city": null,
+    "area": null,
+    "h3_index": null,
+    "aggregation": "published",
+    "metrics": [
+      {
+        "metric": "price_m2",
+        "unit": "BRL/m²",
+        "value": null,
+        "observed_on": null,
+        "source_name": null,
+        "status": "unavailable",
+        "reason": "no_published_observations",
+        "points": []
+      },
+      {
+        "metric": "asking_price",
+        "unit": "BRL",
+        "value": null,
+        "observed_on": null,
+        "source_name": null,
+        "status": "unavailable",
+        "reason": "no_published_observations",
+        "points": []
+      },
+      {
+        "metric": "active_listings",
+        "unit": "count",
+        "value": null,
+        "observed_on": null,
+        "source_name": null,
+        "status": "unavailable",
+        "reason": "no_published_observations",
+        "points": []
+      },
+      {
+        "metric": "dom",
+        "unit": "days",
+        "value": null,
+        "observed_on": null,
+        "source_name": null,
+        "status": "unavailable",
+        "reason": "no_published_observations",
+        "points": []
+      },
+      {
+        "metric": "market_heat",
+        "unit": "score_0_100",
+        "value": null,
+        "observed_on": null,
+        "source_name": null,
+        "status": "unavailable",
+        "reason": "no_published_observations",
+        "points": []
+      },
+      {
+        "metric": "demand_score",
+        "unit": "score_0_100",
+        "value": null,
+        "observed_on": null,
+        "source_name": null,
+        "status": "unavailable",
+        "reason": "no_published_observations",
+        "points": []
+      },
+      {
+        "metric": "liquidity",
+        "unit": "score_0_100",
+        "value": null,
+        "observed_on": null,
+        "source_name": null,
+        "status": "unavailable",
+        "reason": "no_published_observations",
+        "points": []
+      },
+      {
+        "metric": "price_growth",
+        "unit": "percent",
+        "value": null,
+        "observed_on": null,
+        "source_name": null,
+        "status": "unavailable",
+        "reason": "no_published_observations",
+        "points": []
+      },
+      {
+        "metric": "sales_velocity",
+        "unit": "sales/day",
+        "value": null,
+        "observed_on": null,
+        "source_name": null,
+        "status": "unavailable",
+        "reason": "no_published_observations",
+        "points": []
+      }
+    ]
+  }
+}

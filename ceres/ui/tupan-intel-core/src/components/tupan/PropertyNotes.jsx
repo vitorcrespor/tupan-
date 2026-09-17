@@ -8,6 +8,7 @@ import { ptBR } from 'date-fns/locale';
 export default function PropertyNotes({ propertyId }) {
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
+  const [error, setError] = useState(null);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -16,10 +17,11 @@ export default function PropertyNotes({ propertyId }) {
 
   const load = useCallback(async () => {
     try {
+      setError(null);
       const res = await appClient.entities.PropertyNote.filter({ property_id: propertyId }, '-created_date', 100);
       setNotes(Array.isArray(res) ? res : []);
     } catch (e) {
-      setNotes([]);
+      setError('Não foi possível carregar as notas.');
     } finally {
       setLoading(false);
     }
@@ -41,13 +43,13 @@ export default function PropertyNotes({ propertyId }) {
     try {
       await appClient.entities.PropertyNote.create({
         property_id: propertyId,
-        content: text.trim(),
+        note: text.trim(),
         author_name: user?.full_name || user?.email || 'Corretor',
       });
       setText('');
       load();
     } catch (e) {
-      // RLS rejects non-admins; surfaced silently
+      setError('Não foi possível salvar a nota. Verifique sua permissão e tente novamente.');
     } finally {
       setSending(false);
     }
@@ -71,6 +73,7 @@ export default function PropertyNotes({ propertyId }) {
         )}
       </button>
 
+      {error && <p role="alert" className="mt-2 text-xs text-negative">{error}</p>}
       {open && (
         <div className="mt-3 rounded-2xl border border-border bg-elevated/60 p-3">
           {loading ? (
@@ -86,12 +89,12 @@ export default function PropertyNotes({ propertyId }) {
                 {notes.map((n) => (
                   <div key={n.id} className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold text-foreground">{n.author_name || 'Corretor'}</span>
+                      <span className="text-[11px] font-semibold text-foreground">{n.user_id === user?.id ? (user.full_name || 'Você') : 'Membro da equipe'}</span>
                       <span className="text-[10px] text-text-muted">
-                        {n.created_date ? formatDistanceToNow(new Date(n.created_date), { addSuffix: true, locale: ptBR }) : ''}
+                        {n.created_at ? formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: ptBR }) : ''}
                       </span>
                     </div>
-                    <p className="m-0 text-[12px] leading-5 text-text-secondary whitespace-pre-wrap break-words">{n.content}</p>
+                    <p className="m-0 text-[12px] leading-5 text-text-secondary whitespace-pre-wrap break-words">{n.note}</p>
                   </div>
                 ))}
               </div>

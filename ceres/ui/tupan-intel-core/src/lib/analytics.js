@@ -8,9 +8,9 @@ export const computePortfolioStats = (properties, regions) => {
   const avgDom = active.length ? active.reduce((s, p) => s + (p.days_on_market || 0), 0) / active.length : 0;
   const avgDeviation = active.length ? active.reduce((s, p) => s + (p.price_deviation || 0), 0) / active.length : 0;
   const avgConfidence = active.length ? active.reduce((s, p) => s + (p.valuation_confidence || 0), 0) / active.length : 0;
-  const overpriced = active.filter((p) => p.valuation_class === 'Overpriced');
-  const underpriced = active.filter((p) => p.valuation_class === 'Underpriced');
-  const fair = active.filter((p) => p.valuation_class === 'Fair Value');
+  const overpriced = active.filter((p) => p.valuation_class === 'ABOVE_ESTIMATED_RANGE');
+  const underpriced = active.filter((p) => p.valuation_class === 'BELOW_ESTIMATED_RANGE');
+  const fair = active.filter((p) => p.valuation_class === 'WITHIN_ESTIMATED_RANGE');
   const avgLiquidity = active.length ? active.reduce((s, p) => s + (p.liquidity_score || 0), 0) / active.length : 0;
 
   const byRegion = {};

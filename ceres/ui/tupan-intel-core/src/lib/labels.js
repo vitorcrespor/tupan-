@@ -25,9 +25,10 @@ export const STATUS_LABELS = {
 };
 
 export const VALUATION_LABELS = {
-  Overpriced: 'Sobreavaliado',
-  Underpriced: 'Subavaliado',
-  'Fair Value': 'Preço justo',
+  BELOW_ESTIMATED_RANGE: 'Abaixo da faixa estimada',
+  WITHIN_ESTIMATED_RANGE: 'Dentro da faixa estimada',
+  ABOVE_ESTIMATED_RANGE: 'Acima da faixa estimada',
+  INSUFFICIENT_CONFIDENCE: 'Confiança insuficiente',
   Unavailable: 'Indisponível',
 };
 

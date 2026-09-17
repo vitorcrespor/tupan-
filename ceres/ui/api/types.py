@@ -215,7 +215,6 @@ class H3Cell:
     center: tuple[float, float] | None
     boundary: list[tuple[float, float]]
     market_heat: float | None
-    demand_score: float | None
     average_price_m2: float | None
     price_growth: float | None
     inventory: int

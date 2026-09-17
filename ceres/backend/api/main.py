@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import time
 import uuid
 from pathlib import Path
@@ -32,7 +33,7 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env", override=False)
 logger = logging.getLogger(__name__)
 API_VERSION = os.getenv("TUPAN_API_VERSION", "1.0.0").strip() or "1.0.0"
 MINIMUM_CLIENT_VERSION = os.getenv("TUPAN_MINIMUM_CLIENT_VERSION", "").strip()
-TRUST_PROXY_HEADERS = os.getenv("API_TRUST_PROXY_HEADERS", "false").strip().lower() in {"1", "true", "yes"}
+REQUEST_ID_PATTERN = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
 
 
 def _nonnegative_int(name: str, default: int) -> int:
@@ -61,11 +62,22 @@ def _client_is_supported(value: str | None) -> bool:
 
 
 def _request_identifier(request: Request) -> str:
-    if TRUST_PROXY_HEADERS:
-        forwarded = request.headers.get("X-Forwarded-For", "")
-        if forwarded:
-            return forwarded.split(",", 1)[0].strip() or "unknown"
+    # Uvicorn resolves trusted forwarded headers before the ASGI request is
+    # created. The application must not independently trust a raw header.
     return request.client.host if request.client else "unknown"
+
+
+def _request_id(request: Request) -> str:
+    candidate = request.headers.get("X-Request-ID", "")
+    return candidate if REQUEST_ID_PATTERN.fullmatch(candidate) else uuid.uuid4().hex
+
+
+def _public_validation_errors(exc: RequestValidationError) -> list[dict[str, object]]:
+    """Expose contract diagnostics without echoing submitted request values."""
+    return [
+        {key: error[key] for key in ("loc", "msg", "type") if key in error}
+        for error in exc.errors()
+    ]
 
 
 def _sensitive_limit(request: Request) -> tuple[str, int] | None:
@@ -114,7 +126,7 @@ def create_app() -> FastAPI:
 
     @app.middleware("http")
     async def request_observability(request: Request, call_next):
-        request_id = request.headers.get("X-Request-ID") or uuid.uuid4().hex
+        request_id = _request_id(request)
         request.state.request_id = request_id
         request_token = request_id_context.set(request_id)
         started = time.perf_counter()
@@ -135,7 +147,13 @@ def create_app() -> FastAPI:
                         ).model_dump(mode="json", exclude_none=True),
                     )
                     response.headers["Retry-After"] = str(retry_after)
-            if response is None and request.url.path not in {"/health", "/ready", "/api/v1/health", "/api/v1/ready"} and not _client_is_supported(request.headers.get("X-Tupan-Client-Version")):
+            if response is None and request.url.path not in {
+                "/health",
+                "/ready",
+                "/api/v1/health",
+                "/api/v1/ready",
+                "/api/v2/ready",
+            } and not _client_is_supported(request.headers.get("X-Tupan-Client-Version")):
                 response = JSONResponse(
                     status_code=426,
                     content=ErrorResponse(
@@ -188,7 +206,7 @@ def create_app() -> FastAPI:
         error = ErrorResponse(
             code="request_validation_error",
             message="The request does not match the API contract.",
-            details={"errors": json_safe(exc.errors())},
+            details={"errors": json_safe(_public_validation_errors(exc))},
             request_id=getattr(request.state, "request_id", None),
         )
         return JSONResponse(status_code=422, content=error.model_dump(mode="json", exclude_none=True))

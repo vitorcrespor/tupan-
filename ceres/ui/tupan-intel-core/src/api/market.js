@@ -1,165 +1,81 @@
-import { api } from '@/api/client';
+import {api, ApiError} from '@/api/client';
 
-/**
- * @typedef {object} H3CellResponse
- * @property {string} h3_index
- * @property {number} h3_resolution
- * @property {string | null} [city]
- * @property {string | null} [neighborhood]
- * @property {[number, number] | null} [center]
- * @property {Array<[number, number]>} boundary
- * @property {number | null} [market_heat]
- * @property {number | null} [demand_score]
- * @property {number | null} [average_price_m2]
- * @property {number | null} [price_growth]
- * @property {number} inventory
- * @property {number | null} [average_dom_days]
- * @property {number | null} [sales_velocity]
- * @property {'EXISTING_MODEL' | 'UNAVAILABLE'} calculation
- * @property {'LIVE' | 'MOCK'} source
+/** Resolution choices that are useful for an interactive city-level map.
+ * The publisher supports every valid H3 level (0–15); the UI intentionally
+ * offers the four levels that retain legible, decision-useful coverage.
  */
+export const H3_RESOLUTION_OPTIONS = [
+  { value: 7, label: 'Ampla · H3 7' },
+  { value: 8, label: 'Regional · H3 8' },
+  { value: 9, label: 'Bairro · H3 9' },
+  { value: 10, label: 'Detalhada · H3 10' },
+];
 
-/**
- * @typedef {H3CellResponse & {
- *   id: string,
- *   label: string,
- *   market_heat: number | null,
- *   demand_score: number | null,
- *   price_growth_pct: number | null
- * }} MarketCell
- */
-
+/** @typedef {{h3_index:string,h3_resolution:number,city:string|null,area:string|null,boundary:{type:string,coordinates:number[][][]}|null,center:{type:string,coordinates:number[]}|null,metrics:Record<string,unknown>,indicators?:Record<string,number|null>,liquidity_details?:{score:number|null,status:string,horizon_days:number,observation_count:number|null,sale_event_count:number|null,model_version:string,as_of:string}|null,calculated_at:string,period_start:string,period_end:string,input_version:string,scope:string}} PublishedCell */
 /** @param {unknown} value */
-function numberOrNull(value) {
-  return typeof value === 'number' && Number.isFinite(value) ? value : null;
-}
+function numberOrNull(value) { return typeof value === 'number' && Number.isFinite(value) ? value : null; }
 
-/**
- * The H3 calculation returns normalized scores. Existing visual components
- * render scores on a 0–100 scale; this is a display-unit conversion only.
- *
- * @param {unknown} value
- */
-function displayScore(value) {
-  const number = numberOrNull(value);
-  return number === null ? null : Math.abs(number) <= 1 ? number * 100 : number;
-}
-
-/** @param {unknown} value */
-function displayPercent(value) {
-  const number = numberOrNull(value);
-  return number === null ? null : Math.abs(number) <= 1 ? number * 100 : number;
-}
-
-/**
- * @param {H3CellResponse} cell
- * @returns {MarketCell}
+/** GeoJSON is lng/lat; Leaflet requires lat/lng. This is a visual transformation only.
+ * @param {PublishedCell} cell
  */
 export function marketCellToView(cell) {
-  const shortIndex = cell.h3_index.slice(-6);
+  const coordinates = cell.boundary?.type === 'Polygon' ? cell.boundary.coordinates[0] : [];
   return {
-    ...cell,
-    id: cell.h3_index,
-    label: cell.neighborhood ? `${cell.neighborhood} · ${shortIndex}` : `H3 · ${shortIndex}`,
-    market_heat: displayScore(cell.market_heat),
-    demand_score: displayScore(cell.demand_score),
-    price_growth_pct: displayPercent(cell.price_growth),
+    ...cell, id: cell.h3_index, neighborhood: cell.area,
+    label: [cell.area, cell.city].filter(Boolean).join(', ') || `H3 · ${cell.h3_index}`,
+    boundary: (coordinates || []).map(([lng,lat]) => [lat,lng]),
+    center: cell.center?.type === 'Point' ? [cell.center.coordinates[1],cell.center.coordinates[0]] : null,
+    inventory: numberOrNull(cell.metrics.inventory),
+    average_price_m2: numberOrNull(cell.metrics.average_price_m2),
+    average_asking_price: numberOrNull(cell.metrics.average_asking_price),
+    average_dom_days: numberOrNull(cell.metrics.average_dom_days),
+    market_heat: numberOrNull(cell.indicators?.market_heat),
+    liquidity: numberOrNull(cell.indicators?.liquidity),
+    liquidity_details: cell.liquidity_details || null,
+    price_growth_pct: numberOrNull(cell.indicators?.price_growth),
+    sales_velocity: numberOrNull(cell.indicators?.sales_velocity),
+    dataset_kind: cell.metrics.dataset_kind === 'transactions' ? 'transactions' : 'listings',
+    transaction_count: numberOrNull(cell.metrics.transaction_count),
+    source_row_count: numberOrNull(cell.metrics.source_row_count),
+    geocoded_row_count: numberOrNull(cell.metrics.geocoded_row_count),
+    average_transaction_price: numberOrNull(cell.metrics.average_transaction_price),
+    median_transaction_price: numberOrNull(cell.metrics.median_transaction_price),
+    partial_coverage: cell.metrics.partial_coverage === true,
+    calculation: 'PUBLISHED_AGGREGATE', source: 'LIVE',
   };
 }
 
-/**
- * @typedef {object} MarketCellFilters
- * @property {string} [city]
- * @property {string} [neighborhood]
- * @property {string} [propertyKind]
- * @property {number} [periodDays]
- * @property {number} [h3Resolution]
- * @property {number} [priceMin]
- * @property {number} [priceMax]
- * @property {number} [heatMin]
- * @property {AbortSignal} [signal]
- */
-
-/**
- * @param {MarketCellFilters} [filters]
- * @returns {Promise<{ source: object, filters: object, cells: MarketCell[] }>}
- */
-export async function getMarketCells({
-  city,
-  neighborhood,
-  propertyKind,
-  periodDays,
-  h3Resolution = 9,
-  priceMin,
-  priceMax,
-  heatMin,
-  signal,
-} = {}) {
-  const response = await api.get('/market/cells', {
-    query: {
-      city,
-      neighborhood,
-      property_kind: propertyKind,
-      period_days: periodDays,
-      h3_resolution: h3Resolution,
-      price_min: priceMin,
-      price_max: priceMax,
-      // The UI's slider is a percentage representation of the API score.
-      heat_min: heatMin == null ? undefined : heatMin / 100,
-    },
-    signal,
-  });
-  return { ...response, cells: response.cells.map(marketCellToView) };
+/** @param {{publishedOnly?:boolean,signal?:AbortSignal}} [options] */
+export function getMarketRegions({publishedOnly = true, signal} = {}) {
+  return api.get('/market/regions', {query:{published_only:publishedOnly}, signal});
 }
 
-/**
- * @param {string} h3Index
- * @param {MarketCellFilters} [filters]
- * @returns {Promise<{ cell: MarketCell, source: object }>}
- */
-/**
- * @param {string} h3Index
- * @param {MarketCellFilters} [filters]
- */
-export async function getMarketRegion(h3Index, { signal, ...filters } = {}) {
-  const response = await getMarketRegionRaw(h3Index, { signal, ...filters });
-  return { ...response, cell: marketCellToView(response.cell) };
+/** @param {{city?:string, neighborhood?:string, h3Resolution?:number, liquidityHorizonDays?:number, signal?:AbortSignal, propertyKind?:string, periodDays?:number, priceMin?:number, priceMax?:number, heatMin?:number}} [filters] */
+export async function getMarketCells({city, neighborhood, h3Resolution=9, liquidityHorizonDays, signal, ...unsupported} = {}) {
+  if (!Number.isInteger(h3Resolution) || h3Resolution < 0 || h3Resolution > 15) {
+    throw new ApiError('A resolução H3 deve estar entre 0 e 15.', {code:'INVALID_H3_RESOLUTION'});
+  }
+  if (Object.values(unsupported).some(value => value != null)) {
+    throw new ApiError('Este agregado publicado aceita apenas cidade, bairro e resolução H3. Filtros de preço, tipo, aquecimento e período não estão disponíveis.', {code:'FILTER_NOT_SUPPORTED'});
+  }
+  const response = await api.get('/market/heatmap', {query:{city,area:neighborhood,h3_resolution:h3Resolution,liquidity_horizon_days:liquidityHorizonDays},signal});
+  // Select the latest publication per cell for this snapshot, without aggregating values.
+  const cells = [...new Map([...response.cells].reverse().map(cell => [cell.h3_index, cell])).values()];
+  return {...response, source:{kind:'LIVE',label:'Agregação global publicada'}, filters:{city,neighborhood,h3Resolution,liquidityHorizonDays}, cells:cells.map(marketCellToView)};
 }
 
-/**
- * @param {string} h3Index
- * @param {MarketCellFilters} [filters]
- */
-async function getMarketRegionRaw(h3Index, {
-  city,
-  neighborhood,
-  propertyKind,
-  periodDays,
-  h3Resolution = 9,
-  priceMin,
-  priceMax,
-  heatMin,
-  signal,
-} = {}) {
-  return api.get(`/market/regions/${encodeURIComponent(h3Index)}`, {
-    query: {
-      city,
-      neighborhood,
-      property_kind: propertyKind,
-      period_days: periodDays,
-      h3_resolution: h3Resolution,
-      price_min: priceMin,
-      price_max: priceMax,
-      heat_min: heatMin == null ? undefined : heatMin / 100,
-    },
-    signal,
-  });
+export async function getMarketRegion(h3Index, filters = {}) {
+  const response = await getMarketCells(filters);
+  const cell = response.cells.find(item => item.h3_index === h3Index);
+  if (!cell) throw new ApiError('A célula não está disponível neste recorte publicado.', {code:'NOT_FOUND',status:404});
+  return {cell,source:response.source};
 }
 
 /**
  * @typedef {object} MetricHistoryValue
  * @property {string} date ISO calendar date (`YYYY-MM-DD`), never a timestamp.
  * @property {number | null} value
+ * @property {string | null} [reason] Why the observation cannot be used, if known.
  */
 
 /**
@@ -193,46 +109,66 @@ export function formatMetricDate(date, options = { month: 'short', year: '2-digi
 /**
  * Converts the API's `points[].period` contract into the shared frontend
  * `values[].date` representation used by chart components.
- * Historical support is currently limited by the backend to `price_m2`.
+ * The backend returns only persisted publications for each supported metric;
+ * no client-side aggregation or inferred points are added here.
  *
  * @param {string} metric
  * @param {{ city?: string, area?: string, signal?: AbortSignal }} [filters]
  * @returns {Promise<MetricHistoryResponse>}
  */
 export async function getMetricHistory(metric, { city, area, signal } = {}) {
-  const response = await api.get(`/metrics/${encodeURIComponent(metric)}/history`, {
-    query: { city, area },
-    signal,
-  });
+  const published = await getPublishedMarketMetrics({city, area, signal});
+  return publishedMetricHistory(published, metric);
+}
+
+/** @typedef {{metric:string,unit:string,value:number|null,observed_on:string|null,source_name:string|null,status:'available'|'unavailable',reason:string|null,points:Array<{period:string,value:number|null,reason:string|null}>}} PublishedMetric */
+/** @typedef {{scope:'platform',city:string|null,area:string|null,h3_index:string|null,aggregation:'published',metrics:PublishedMetric[]}} PublishedMarket */
+/** @param {{city?:string,area?:string,h3Index?:string,liquidityHorizonDays?:number,signal?:AbortSignal}} [filters] @returns {Promise<PublishedMarket>} */
+export function getPublishedMarketMetrics({city,area,h3Index,liquidityHorizonDays,signal} = {}) {
+  return api.get('/market/published-metrics', {query:{city,area,h3_index:h3Index,liquidity_horizon_days:liquidityHorizonDays},signal});
+}
+
+/** @param {PublishedMarket|undefined} published @param {string} metric @returns {MetricHistoryResponse} */
+export function publishedMetricHistory(published, metric) {
+  const response = published?.metrics.find(item => item.metric === metric);
   return {
-    metric: response.metric,
-    unit: response.unit,
+    metric,
+    unit: response?.unit || '',
     frequency: null,
-    aggregation: response.aggregation,
-    values: (response.points || []).map((point) => ({
+    aggregation: 'published',
+    values: (response?.points || []).map((point) => ({
       date: toDateOnly(point.period),
       value: numberOrNull(point.value),
+      reason: point.reason || null,
     })),
-    source: response.source,
+    source: {kind:'LIVE',label:response?.source_name || 'Sem observações publicadas',reason:response?.reason},
   };
 }
 
 /**
  * @param {MetricHistoryResponse | undefined} history
- * @returns {Array<{ date: string, label: string, value: number }>}
+ * The explicit null points preserve a known publication gap. Recharts leaves
+ * those gaps unconnected by default, rather than implying a measured trend.
+ *
+ * @returns {Array<{ date: string, label: string, value: number | null, reason: string | null }>}
  */
 export function metricHistoryToChartSeries(history) {
   return (history?.values || [])
-    .filter((point) => numberOrNull(point.value) !== null && /^\d{4}-\d{2}-\d{2}$/.test(point.date))
+    .filter((point) => /^\d{4}-\d{2}-\d{2}$/.test(point.date))
     .sort((left, right) => left.date.localeCompare(right.date))
-    .map((point) => ({ date: point.date, label: formatMetricDate(point.date), value: point.value }));
+    .map((point) => ({
+      date: point.date,
+      label: formatMetricDate(point.date),
+      value: numberOrNull(point.value),
+      reason: point.reason || null,
+    }));
 }
 
 /**
  * Limits an already-returned history to a calendar-month display window. This
  * does not recalculate or aggregate the metric; the API remains authoritative.
  *
- * @param {Array<{ date: string, label: string, value: number }>} series
+ * @param {Array<{ date: string, label: string, value: number | null, reason?: string | null }>} series
  * @param {number} months
  */
 export function limitMetricHistoryToMonths(series, months) {

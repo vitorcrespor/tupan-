@@ -620,6 +620,7 @@ input, textarea { caret-color: hsl(var(--brand)); }
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
+  overflow-anchor: none;
 }
 
 .voice-chat-stage::-webkit-scrollbar {

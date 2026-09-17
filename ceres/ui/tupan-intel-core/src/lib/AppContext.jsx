@@ -7,16 +7,18 @@ export const useApp = () => useContext(AppContext);
 
 export function AppContextProvider({ children }) {
   const navigate = useNavigate();
+  const [selectedPortfolioId, setSelectedPortfolioId] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [filters, setFilters] = useState({
-    city: 'São Paulo',
+    city: null,
     neighborhood: null,
     propertyType: null,
     priceMin: null,
     priceMax: null,
     heatMin: null,
     period: '90d',
+    h3Resolution: 9,
   });
   const [timePeriod, setTimePeriod] = useState('90d');
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
@@ -78,6 +80,7 @@ export function AppContextProvider({ children }) {
   );
 
   const value = {
+    selectedPortfolioId, setSelectedPortfolioId,
     selectedRegion,
     setSelectedRegion,
     selectedProperty,
@@ -111,4 +114,3 @@ export function AppContextProvider({ children }) {
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
-

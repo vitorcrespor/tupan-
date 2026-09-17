@@ -47,7 +47,8 @@ python -m backend.worker
 3. Create a second service from the same source/image. Override its start
    command to `python -m backend.worker`, disable the HTTP health check for that
    worker service in Railway, and do not expose it publicly. The `railway.toml`
-   health check belongs only to the API service.4. Give the worker a dedicated database role when the database provider permits
+   health check belongs only to the API service.
+4. Give the worker a dedicated database role when the database provider permits
    it. The role may execute the queue claim/recovery functions but every job
    handler remains tenant-scoped through RLS context.
 5. Configure the API public domain and use that exact HTTPS API URL in the
@@ -89,13 +90,19 @@ environment files:
 | `API_CORS_ORIGINS` | required | no | exact comma-separated desktop/web origins; never `*` |
 | `API_ALLOW_LEGACY_GLOBAL_DATA` | `false` | no | must remain disabled in production |
 | `API_ALLOW_MOCK_DATA` | `false` | no | must remain disabled in production |
-| `API_TRUST_PROXY_HEADERS` | `true` | no | only because Railway terminates the public proxy |
+| `FORWARDED_ALLOW_IPS` | platform-specific | no | trusted ingress proxy addresses only; defaults to loopback and must not be `*` when the service is directly reachable |
 | `AUTH_RATE_LIMIT_PER_MINUTE` | recommended | no | defaults to `10` per process/client address |
 | `AI_RATE_LIMIT_PER_MINUTE` | recommended | no | defaults to `30` per process/client address |
 | `TUPAN_API_VERSION` | recommended | no | API compatibility header, e.g. `1.0.0` |
 | `TUPAN_MINIMUM_CLIENT_VERSION` | optional | no | set only after a supported-client release exists |
 | `LOG_LEVEL` | `INFO` | `INFO` | JSON logs to stderr |
 | `WORKER_LOG_LEVEL` | no | `INFO` | worker JSON logs to stderr |
+| `WORKER_CONCURRENCY` | no | `2` | maximum jobs executed concurrently by one worker process |
+| `WORKER_POLL_SECONDS` | no | `1` | delay between empty queue polls |
+| `WORKER_STALE_AFTER_SECONDS` | no | `900` | lease age after which interrupted jobs may be recovered |
+| `WORKER_HEARTBEAT_SECONDS` | no | `30` | interval used to renew the active job lease |
+| `WORKER_MAX_EXECUTION_SECONDS` | no | `1800` | hard upper bound for one job attempt |
+| `WORKER_SHUTDOWN_SECONDS` | no | `30` | graceful drain window after SIGTERM |
 
 Railway supplies `PORT`; the image binds Uvicorn to `0.0.0.0:$PORT` without
 reload mode.
@@ -105,14 +112,18 @@ reload mode.
 - `GET /health` is liveness only and is safe for Railway’s health check.
 - `GET /ready` verifies a PostgreSQL query; it returns `503` when the source of
   truth is unavailable.
-- Versioned equivalents exist at `/api/v1/health` and `/api/v1/ready`.
+- Versioned equivalents exist at `/api/v1/health` and `/api/v1/ready`;
+  Supabase control-plane readiness is exposed separately at `/api/v2/ready`.
 
 ## Model artifacts
 
-No trained AVM artifact is currently present in the repository. Therefore the
-container will correctly return the existing `model_artifact_missing` response
-for AVM until a versioned model artifact and its metadata are supplied to the
-runtime at the configured `AVM_MODEL_PATH` and `AVM_MODEL_METADATA_PATH`.
+The repository contains an explicitly **candidate-only** transaction AVM and
+calibration metadata. The runtime deliberately ignores it while its metadata
+has `promotion_status: candidate`; candidate presence must never be mistaken
+for production approval. Until a reviewed artifact is promoted, production
+must supply a separate approved artifact through `AVM_MODEL_PATH` and
+`AVM_MODEL_METADATA_PATH`, or accept the controlled
+`model_artifact_missing`/not-calibrated behavior of the legacy runtime.
 
 Do not train on boot or during a request. Publish a reviewed immutable model
 artifact in the release image or retrieve it from a controlled object store in

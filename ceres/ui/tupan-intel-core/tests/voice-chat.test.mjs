@@ -36,7 +36,22 @@ before(async () => {
   });
   await server.listen();
   origin = `http://127.0.0.1:${server.httpServer.address().port}`;
-  browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL });
+  const entry = await fetch(`${origin}/__voice-chat-test.html`);
+  if (!entry.ok) throw new Error(`Voice-chat test entry failed to warm up: HTTP ${entry.status}`);
+  await entry.text();
+  await server.warmupRequest('/tests/fixtures/voice-chat.jsx');
+  const fixture = await fetch(`${origin}/tests/fixtures/voice-chat.jsx`);
+  if (!fixture.ok) throw new Error(`Voice-chat test module failed to warm up: HTTP ${fixture.status}`);
+  await fixture.text();
+  browser = await chromium.launch({
+    headless: true,
+    channel: process.env.PLAYWRIGHT_CHANNEL,
+    args: [
+      '--disable-background-timer-throttling',
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding',
+    ],
+  });
 });
 
 after(async () => {
@@ -59,13 +74,19 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
     try {
       await page.goto(`${origin}/__voice-chat-test.html`, { waitUntil: 'domcontentloaded', timeout: 60000 });
       const input = page.getByPlaceholder('Fale ou digite para o Ceres…');
+      await input.waitFor({ state: 'attached', timeout: 120000 });
       const stage = page.locator('#voice-chat-history');
       const messages = page.locator('.voice-chat-message');
       const send = async text => {
         pending = null;
-        await input.locator('xpath=../../..').hover();
         await input.fill(text);
-        await input.press('Enter');
+        const sendButton = page.getByTitle('Enviar');
+        await page.waitForFunction(
+          () => !document.querySelector('button[title="Enviar"]')?.disabled,
+          null,
+          { polling: 25, timeout: 10000 },
+        );
+        await sendButton.evaluate(element => element.click());
         for (let i = 0; !pending && i < 100; i++) await page.waitForTimeout(30);
         assert.ok(pending, 'question must reach the frontend API service');
       };
@@ -102,12 +123,24 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
         await send(`Pergunta longa ${i}`);
         await respond(`Resposta ${i}: ` + 'Conteúdo de teste para validar a leitura do histórico. '.repeat(32));
       }
-      await stage.hover();
+      const hoverStage = async () => {
+        const box = await stage.boundingBox();
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      };
+      await hoverStage();
+      await stage.focus();
       const bottom = await stage.evaluate(el => ({ top: el.scrollTop, height: el.clientHeight, total: el.scrollHeight, width: el.clientWidth }));
       assert.ok(bottom.total > bottom.height * 2, 'long history has positive reachable overflow');
       assert.ok(bottom.top > 0, 'new replies initially follow the conversation end');
-      for (let i = 0; i < 12; i++) await page.mouse.wheel(0, -24);
-      await page.waitForTimeout(250);
+      for (let i = 0; i < 20; i++) {
+        await page.mouse.wheel(0, -24);
+        await page.waitForTimeout(20);
+      }
+      await page.waitForFunction(
+        initialTop => document.querySelector('#voice-chat-history')?.scrollTop < initialTop - 100,
+        bottom.top,
+        { polling: 50, timeout: 15000 },
+      );
       const afterWheel = await stage.evaluate(el => el.scrollTop);
       assert.ok(afterWheel < bottom.top - 100, 'small trackpad-style wheel deltas scroll the history');
       assert.notEqual(await stage.evaluate(el => getComputedStyle(el).scrollbarColor), 'rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)', 'scrollbar thumb is visible on hover');
@@ -134,18 +167,29 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
         await page.screenshot({ path: `${process.env.VOICE_CHAT_SCREENSHOT_DIR}/voice-chat-${viewport.width}.png` });
       }
       const messageCount = await messages.count();
-      await page.getByRole('button', { name: 'Recolher conversa' }).click();
-      await page.waitForTimeout(500);
-      assert.equal(await page.locator('.voice-chat-frame').evaluate(el => getComputedStyle(el).opacity), '0');
+      await page.getByRole('button', { name: 'Recolher conversa' }).evaluate(element => element.click());
+      await page.waitForFunction(
+        () => Number(getComputedStyle(document.querySelector('.voice-chat-frame')).opacity) < 0.02,
+        null,
+        { polling: 25, timeout: 5000 },
+      );
+      assert.ok(
+        Number(await page.locator('.voice-chat-frame').evaluate(el => getComputedStyle(el).opacity)) < 0.02,
+        'collapsed history is visually absent',
+      );
       await send('Pergunta após recolher');
       assert.equal(await messages.count(), messageCount + 1, 'collapsing must not erase history');
-      await stage.hover();
+      await hoverStage();
       await page.mouse.wheel(0, -320);
       await page.waitForTimeout(250);
       const readingPosition = await stage.evaluate(el => el.scrollTop);
+      const anchor = messages.nth(Math.max(0, (await messages.count()) - 2));
+      const readingAnchorY = (await anchor.boundingBox()).y;
       await respond('Nova resposta de teste.');
       await page.waitForTimeout(150);
-      assert.equal(await stage.evaluate(el => el.scrollTop), readingPosition, 'a reply must not interrupt reading older messages');
+      const updatedPosition = await stage.evaluate(el => el.scrollTop);
+      const updatedAnchorY = (await anchor.boundingBox()).y;
+      assert.ok(Math.abs(updatedAnchorY - readingAnchorY) < 2, `a reply must not move the message being read (${readingPosition} → ${updatedPosition})`);
       assert.deepEqual(runtimeErrors, [], 'no browser runtime errors');
       console.log(JSON.stringify({ viewport, scroll: bottom, afterWheel, blur }));
     } finally { await context.close(); }

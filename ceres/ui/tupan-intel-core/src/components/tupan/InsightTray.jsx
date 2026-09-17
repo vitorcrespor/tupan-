@@ -21,7 +21,11 @@ export default function InsightTray() {
   };
 
   return (
-    <aside ref={trayRef} className={`surface-popover absolute bottom-4 right-4 z-50 w-[290px] overflow-hidden rounded-2xl transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,_1,_0.36,_1)] ${open ? 'translate-x-0' : 'translate-x-[262px]'}`}>
+    <aside
+      ref={trayRef}
+      className={`surface-popover absolute bottom-4 right-4 z-50 w-[290px] overflow-hidden rounded-2xl transition-[transform,border-color,box-shadow] duration-300 ${open ? 'translate-x-0' : 'translate-x-[262px]'}`}
+      style={{ transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)' }}
+    >
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}

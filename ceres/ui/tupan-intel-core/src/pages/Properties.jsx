@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Search, Sparkles, X, ExternalLink, MapPin, ArrowLeftRight } from 'lucide-react';
 import TopBar from '@/components/tupan/TopBar';
+import EstimateProvenance from '@/components/tupan/EstimateProvenance';
 import { Panel, MetricRow } from '@/components/tupan/primitives';
 import { useApp } from '@/lib/AppContext';
-import { formatBRL, formatM2, formatPct, classBadge, heatColor } from '@/lib/format';
+import { formatBRL, formatM2, formatPct, classBadge, classColor, heatColor } from '@/lib/format';
 import { propertyTypeLabel, statusLabel, valuationLabel } from '@/lib/labels';
 import { cn } from '@/lib/utils';
 import { apiErrorMessage } from '@/api/client';
 import { getProperties, PROPERTY_KIND_OPTIONS, searchProperties } from '@/api/properties';
+import { liquidityHorizonDays as liquidityHorizonForPeriod, timePeriodLabel } from '@/lib/tupanData';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import {
   TableProvider,
@@ -23,7 +25,8 @@ import {
 } from '@/components/kibo-ui/table';
 
 export default function Properties() {
-  const { sendToAgent } = useApp();
+  const { sendToAgent, timePeriod } = useApp();
+  const liquidityHorizonDays = liquidityHorizonForPeriod(timePeriod);
   const navigate = useNavigate();
   const [q, setQ] = useState('');
   const [type, setType] = useState('');
@@ -31,11 +34,11 @@ export default function Properties() {
   const deferredQuery = useDeferredValue(q.trim());
 
   const { data: propertyPage, isLoading, isError, error } = useQuery({
-    queryKey: ['properties', { query: deferredQuery, kind: type }],
+    queryKey: ['properties', { query: deferredQuery, kind: type, liquidityHorizonDays }],
     queryFn: ({ signal }) => (
       deferredQuery
-        ? searchProperties({ query: deferredQuery, kind: type || undefined, signal })
-        : getProperties({ kind: type || undefined, signal })
+        ? searchProperties({ query: deferredQuery, kind: type || undefined, liquidity_horizon_days: liquidityHorizonDays, signal })
+        : getProperties({ kind: type || undefined, liquidity_horizon_days: liquidityHorizonDays, signal })
     ),
     placeholderData: (previousData) => previousData,
   });
@@ -83,7 +86,7 @@ export default function Properties() {
         accessorKey: 'price_deviation',
         header: ({ column }) => <TableColumnHeader column={column} title="Desvio" />,
         cell: ({ row }) => (
-          <span className={cn('tnum', row.original.price_deviation > 5 ? 'text-negative' : row.original.price_deviation < -5 ? 'text-positive' : 'text-text-secondary')}>
+          <span className={cn('tnum', classColor(row.original.valuation_class))}>
             {formatPct(row.original.price_deviation)}
           </span>
         ),
@@ -102,8 +105,8 @@ export default function Properties() {
       },
       {
         accessorKey: 'liquidity_score',
-        header: ({ column }) => <TableColumnHeader column={column} title="Liquidez" />,
-        cell: ({ row }) => <span className="tnum text-text-secondary">{row.original.liquidity_score ?? '—'}</span>,
+        header: ({ column }) => <TableColumnHeader column={column} title={`Liquidez · ${timePeriodLabel(timePeriod)}`} />,
+        cell: ({ row }) => <span className="tnum text-text-secondary" title={row.original.liquidity_status || undefined}>{row.original.liquidity_score == null ? '—' : `${row.original.liquidity_score}/100`}</span>,
       },
       {
         accessorKey: 'status',
@@ -115,7 +118,7 @@ export default function Properties() {
         ),
       },
     ],
-    []
+    [timePeriod]
   );
 
   const sel = selected ? rows.find((p) => p.id === selected.id) : null;
@@ -191,22 +194,24 @@ export default function Properties() {
                   <div className="text-[10px] text-text-muted">{formatM2(sel.price_per_m2)}/m²</div>
                 </div>
                 <div className="py-2">
-                  <div className="text-[10px] uppercase text-text-muted">AVM sugerido</div>
+                  <div className="text-[10px] uppercase text-text-muted">Estimativa registrada</div>
                   <div className="text-base font-semibold tnum text-brand">{formatBRL(sel.suggested_price)}</div>
-                  <div className={cn('text-[10px] font-medium', sel.price_deviation > 5 ? 'text-negative' : sel.price_deviation < -5 ? 'text-positive' : 'text-text-secondary')}>{formatPct(sel.price_deviation)} desvio</div>
+                  {sel.suggested_price != null && <EstimateProvenance provenance={sel.estimate_provenance} />}
+                  <div className={cn('text-[10px] font-medium', classColor(sel.valuation_class))}>{formatPct(sel.price_deviation)} desvio</div>
                 </div>
               </div>
+              <MetricRow label="Faixa estimada" value={sel.estimated_lower_bound == null || sel.estimated_upper_bound == null ? '—' : `${formatBRL(sel.estimated_lower_bound)} — ${formatBRL(sel.estimated_upper_bound)}`} />
               <div className="flex items-center gap-2">
                 <span className={cn('text-[10px] px-2 py-0.5 rounded border', classBadge(sel.valuation_class))}>{valuationLabel(sel.valuation_class)}</span>
                 <span className="text-[10px] text-text-muted">Confiança indisponível</span>
-                <span className="text-[10px] text-text-muted">· comparáveis indisponíveis</span>
+                <span className="text-[10px] text-text-muted">· {sel.comparable_count == null ? 'comparáveis indisponíveis' : `${sel.comparable_count} comparáveis elegíveis`}</span>
               </div>
               <Panel className="p-3">
                 <div className="text-[10px] uppercase tracking-wide text-text-muted mb-2">Mercado</div>
                 <MetricRow label="Aquecimento de mercado" value="—" />
                 <MetricRow label="DOM do imóvel" value={sel.days_on_market == null ? '—' : `${sel.days_on_market}d`} />
                 <MetricRow label="Crescimento esperado" value={sel.expected_growth_pct == null ? '—' : <span className="text-positive">{formatPct(sel.expected_growth_pct)}</span>} />
-                <MetricRow label="Liquidez" value="—" />
+                <MetricRow label={`Liquidez · ${timePeriodLabel(timePeriod)}`} value={sel.liquidity_score == null ? '—' : `${sel.liquidity_score}/100`} />
               </Panel>
               <div className="space-y-2">
                 <button onClick={() => navigate(`/properties/${sel.id}`)} className="w-full h-9 rounded border border-border bg-elevated text-xs text-text-secondary hover:text-foreground flex items-center justify-center gap-1.5">

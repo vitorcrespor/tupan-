@@ -1,0 +1,1290 @@
+{
+  "Indaiatuba|R. PEDRO VIRILLO|186|BR. ITAICI": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:19.625743+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0976367,
+    "longitude": -47.1985554,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-545",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Pedro Virillo, 186 - Jardim Santiago, Indaiatuba - SP, 13339-545, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. MARGARIDAS, DAS|80|BR. PAU PRETO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:19.628898+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|ET. MUNICIPAL CHAFIC JOSE SAIF|2780|BR. SAPEZAL": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:19.630507+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. ARY BARNABE|50|BR. BELA VISTA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:19.631655+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0650005,
+    "longitude": -47.23201299999999,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13331-710",
+    "precision": "ROOFTOP",
+    "formatted_address": "Av. Ary Barnabé, 50 - Jardim Bela Vista, Indaiatuba - SP, 13331-710, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ARAGUAIA|208|BR. AREAL": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:20.861208+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0812753,
+    "longitude": -47.220481,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-660",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Araguaia, 208 - Vila Almeida, Indaiatuba - SP, 13330-660, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ANGELA BRUNO RODRIGUES|411|BR. ITAICI": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:20.871173+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0992895,
+    "longitude": -47.1993181,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-555",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Ângela Bruno Rodrigues, 411 - Jardim Santiago, Indaiatuba - SP, 13339-555, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. BENEDITO GONCALVES DE ARAUJO|25|BR. TOMBADOURO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:20.885861+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. ORQUIDEAS, DAS|737|BR. PAU PRETO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:21.088485+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. ORQUIDEAS, DAS|859|BR. PAU PRETO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:21.109802+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AL. EZEQUIEL MANTOANELLI|520|CR. MORADAS DE ITAICI": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:21.251800+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1018175,
+    "longitude": -47.1782227,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13340-214",
+    "precision": "ROOFTOP",
+    "formatted_address": "Res. Moradas de Itaici - Alameda Ezequiel Mantoanelli, 520 - Jardim Panorama, Indaiatuba - SP, 13340-214, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ANTONIO NAGIB IBRAHIM, COMEND.|140|BR. CRUZ, SANTA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:21.263710+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. MASSAHARO KANESAKI|260|LT. SEM DENOMINACAO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:21.499197+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0953712,
+    "longitude": -47.1930752,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-575",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Massaharo Kanesaki, 260 - Jardim Sevilha, Indaiatuba - SP, 13339-575, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ANTONIO MARTILIANO DE CAMPOS|440|JD. ALICE": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:21.621608+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. SERGIPE|43|BR. CIDADE NOVA GL 2": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:21.622210+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. TRABALHADORES, DOS|116|BR. CIDADE NOVA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:21.958556+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. TUPINAMBAS|860|LT. SEM DENOMINACAO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:21.993118+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. PEDRO AMERICO|194|BR. CIDADE NOVA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:22.011069+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0846771,
+    "longitude": -47.1973935,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13334-140",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Pedro Américo, 194 - Cidade Nova I, Indaiatuba - SP, 13334-140, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. PRIMO JOSE MATTIONI|526|BR. CRUZ, SANTA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:22.293503+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. ANTONIO ESTANISLAU AMARAL, CEL.|277|CR. VILLAGE AZALEIA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:22.361550+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AL. JOSE AMSTALDEN|202|LT. SEM DENOMINACAO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:22.362397+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0768102,
+    "longitude": -47.2254118,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13331-100",
+    "precision": "ROOFTOP",
+    "formatted_address": "Alameda José Amstalden, 202 - Jardim Bela Vista, Indaiatuba - SP, 13331-100, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. JOAO AMBIEL|1657|CR. CASA BELLA - BOSQUE RESIDENCIAL": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:22.561397+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0630479,
+    "longitude": -47.2220895,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13332-810",
+    "precision": "ROOFTOP",
+    "formatted_address": "Av. João Ambiel, 1657 - Casa Bella Bosque Res., Indaiatuba - SP, 13332-810, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. MEXICO|385|JD. AMERICA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:22.689401+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0920199,
+    "longitude": -47.1973361,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-440",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. México, 385 - Jardim America, Indaiatuba - SP, 13339-440, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. JOSUE FERREIRA DA SILVA|13|BR. CALDEIRA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:22.783569+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0863609,
+    "longitude": -47.220871,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13349-125",
+    "precision": "ROOFTOP",
+    "formatted_address": "Av. Josue Ferreira Da Silva, 13 - Jardim Maria Luiza, Indaiatuba - SP, 13349-125, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. OSWALDO GROFF|200|CR. PORTAL DAS FLORES": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:22.924484+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1098151,
+    "longitude": -47.2180596,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13344-450",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Oswaldo Groff, 200 - Jardim Nova Indaia, Indaiatuba - SP, 13344-450, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ORQUIDEAS, DAS|401|LT. SEM DENOMINACAO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:22.925411+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. PEDRO DE TOLEDO|1322|PQ. TOMAS DE AQUINO, SAO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:23.051998+00:00",
+    "provider_status": "OK",
+    "latitude": -23.081464,
+    "longitude": -47.21128400000001,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-090",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Pedro de Toledo, 1322 - Jardim Dom Bosco, Indaiatuba - SP, 13330-090, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. CHRISTIANO SELEGUIN|420|CR. SOLAR DOS GIRASSOIS": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:23.161624+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0654424,
+    "longitude": -47.2178542,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13332-070",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Christiano Seleguin, 420 - Parque Res. Indaia, Indaiatuba - SP, 13332-070, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. JOAO DA FONSECA BICUDO|533|JD. PAU PRETO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:23.320914+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0904826,
+    "longitude": -47.2198284,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-370",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. João da Fonseca Bicudo, 533 - Jardim Pau Preto, Indaiatuba - SP, 13330-370, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. JOAO DOS SANTOS, VOL.|52|JD. PAU PRETO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:23.433364+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. PRIMAVERAS, DAS|502|LT. SEM DENOMINACAO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:23.437055+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. ORQUIDEAS, DAS|667|BR. PAU PRETO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:23.533664+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. TRABALHADORES, DOS|310|BR. CIDADE NOVA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:23.784835+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. 13 DE MAIO|110|BR. CENTRO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:23.849342+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. PARA|934|BR. CIDADE NOVA GL 2": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:23.939427+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0816887,
+    "longitude": -47.1979726,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13334-270",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Pará, 934 - Cidade Nova I, Indaiatuba - SP, 13334-270, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. VARGAS, PRES.|2851|BR. BARROCA FUNDA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:24.078190+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|PC. LEONOR BARROS CAMARGO|42|BR. CENTRO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:24.244246+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0913052,
+    "longitude": -47.2180265,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-190",
+    "precision": "ROOFTOP",
+    "formatted_address": "Praça Leonor de Barros Camargo, 42 - Jardim Pau Preto, Indaiatuba - SP, 13330-190, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AL. JOSE AMSTALDEN|1469|BR. BELA VISTA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:24.255500+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. HERCULES MAZZONI|665|JD. PAU PRETO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:24.302251+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0886739,
+    "longitude": -47.2217859,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-250",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Hércules Mazzoni, 665 - Jardim Pau Preto, Indaiatuba - SP, 13330-250, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. TRABALHADORES, DOS|210|BR. CIDADE NOVA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:24.422675+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. ANTONIO CANTELLI|1449|BR. CALDEIRA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:24.645201+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1208677,
+    "longitude": -47.2481571,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13349-750",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Antônio Cantelli, 1449 - Jardim Morada do Sol, Indaiatuba - SP, 13349-750, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. CHRISTIANO STEFFEN|147|JD. MARIA LUIZA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:24.846745+00:00",
+    "provider_status": "OK",
+    "latitude": -23.085972,
+    "longitude": -47.2218679,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-270",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Christiano Steffen, 147 - Vila Sfeir, Indaiatuba - SP, 13330-270, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. GENTIL MARTINS|40|BR. SALTINHO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:24.850901+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0925616,
+    "longitude": -47.2506592,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13348-697",
+    "precision": "ROOFTOP",
+    "formatted_address": "Av. Gentil Martins, 40 - Jardins do Império, Indaiatuba - SP, 13348-697, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. MANOEL DA NOBREGA, PE.|782|VL. SFEIR": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:24.878027+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. MARIA IZABEL GARCIA SQUILANTI|222|BR. LAGOA PRETA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:24.991834+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. VARGAS, PRES.|2921|BR. BARROCA FUNDA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:25.141356+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. JOSE OLIVA|21|BR. CRUZ, SANTA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:25.186829+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0973246,
+    "longitude": -47.2136645,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13344-105",
+    "precision": "RANGE_INTERPOLATED",
+    "formatted_address": "R. José Oliva, 21 - Jardim Santa Cruz, Indaiatuba - SP, 13344-105, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. TOCANTINS|88|VL. ALMEIDA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:25.353459+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0821745,
+    "longitude": -47.222305,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-670",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Tocantins, 88 - Vila Almeida, Indaiatuba - SP, 13330-670, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ORQUIDEAS, DAS|803|BR. PAU PRETO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:25.383537+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AL. JOSE AMSTALDEN|1098|CR. JARDIM DOS AROMAS": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:25.465886+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. AUGUSTA STEFFEN|126|CR. COND RESID MIRIM 2": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:25.554716+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0886211,
+    "longitude": -47.1896336,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13338-490",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Júlia Augusta Steffen, 126 - Alto da Colina, Indaiatuba - SP, 13338-490, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. MARTINHO LUTERO|1789|BR. CALDEIRA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:25.591009+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1218689,
+    "longitude": -47.2467615,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13348-074",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Martinho Lutero, 1789 - Jardim Morada do Sol, Indaiatuba - SP, 13348-074, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. PEDRO DE TOLEDO|1218|LT. SUBDIV FISA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:25.724648+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0823606,
+    "longitude": -47.2116883,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-090",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Pedro de Toledo, 1218 - Jardim Dom Bosco, Indaiatuba - SP, 13330-090, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. WALTER AMBIEL|196|JD. JEQUITIBA, DO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:25.813108+00:00",
+    "provider_status": "OK",
+    "latitude": -23.094233,
+    "longitude": -47.2033534,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13343-200",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Walter Ambiel, 196 - Jardim Primavera, Indaiatuba - SP, 13343-200, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. HORST FREDERICO JOAO HEER|3875|BR. BURU": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:25.922662+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1041157,
+    "longitude": -47.27737450000001,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13349-059",
+    "precision": "ROOFTOP",
+    "formatted_address": "Av. Horst Frederico João Heer, 3875 - Parque Campo Bonito, Indaiatuba - SP, 13349-059, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. HORST FREDERICO JOAO HEER|4484|PQ. CAMPO BONITO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:25.948002+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. CANDELARIA|1671|JD. BENEDITO, SAO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:26.152158+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0812514,
+    "longitude": -47.2132216,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-180",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Candelária, 1671 - Centro, Indaiatuba - SP, 13330-180, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. JOAO MANOEL RUZ PERES|490|BR. BURU": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:26.313419+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0963242,
+    "longitude": -47.259179,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13348-708",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. João Manoel Ruz Peres, 490 - Jardim Veneza, Indaiatuba - SP, 13348-708, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AL. JOSE AMSTALDEN|491|CR. CARIBE VILLAGE": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:26.349881+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0732523,
+    "longitude": -47.2262339,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13331-100",
+    "precision": "ROOFTOP",
+    "formatted_address": "Alameda José Amstalden, 491 - Jardim Europa, Indaiatuba - SP, 13331-100, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. 11 DE JUNHO|340|BR. CENTRO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:26.546453+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0839571,
+    "longitude": -47.2197569,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-050",
+    "precision": "ROOFTOP",
+    "formatted_address": "Rua Onze de Junho, 340 - Centro, Indaiatuba - SP, 13330-050, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ARMANDO SALLES DE OLIVEIRA|983|BR. CIDADE NOVA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:26.697508+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0821593,
+    "longitude": -47.2086121,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-555",
+    "precision": "ROOFTOP",
+    "formatted_address": "Edifício Elegance - R. Armando Salles de Oliveira, 983 - Cidade Nova I, Indaiatuba - SP, 13330-555, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. SERGIO DOS SANTOS PEREIRA|205|JD. ALICE": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:26.703167+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1103138,
+    "longitude": -47.2277304,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13346-240",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Sérgio dos Santos Pereira, 205 - Jardim Alice, Indaiatuba - SP, 13346-240, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. TIEKO UEDA|15|CR. COND RESID MIRIM 1": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:26.758007+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0552215,
+    "longitude": -47.2098379,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13332-490",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Tieko Ueda, 15 - Jardim Morumbi, Indaiatuba - SP, 13332-490, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. TUPINAMBAS|685|JD. GUANABARA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:27.072530+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0767078,
+    "longitude": -47.19802929999999,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13335-520",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Tupinambas, 685 - Aqui Se Vive, Indaiatuba - SP, 13335-520, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. ROMEU TUMA, SENADOR|101|BR. MATO DENTRO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:27.139948+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|ET. RAFAEL ELIAS JOSE AUN, DR.|300|CR. GREEN VILLAGE": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:27.153716+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. 24 DE MAIO|2591|PQ. BOA ESPERANCA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:27.275436+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0916345,
+    "longitude": -47.2006436,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-315",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Vinte e Quatro de Maio, 2591 - Centro, Indaiatuba - SP, 13339-315, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. NICARAGUA|421|PQ. BOA ESPERANCA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:27.436309+00:00",
+    "provider_status": "OK",
+    "latitude": -23.08909,
+    "longitude": -47.2024088,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-250",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Nicarágua, 421 - Parque Boa Esperanca, Indaiatuba - SP, 13339-250, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. PRIMO JOSE MATTIONI|490|BR. CRUZ, SANTA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:27.535736+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0987297,
+    "longitude": -47.2104125,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13343-400",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Primo José Mattioni, 490 - Vila Brizzola, Indaiatuba - SP, 13343-400, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. BENEDITA CARVALHO|25|PQ. CAMPO BONITO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:27.546259+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0939527,
+    "longitude": -47.2749964,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13349-052",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Benedita Carvalho, 25 - Parque Campo Bonito, Indaiatuba - SP, 13349-052, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|RD. CYRIACO SCARANELO PIRES, CON.|2601|CR. FLAMBOYANT": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:27.678574+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. OTTILIA FERRAZ DE CAMARGO|726|PQ. CAMPO BONITO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:27.802619+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0954007,
+    "longitude": -47.2751847,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13349-042",
+    "precision": "ROOFTOP",
+    "formatted_address": "Av. Ottilia Ferraz de Camargo, 726 - campo bonito, Indaiatuba - SP, 13349-042, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. SERGIO DOS SANTOS PEREIRA|55|JD. ALICE": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:27.930435+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1100561,
+    "longitude": -47.2266534,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13346-240",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Sérgio dos Santos Pereira, 55 - Jardim Tropical, Indaiatuba - SP, 13346-240, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ARMANDO SALLES DE OLIVEIRA|752|PQ. TOMAS DE AQUINO, SAO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:27.969483+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0814609,
+    "longitude": -47.21095469999999,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13334-160",
+    "precision": "RANGE_INTERPOLATED",
+    "formatted_address": "R. Armando Salles de Oliveira, 752 - Cidade Nova I, Indaiatuba - SP, 13334-160, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. SIQUEIRA CAMPOS|220|BR. CENTRO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:28.095629+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0884106,
+    "longitude": -47.2191415,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-290",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Siqueira Campos, 220 - Vila Sfeir, Indaiatuba - SP, 13330-290, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. SIQUEIRA CAMPOS|254|BR. CENTRO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:28.475137+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0887453,
+    "longitude": -47.2187411,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-290",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Siqueira Campos, 254 - Vila Sfeir, Indaiatuba - SP, 13330-290, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. ANTONIO ESTANISLAU AMARAL, CEL.|1441|LT. REC MARIA ANGELA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:28.476822+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. ANTONIO ESTANISLAU DO AMARAL, CEL.|277|CR. VILLAGE AZALEIA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:28.477501+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. HORST FREDERICO JOAO HEER|4801|PQ. CAMPO BONITO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:28.527476+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0958073,
+    "longitude": -47.2734679,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13348-758",
+    "precision": "ROOFTOP",
+    "formatted_address": "Av. Horst Frederico João Heer, 4801 - Europark Comercial, Indaiatuba - SP, 13348-758, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ANTONIO NAGIB IBRAHIM, COMEND.|60|BR. CRUZ, SANTA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:28.764668+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. PARA|1000|BR. CIDADE NOVA GL 2": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:28.915466+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0821578,
+    "longitude": -47.1975602,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13334-270",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Pará, 1000 - Cidade Nova II, Indaiatuba - SP, 13334-270, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. FABIO ROBERTO BARNABE, ENG. - ME|4223|CR. RESID VILA DAS PALMEIRAS": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:29.019495+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. PORTUGAL|180|CH. TREVO, DO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:29.145286+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0997638,
+    "longitude": -47.1908401,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13340-503",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Portugal, 180 - Helvetia Country, Indaiatuba - SP, 13340-503, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. VICENTE RIZZO, PE.|259|JD. PAU PRETO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:29.274506+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. KENNEDY, PRES.|1386|BR. CIDADE NOVA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:29.304156+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. BELA VISTA|395|VL. GEORGINA GL 1": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:29.482725+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0795121,
+    "longitude": -47.2088712,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13333-020",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Bela Vista, 395 - Vila Areal, Indaiatuba - SP, 13333-020, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. MURTA DO CAMPO|138|PQ. CAMPO BONITO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:29.491207+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0990945,
+    "longitude": -47.27032699999999,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13349-054",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Murta do Campo, 138, Indaiatuba - SP, 13349-054, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AL. JOSE AMSTALDEN|540|CR. CONDOMINIO VILA PANORAMA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:29.638346+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AL. EZEQUIEL MANTOANELLI|190|BR. ITAICI": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:29.712511+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1025255,
+    "longitude": -47.18167210000001,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13340-612",
+    "precision": "ROOFTOP",
+    "formatted_address": "Alameda Ezequiel Mantoanelli, 190, Indaiatuba - SP, 13340-612, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ARMANDO SALLES DE OLIVEIRA|590|BR. CENTRO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:29.954027+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0806457,
+    "longitude": -47.2123971,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-585",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Armando Salles de Oliveira, 590 - Cidade Nova I, Indaiatuba - SP, 13330-585, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. JANGADA DO CAMPO|76|PQ. CAMPO BONITO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:29.994527+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. JOAO AMSTALDEN|595|VL. ALMEIDA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:30.081179+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0815026,
+    "longitude": -47.2229168,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-680",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. João Amstalden, 595 - Vila Lopes, Indaiatuba - SP, 13330-680, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. PEDRO VIRILLO|48|BR. ITAICI": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:30.093846+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0962037,
+    "longitude": -47.1984692,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-545",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Pedro Virillo, 48 - Jardim Santiago, Indaiatuba - SP, 13339-545, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. 11 DE JUNHO|2958|JD. SANTHIAGO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:30.236187+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0950517,
+    "longitude": -47.19705159999999,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-245",
+    "precision": "ROOFTOP",
+    "formatted_address": "Rua Onze de Junho, 2958 - Centro, Indaiatuba - SP, 13339-245, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. JACOMO NAZARIO, DR.|682|BR. CIDADE NOVA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:30.262119+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. JOSE TEIXEIRA DE CAMARGO|85|JD. VALENCA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:30.417633+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0731297,
+    "longitude": -47.2001815,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13335-180",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. José Teixeira de Camargo, 85 - Vila Rubens, Indaiatuba - SP, 13335-180, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. 24 DE MAIO|447|VL. RUZ PERES": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:30.452068+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0825645,
+    "longitude": -47.2191765,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-060",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Vinte e Quatro de Maio, 447 - Centro, Indaiatuba - SP, 13330-060, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ANTONIO AMSTALDEN|584|CR. RESID MAISON BLANCHE": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:30.631484+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0707322,
+    "longitude": -47.2116207,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13333-430",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Antônio Amstalden, 584 - Vila Suiça, Indaiatuba - SP, 13333-430, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ANTONIO MARTILIANO DE CAMPOS|530|JD. ALICE": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:30.807279+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1103043,
+    "longitude": -47.2258849,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13346-250",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Antônio Martiliano de Campos, 530 - Jardim Alice, Indaiatuba - SP, 13346-250, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ILDEFONSO STEHLE|276|VL. GEORGINA GL 1": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:30.837314+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0790948,
+    "longitude": -47.208471,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13333-020",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Ildefonso Stehle, 276 - Cidade Nova I, Indaiatuba - SP, 13333-020, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. JOAO DOS SANTOS, VOL.|1378|BR. CENTRO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:30.854404+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. PEDRO GONCALVES|1400|BR. CENTRO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:31.023658+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0839279,
+    "longitude": -47.2156947,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-210",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Pedro Gonçalves, 1400 - Centro, Indaiatuba - SP, 13330-210, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. 7 DE SETEMBRO|735|BR. CENTRO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:31.183206+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0901429,
+    "longitude": -47.2166328,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-350",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Sete de Setembro, 735 - Vila Sfeir, Indaiatuba - SP, 13330-350, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ANCHIETA, PE.|133|JD. PAU PRETO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:31.194000+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. MANOEL DA NOBREGA, PE.|730|JD. MARIA LUIZA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:31.342074+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. PEDRO MOREIRA DE SOUSA|518|JD. PARK REAL": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:31.368923+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0914387,
+    "longitude": -47.2447686,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13348-731",
+    "precision": "RANGE_INTERPOLATED",
+    "formatted_address": "R. Pedro Moreira de Sousa, 518 - Jardim Park Real, Indaiatuba - SP, 13348-731, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ADEMAR DE BARROS|1032|BR. CIDADE NOVA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:31.543120+00:00",
+    "provider_status": "OK",
+    "latitude": -23.082758,
+    "longitude": -47.2086884,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-130",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Ademar de Barros, 1032 - Centro, Indaiatuba - SP, 13330-130, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. GUAYI|36|JD. UMUARAMA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:31.559649+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1044991,
+    "longitude": -47.2031886,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13343-825",
+    "precision": "ROOFTOP",
+    "formatted_address": "Rua Guayi, 36 - Jardim Umuarama, Indaiatuba - SP, 13343-825, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. JANGADA DO CAMPO|71|PQ. CAMPO BONITO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:31.588944+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0972083,
+    "longitude": -47.2722212,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13349-053",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Jangada do Campo, 71 - Parque Campo Bonito, Indaiatuba - SP, 13349-053, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. JOSE ESCODRO|331|PQ. BOA ESPERANCA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:31.759873+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0903376,
+    "longitude": -47.2061267,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-190",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. José Escodro, 331 - Centro, Indaiatuba - SP, 13339-190, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. WILLYBALDO PERALTA ALVES|4|LT. CJ HAB LUCIO ARTONI": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:31.938762+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1042529,
+    "longitude": -47.2100078,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13343-803",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Willybaldo Peralta Alves, 4 - Jardim Eldorado, Indaiatuba - SP, 13343-803, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AL. JOSE CARDEAL, DR.|947|BR. CRUZ, SANTA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:31.970714+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. BERNARDINO BONAVITA|1215|CR. RESID VILLAGGIO PORTOFINO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:32.110556+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0682015,
+    "longitude": -47.1983695,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": null,
+    "precision": "ROOFTOP",
+    "formatted_address": "Av. Bernadino Bonavita, 1215 - Jardim Santa Rita, Indaiatuba - SP, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|AV. FABIO ROBERTO BARNABE, ENG. - ME|4285|CR. RESID DA LAGOA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:32.150046+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. ROMEU TUMA, SENADOR|320|BR. MATO DENTRO": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:32.321273+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. HAITI|83|PQ. BOA ESPERANCA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:32.575921+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0918577,
+    "longitude": -47.2043771,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-240",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Haiti, 83 - Parque Boa Esperanca, Indaiatuba - SP, 13339-240, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ALBERTO SANTOS DUMONT|104|VL. TELLER GL 2": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:32.578958+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0791323,
+    "longitude": -47.2183392,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-530",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Alberto Santos Dumont, 104 - Vila Todos Os Santos, Indaiatuba - SP, 13330-530, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. BETTY HASS DE CAMPOS|728|BR. MATO DENTRO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:32.627265+00:00",
+    "provider_status": "OK",
+    "latitude": -23.055608,
+    "longitude": -47.2363813,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13332-651",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Betty Hass de Campos, 728 - Colinas de Indaiatuba, Indaiatuba - SP, 13332-651, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. CAMELIAS, DAS|457|JD. RENATA": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:32.748786+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|R. CORINO SOLIANI|450|JD. TROPICAL": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:32.936662+00:00",
+    "provider_status": "OK",
+    "latitude": -23.1121088,
+    "longitude": -47.21704159999999,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13344-560",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Corino Soliani, 450 - Jardim Tropical, Indaiatuba - SP, 13344-560, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. 11 DE JUNHO|1881|PQ. BOA ESPERANCA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:33.012520+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0902923,
+    "longitude": -47.2062102,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-050",
+    "precision": "ROOFTOP",
+    "formatted_address": "Rua Onze de Junho, 1881 - Centro, Indaiatuba - SP, 13330-050, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. 7 DE SETEMBRO|868|BR. CENTRO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:33.046378+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0909388,
+    "longitude": -47.2156341,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-350",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Sete de Setembro, 868 - Centro, Indaiatuba - SP, 13330-350, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. ALMEIDA JUNIOR|74|JD. PAU PRETO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:33.112898+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0944972,
+    "longitude": -47.2240928,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13330-500",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Almeida Júnior, 74 - Jardim Pau Preto, Indaiatuba - SP, 13330-500, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. IGNACIO WOLF|174|JD. PEDROSO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:33.308454+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0945262,
+    "longitude": -47.21256109999999,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13343-030",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Ignácio Wolf, 174 - Jardim Pedroso, Indaiatuba - SP, 13343-030, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. NICARAGUA|97|PQ. BOA ESPERANCA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:33.380198+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0920809,
+    "longitude": -47.2038472,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-250",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Nicarágua, 97 - Parque Boa Esperanca, Indaiatuba - SP, 13339-250, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. OLAVO BILAC|331|PQ. BOA ESPERANCA": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:33.400592+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0913998,
+    "longitude": -47.2059975,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-200",
+    "precision": "RANGE_INTERPOLATED",
+    "formatted_address": "R. Olavo Bilac, 331 - Vila Vitoria II, Indaiatuba - SP, 13339-200, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. INDAIAS, DOS|1117|LT. CJ HAB LUCIO ARTONI": {
+    "status": "unavailable",
+    "retrieved_at": "2026-09-13T15:58:33.501461+00:00",
+    "provider_status": "OK"
+  },
+  "Indaiatuba|AV. HORST FREDERICO JOAO HEER|4682|PQ. CAMPO BONITO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:33.753832+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0969146,
+    "longitude": -47.2746184,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13349-059",
+    "precision": "ROOFTOP",
+    "formatted_address": "Av. Horst Frederico João Heer, 4682 - Parque Campo Bonito, Indaiatuba - SP, 13349-059, Brazil",
+    "provider": "google_geocoding"
+  },
+  "Indaiatuba|R. AMADEU SCHREINER|207|JD. SANTHIAGO": {
+    "status": "ok",
+    "retrieved_at": "2026-09-13T15:58:33.774042+00:00",
+    "provider_status": "OK",
+    "latitude": -23.0943524,
+    "longitude": -47.1952136,
+    "city": "Indaiatuba",
+    "state": "SP",
+    "postal_code": "13339-530",
+    "precision": "ROOFTOP",
+    "formatted_address": "R. Amadeu Schreiner, 207 - Jardim Santiago, Indaiatuba - SP, 13339-530, Brazil",
+    "provider": "google_geocoding"
+  }
+}

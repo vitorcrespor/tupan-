@@ -60,16 +60,18 @@ export default function MetricKnob({ value, onChange, metrics = [], className })
   if (!metrics.length) return null;
 
   const placementClass = placement.direction === 'down' ? 'metric-knob--opens-down' : '';
+  /** @type {(React.CSSProperties & Record<`--${string}`, string>) | undefined} */
+  const placementStyle = rendered ? {
+    '--metric-knob-open-height': `${placement.maxHeight}px`,
+    '--metric-knob-closed-scale-y': `${Math.min(1, 12 / placement.maxHeight)}`,
+  } : undefined;
 
   return (
     <div
       ref={ref}
       onClick={(event) => event.stopPropagation()}
       className={`metric-knob ${rendered ? 'metric-knob--active' : ''} ${open ? 'metric-knob--open' : rendered ? 'metric-knob--closing' : ''} ${placementClass} ${className || ''}`}
-      style={rendered ? {
-        '--metric-knob-open-height': `${placement.maxHeight}px`,
-        '--metric-knob-closed-scale-y': `${Math.min(1, 12 / placement.maxHeight)}`,
-      } : undefined}
+      style={placementStyle}
     >
       <button
         className="metric-knob__handle"

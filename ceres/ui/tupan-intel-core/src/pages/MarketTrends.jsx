@@ -15,7 +15,9 @@ import { sendAgentMessage } from '@/api/agent';
 import { getProperties, PROPERTY_KIND_OPTIONS } from '@/api/properties';
 import ListingCard from '@/components/tupan/ListingCard';
 import { AsyncEmpty, AsyncError, AsyncLoading } from '@/components/tupan/AsyncState';
-import { getMetricHistory, limitMetricHistoryToMonths, metricHistoryToChartSeries } from '@/api/market';
+import { limitMetricHistoryToMonths } from '@/api/market';
+import { useMarketAnalytics } from '@/lib/useMarketAnalytics';
+import { useApp } from '@/lib/AppContext';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 
 const HORIZONS = [
@@ -25,10 +27,10 @@ const HORIZONS = [
 ];
 
 const METRIC_OPTIONS = [
-  { id: 'price', label: 'Preço por m²', title: 'Preço/m² — tendência de longo prazo', key: 'price', color: CHART.aqua, formatter: formatM2, history: true },
-  { id: 'inventory', label: 'Inventário', title: 'Inventário — tendência de longo prazo', key: 'inventory', color: CHART.lagoon, formatter: (value) => Math.round(value).toLocaleString('pt-BR'), history: false },
-  { id: 'dom', label: 'Dias no mercado', title: 'DOM — tendência de longo prazo', key: 'dom', color: CHART.warning, formatter: (value) => `${Math.round(value)} dias`, history: false },
-  { id: 'velocity', label: 'Velocidade de venda', title: 'Velocidade — tendência de longo prazo', key: 'velocity', color: CHART.mint, formatter: (value) => Number(value).toFixed(2), history: false },
+  { id: 'price', apiMetric:'price_m2', label: 'Preço por m²', title: 'Preço/m² — tendência de longo prazo', key: 'price', color: CHART.aqua, formatter: formatM2, history: true },
+  { id: 'inventory', apiMetric:'active_listings', label: 'Inventário', title: 'Inventário — tendência de longo prazo', key: 'inventory', color: CHART.lagoon, formatter: (value) => Math.round(value).toLocaleString('pt-BR'), history: true },
+  { id: 'dom', apiMetric:'dom', label: 'Dias no mercado', title: 'DOM — tendência de longo prazo', key: 'dom', color: CHART.warning, formatter: (value) => `${Math.round(value)} dias`, history: true },
+  { id: 'velocity', apiMetric:'sales_velocity', label: 'Velocidade de venda', title: 'Velocidade — tendência de longo prazo', key: 'velocity', color: CHART.mint, formatter: (value) => `${Number(value).toFixed(2)} vendas/dia`, history: true },
 ];
 
 function ChartState({ metric, query, data, height, children }) {
@@ -36,49 +38,45 @@ function ChartState({ metric, query, data, height, children }) {
   if (!metric.history) return <div style={{ height }} className={`${className} text-text-muted`}>Histórico ainda indisponível para esta métrica.</div>;
   if (query.isLoading) return <div style={{ height }} className={`${className} text-text-muted`}>Carregando histórico…</div>;
   if (query.isError) return <div role="alert" style={{ height }} className={`${className} text-negative`}>{apiErrorMessage(query.error)}</div>;
-  if (data.length === 0) return <div style={{ height }} className={`${className} text-text-muted`}>Sem observações históricas para este recorte.</div>;
+  if (!data.some((point) => point.value != null)) return <div style={{ height }} className={`${className} text-text-muted`}>Sem observações históricas para este recorte.</div>;
   return children;
 }
 
 export function MarketTrendMetrics({ embedded = false }) {
+  const { filters } = useApp();
   const [regionName, setRegionName] = useState('all');
   const [horizon, setHorizon] = useState(24);
   const [primaryMetricId, setPrimaryMetricId] = useState('price');
   const [barMetricId, setBarMetricId] = useState('inventory');
   const [lineMetricId, setLineMetricId] = useState('dom');
-  const neighborhoodOptions = CITIES.find((city) => city.name === 'São Paulo')?.neighborhoods || [];
+  const marketCity = filters.city || undefined;
+  const neighborhoodOptions = marketCity ? CITIES.find((city) => city.name === marketCity)?.neighborhoods || [] : [];
   const area = regionName === 'all' ? undefined : regionName;
 
-  const priceHistoryQuery = useQuery({
-    queryKey: ['market-trends-price-m2', 'São Paulo', area],
-    queryFn: ({ signal }) => getMetricHistory('price_m2', { city: 'São Paulo', area, signal }),
-    retry: false,
-  });
-  const allPriceSeries = useMemo(
-    () => metricHistoryToChartSeries(priceHistoryQuery.data),
-    [priceHistoryQuery.data],
-  );
-  const data = useMemo(() => limitMetricHistoryToMonths(allPriceSeries, horizon), [allPriceSeries, horizon]);
+  const marketQuery = useMarketAnalytics({city:marketCity,area});
+  const seriesFor = (metric) => limitMetricHistoryToMonths(marketQuery.series(metric.apiMetric), horizon);
 
   const primaryMetric = METRIC_OPTIONS.find((option) => option.id === primaryMetricId) || METRIC_OPTIONS[0];
   const barMetric = METRIC_OPTIONS.find((option) => option.id === barMetricId) || METRIC_OPTIONS[1];
   const lineMetric = METRIC_OPTIONS.find((option) => option.id === lineMetricId) || METRIC_OPTIONS[2];
-  const latestPrice = data.at(-1)?.value;
-  const kpiOptions = [
-    { id: 'price', label: 'Último preço por m²', value: latestPrice == null ? '—' : formatM2(latestPrice), tag: 'DATA', sub: `${data.length} observações`, series: data, seriesValueFormatter: formatM2 },
-    { id: 'inventory', label: 'Variação de inventário', value: '—', tag: 'MODEL', sub: 'Histórico indisponível', series: [] },
-    { id: 'dom', label: 'DOM médio', value: '—', tag: 'DATA', sub: 'Histórico indisponível', series: [] },
-    { id: 'velocity', label: 'Velocidade média', value: '—', tag: 'AI', sub: 'Histórico indisponível', series: [] },
-  ];
+  const data = seriesFor(primaryMetric);
+  const barData = seriesFor(barMetric);
+  const lineData = seriesFor(lineMetric);
+  const kpiOptions = METRIC_OPTIONS.map(metric => ({
+    id:metric.id, label:metric.id === 'price' ? 'Último preço por m²' : metric.label,
+    value:marketQuery.value(metric.apiMetric) == null ? '—' : metric.formatter(marketQuery.value(metric.apiMetric)),
+    tag:'DATA', sub:`${seriesFor(metric).length} observações`,
+    series:seriesFor(metric), seriesValueFormatter:metric.formatter,
+  }));
   const contextData = (metric) => ({
-    metric: metric.label,
+    metric: metric.apiMetric, city:marketCity || null, area,
     period: `${horizon} meses`,
-    series: metric.history ? data.map((point) => ({ label: point.label, value: point.value })) : [],
+    series: seriesFor(metric),
   });
 
   return (
     <>
-      {!embedded && <TopBar title="Tendências de Mercado" subtitle="Análise histórica de longo prazo · São Paulo" />}
+      {!embedded && <TopBar title="Tendências de Mercado" subtitle={`Análise histórica de longo prazo · ${marketCity || 'mercado publicado'}`} />}
       <div className={embedded ? 'space-y-4' : 'flex-1 overflow-y-auto p-5 space-y-4'}>
         <div className="analysis-toolbar">
           <div className="flex items-center gap-3 flex-wrap">
@@ -106,7 +104,7 @@ export function MarketTrendMetrics({ embedded = false }) {
         <div className="market-trend-layout">
           <Panel className="p-5" metricOptions={METRIC_OPTIONS} activeMetricId={primaryMetricId} onMetricSelect={(option) => setPrimaryMetricId(option.id)} contextItem={{ id: `chart-trends-${primaryMetric.key}`, type: 'Chart', label: primaryMetric.title, data: contextData(primaryMetric) }}>
           <SectionTitle right={<ContextTag type="DATA">{horizon}M</ContextTag>}>{primaryMetric.title}</SectionTitle>
-          <ChartState metric={primaryMetric} query={priceHistoryQuery} data={data} height={280}>
+          <ChartState metric={primaryMetric} query={marketQuery} data={data} height={280}>
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={data} margin={{ left: -10, right: 8, top: 8, bottom: 0 }}>
                 <defs><linearGradient id="gPrimary" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={primaryMetric.color} stopOpacity={0.35} /><stop offset="100%" stopColor={primaryMetric.color} stopOpacity={0.02} /></linearGradient></defs>
@@ -125,9 +123,9 @@ export function MarketTrendMetrics({ embedded = false }) {
           <div className="market-trend-support">
           <Panel className="p-5" metricOptions={METRIC_OPTIONS} activeMetricId={barMetricId} onMetricSelect={(option) => setBarMetricId(option.id)} contextItem={{ id: `chart-trends-bar-${barMetric.key}`, type: 'Chart', label: `${barMetric.label} — movimento`, data: contextData(barMetric) }}>
             <SectionTitle right={<ContextTag type="MODEL">{horizon}M</ContextTag>}>{barMetric.label} — movimento</SectionTitle>
-            <ChartState metric={barMetric} query={priceHistoryQuery} data={data} height={160}>
+            <ChartState metric={barMetric} query={marketQuery} data={barData} height={160}>
               <ResponsiveContainer width="100%" height={160}>
-                <BarChart data={data} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
+                <BarChart data={barData} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
                   <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="label" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
                   <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} tickFormatter={barMetric.formatter} />
@@ -139,9 +137,9 @@ export function MarketTrendMetrics({ embedded = false }) {
           </Panel>
           <Panel className="p-5" metricOptions={METRIC_OPTIONS} activeMetricId={lineMetricId} onMetricSelect={(option) => setLineMetricId(option.id)} contextItem={{ id: `chart-trends-line-${lineMetric.key}`, type: 'Chart', label: `${lineMetric.label} — tendência`, data: contextData(lineMetric) }}>
             <SectionTitle right={<ContextTag type="DATA">{horizon}M</ContextTag>}>{lineMetric.label} — tendência</SectionTitle>
-            <ChartState metric={lineMetric} query={priceHistoryQuery} data={data} height={160}>
+            <ChartState metric={lineMetric} query={marketQuery} data={lineData} height={160}>
               <ResponsiveContainer width="100%" height={160}>
-                <LineChart data={data} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
+                <LineChart data={lineData} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
                   <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="label" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
                   <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} tickFormatter={lineMetric.formatter} />

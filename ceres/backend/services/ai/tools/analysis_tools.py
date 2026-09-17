@@ -30,6 +30,11 @@ class PortfolioToolInput(ApiSchema):
     portfolio_id: str = Field(min_length=1, max_length=128)
 
 
+class ReportToolInput(ApiSchema):
+    city: str | None = Field(default=None, max_length=160)
+    area: str | None = Field(default=None, max_length=160)
+
+
 class HeatmapToolInput(HeatmapQuery):
     max_cells: int = Field(default=250, ge=1, le=500)
 
@@ -82,6 +87,8 @@ class AuthorizedAiTools:
             return {
                 "estate_id": raw.estate_id,
                 "valuation": result.valuation,
+                "data_quality": result.data_quality,
+                "avm_diagnostics": result.avm_diagnostics,
                 "component_status": [item for item in result.timing.components if item.name == "avm"],
             }
 
@@ -115,16 +122,29 @@ class AuthorizedAiTools:
             lambda: self._analysis.portfolio_overview(self._context, raw.portfolio_id),
         )
 
+    async def get_report_summary(self, raw: ReportToolInput) -> ToolResult:
+        return await self._run(
+            "get_report_summary",
+            lambda: self._analysis.report_summary(
+                self._context, city=raw.city, area=raw.area, featured_limit=6
+            ),
+        )
+
     async def get_market_metric(self, raw: MarketIntelligenceRequest) -> ToolResult:
-        if self._market is None:
-            return ToolResult(
-                name='get_market_metric',
-                status='degraded',
-                warning='get_market_metric is unavailable without the market service.',
-            )
+        # Use the same published values as charts; no legacy global-estate read.
+        async def operation():
+            from backend.services.published_metrics import METRIC_UNITS
+            from backend.services.errors import DomainValidationError
+            if raw.metric not in METRIC_UNITS or raw.comparison_region != 'No comparison':
+                raise DomainValidationError('This metric or comparison has no published market provider.')
+            response = await self._analysis.published_market_metrics(self._context, city=raw.city,
+                area=None if raw.region == 'All neighborhoods' else raw.region)
+            metric = next(item for item in response.metrics if item.metric == raw.metric)
+            return {'scope':response.scope, 'city':response.city, 'area':response.area,
+                    'aggregation':response.aggregation, 'metric':metric}
         return await self._run(
             'get_market_metric',
-            lambda: asyncio.to_thread(self._market.intelligence, raw),
+            operation,
         )
     async def get_heatmap_metrics(self, raw: HeatmapToolInput) -> ToolResult:
         async def operation() -> dict[str, Any]:
